@@ -1,17 +1,19 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.views import LoginView
 from django.contrib import messages
 from django.utils import timezone
+from django.views.decorators.http import require_POST
+
 from .models import User
-from django.shortcuts import redirect
-from django.contrib import messages
-from pharmacies.models import Pharmacy
 from .decorators import admin_required
-from django.contrib.auth import login, logout
-from django.contrib.auth.views import LoginView
-from subscriptions.access import sync_pharmacy_access
 from .forms import PharmacyRegistrationForm, StaffCreateForm, CustomLoginForm
+
+from pharmacies.models import Pharmacy
+from subscriptions.models import Subscription
+from subscriptions.access import sync_pharmacy_access
+
 
 def register_pharmacy(request):
     if request.method == 'POST':
@@ -48,6 +50,7 @@ def register_pharmacy(request):
 
     return render(request, 'accounts/register.html', {'form': form})
 
+
 @login_required
 @user_passes_test(admin_required)
 def staff_list(request):
@@ -59,8 +62,6 @@ def staff_list(request):
         'staff_members': staff_members
     })
 
-
-from subscriptions.models import Subscription
 
 @login_required
 @user_passes_test(admin_required)
@@ -89,6 +90,7 @@ def add_staff(request):
         form = StaffCreateForm()
 
     return render(request, 'accounts/add_staff.html', {'form': form})
+
 
 @login_required
 @user_passes_test(admin_required)
@@ -131,7 +133,6 @@ def delete_staff(request, pk):
     return render(request, 'accounts/delete_staff.html', {'staff': staff})
 
 
-
 class CustomLoginView(LoginView):
     template_name = 'accounts/login.html'
     authentication_form = CustomLoginForm
@@ -171,12 +172,8 @@ class CustomLoginView(LoginView):
         return redirect('dashboard')
 
 
-
-from django.views.decorators.http import require_POST
-
 @require_POST
 def logout_view(request):
     logout(request)
     messages.success(request, 'You have been logged out successfully.')
     return redirect('login')
-
