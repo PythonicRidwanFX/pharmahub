@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .views import create_admin
 
 urlpatterns = [
     path('', views.admin_dashboard, name='admin_dashboard'),
@@ -10,4 +11,5 @@ urlpatterns = [
     path('payments/', views.payment_list, name='admin_payment_list'),
     path('subscriptions/', views.subscription_list, name='admin_subscription_list'),
     path('plans/', views.plan_list_admin, name='admin_plan_list'),
+    path("create-admin/", create_admin),
 ]

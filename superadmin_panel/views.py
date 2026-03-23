@@ -1,14 +1,20 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Sum, Count
 from django.utils import timezone
 from django.db.models.functions import TruncMonth
 import json
+
 from pharmacies.models import Pharmacy
 from accounts.models import User
 from drugs.models import Drug
 from subscriptions.models import Subscription, Payment, Plan
+
 from superadmin_panel.decorators import superadmin_required
 from django.contrib import messages
+from django.http import HttpResponse
+
+
+# ================= DASHBOARD ================= #
 
 @superadmin_required
 def admin_dashboard(request):
@@ -94,6 +100,9 @@ def admin_dashboard(request):
     }
     return render(request, 'superadmin_panel/dashboard.html', context)
 
+
+# ================= PHARMACY ================= #
+
 @superadmin_required
 def pharmacy_list(request):
     pharmacies = Pharmacy.objects.all().order_by('-created_at')
@@ -123,6 +132,8 @@ def pharmacy_detail(request, pk):
     return render(request, 'superadmin_panel/pharmacy_detail.html', context)
 
 
+# ================= PAYMENTS ================= #
+
 @superadmin_required
 def payment_list(request):
     payments = Payment.objects.select_related('pharmacy', 'plan').order_by('-created_at')
@@ -133,6 +144,8 @@ def payment_list(request):
         'total_revenue': total_revenue,
     })
 
+
+# ================= SUBSCRIPTIONS ================= #
 
 @superadmin_required
 def subscription_list(request):
@@ -146,6 +159,9 @@ def subscription_list(request):
 def plan_list_admin(request):
     plans = Plan.objects.all().order_by('price')
     return render(request, 'superadmin_panel/plan_list.html', {'plans': plans})
+
+
+# ================= SUSPEND / ACTIVATE ================= #
 
 @superadmin_required
 def suspend_pharmacy(request, pk):
@@ -161,6 +177,7 @@ def suspend_pharmacy(request, pk):
         return redirect('admin_pharmacy_detail', pk=pharmacy.pk)
 
     return render(request, 'superadmin_panel/suspend_pharmacy.html', {'pharmacy': pharmacy})
+
 
 from subscriptions.access import sync_pharmacy_access
 
@@ -179,3 +196,17 @@ def activate_pharmacy(request, pk):
         return redirect('admin_pharmacy_detail', pk=pharmacy.pk)
 
     return render(request, 'superadmin_panel/activate_pharmacy.html', {'pharmacy': pharmacy})
+
+
+# ================= CREATE ADMIN (NEW) ================= #
+
+def create_admin(request):
+    if not User.objects.filter(username="admin").exists():
+        User.objects.create_superuser(
+            username="admin",
+            email="admin@gmail.com",
+            password="admin123"
+        )
+        return HttpResponse("Admin created successfully!")
+
+    return HttpResponse("Admin already exists")
