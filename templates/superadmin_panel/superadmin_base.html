@@ -17,11 +17,27 @@
             min-height: 100vh;
         }
 
+        .menu-btn {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            background: #111827;
+            color: white;
+            border: none;
+            font-size: 22px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            z-index: 1001;
+            cursor: pointer;
+        }
+
         .sidebar {
             width: 240px;
             background: #111827;
             color: white;
             padding: 20px;
+            transition: left 0.3s ease;
         }
 
         .sidebar h2 {
@@ -122,12 +138,30 @@
         }
 
         @media (max-width: 800px) {
+            .menu-btn {
+                display: block;
+            }
+
             .layout {
                 flex-direction: column;
             }
 
             .sidebar {
-                width: 100%;
+                position: fixed;
+                top: 0;
+                left: -260px;
+                width: 240px;
+                height: 100vh;
+                z-index: 1000;
+                overflow-y: auto;
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .main {
+                padding: 70px 15px 20px 15px;
             }
 
             .cards {
@@ -138,6 +172,8 @@
 </head>
 <body>
 <div class="layout">
+    <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+
     <div class="sidebar">
         <h2>PharmaHub Admin</h2>
         <a href="{% url 'admin_dashboard' %}">Dashboard</a>
@@ -165,5 +201,11 @@
         {% block content %}{% endblock %}
     </div>
 </div>
+
+<script>
+function toggleSidebar() {
+    document.querySelector('.sidebar').classList.toggle('active');
+}
+</script>
 </body>
 </html>
