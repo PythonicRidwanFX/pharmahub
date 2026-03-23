@@ -198,15 +198,3 @@ def activate_pharmacy(request, pk):
     return render(request, 'superadmin_panel/activate_pharmacy.html', {'pharmacy': pharmacy})
 
 
-# ================= CREATE ADMIN (NEW) ================= #
-
-def create_admin(request):
-    if not User.objects.filter(username="admin").exists():
-        User.objects.create_superuser(
-            username="admin",
-            email="admin@gmail.com",
-            password="admin123"
-        )
-        return HttpResponse("Admin created successfully!")
-
-    return HttpResponse("Admin already exists")
