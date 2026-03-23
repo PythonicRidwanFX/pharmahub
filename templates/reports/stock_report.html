@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Stock Report</h2>
+
+<p>
+    <a href="{% url 'print_stock_report' %}" class="btn" target="_blank">Print Report</a>
+</p>
+
+<div class="table-box">
+    <table>
+        <thead>
+            <tr>
+                <th>Drug Name</th>
+                <th>Category</th>
+                <th>Batch</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+                <th>Expiry Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for drug in drugs %}
+            <tr>
+                <td>{{ drug.drug_name }}</td>
+                <td>{{ drug.category }}</td>
+                <td>{{ drug.batch_number }}</td>
+                <td>{{ drug.quantity }}</td>
+                <td>₦{{ drug.unit_price }}</td>
+                <td>{{ drug.expiry_date }}</td>
+                <td>
+                    {% if drug.quantity < 10 %}
+                        <span class="status-warning">Low Stock</span>
+                    {% else %}
+                        <span class="status-safe">Available</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7">No stock records found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

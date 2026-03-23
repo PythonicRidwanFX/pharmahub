@@ -1,0 +1,36 @@
+{% extends 'superadmin_panel/superadmin_base.html' %}
+
+{% block content %}
+<h2>All Subscriptions</h2>
+
+<div class="table-box">
+    <table>
+        <thead>
+            <tr>
+                <th>Pharmacy</th>
+                <th>Plan</th>
+                <th>Status</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Current</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for subscription in subscriptions %}
+            <tr>
+                <td>{{ subscription.pharmacy.name }}</td>
+                <td>{% if subscription.plan %}{{ subscription.plan.name }}{% else %}Trial{% endif %}</td>
+                <td>{{ subscription.status }}</td>
+                <td>{{ subscription.start_date }}</td>
+                <td>{{ subscription.end_date }}</td>
+                <td>{{ subscription.is_current }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6">No subscriptions found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

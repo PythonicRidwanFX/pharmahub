@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Subscription Status</h2>
+
+<div class="table-box">
+    {% if current_subscription %}
+        <p><strong>Status:</strong> {{ current_subscription.status }}</p>
+        <p><strong>Start Date:</strong> {{ current_subscription.start_date }}</p>
+        <p><strong>End Date:</strong> {{ current_subscription.end_date }}</p>
+
+        {% if current_subscription.plan %}
+            <p><strong>Plan:</strong> {{ current_subscription.plan.name }}</p>
+            <p><strong>Billing Cycle:</strong> {{ current_subscription.plan.billing_cycle }}</p>
+            <p><strong>Price:</strong> ₦{{ current_subscription.plan.price }}</p>
+        {% else %}
+            <p><strong>Plan:</strong> Trial</p>
+        {% endif %}
+    {% else %}
+        <p>No active subscription found.</p>
+    {% endif %}
+
+    <p style="margin-top: 15px;">
+        <a href="{% url 'plan_list' %}" class="btn">View Plans</a>
+    </p>
+</div>
+{% endblock %}

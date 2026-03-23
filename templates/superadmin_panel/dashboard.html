@@ -1,0 +1,245 @@
+{% extends 'superadmin_panel/superadmin_base.html' %}
+
+{% block content %}
+<h2>Platform Owner Dashboard</h2>
+
+<div class="cards">
+    <div class="card">
+        <h3>Total Pharmacies</h3>
+        <p>{{ total_pharmacies }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Total Users</h3>
+        <p>{{ total_users }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Total Drugs</h3>
+        <p>{{ total_drugs }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Active Subscriptions</h3>
+        <p>{{ active_subscriptions }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Expired Subscriptions</h3>
+        <p>{{ expired_subscriptions }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Total Revenue</h3>
+        <p>₦{{ total_revenue }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Successful Payments</h3>
+        <p>{{ successful_payments }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Pending Payments</h3>
+        <p>{{ pending_payments }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Failed Payments</h3>
+        <p>{{ failed_payments }}</p>
+    </div>
+</div>
+
+<div class="chart-box">
+    <h3>Monthly Revenue</h3>
+    <canvas id="revenueChart"></canvas>
+</div>
+
+<div class="chart-box">
+    <h3>New Pharmacies Per Month</h3>
+    <canvas id="pharmacyChart"></canvas>
+</div>
+
+<div class="chart-box">
+    <h3>Subscription Status Breakdown</h3>
+    <canvas id="subscriptionChart"></canvas>
+</div>
+
+<div class="chart-box">
+    <h3>Payment Status Breakdown</h3>
+    <canvas id="paymentChart"></canvas>
+</div>
+
+<div class="table-box">
+    <h3>Quick Links</h3>
+    <p><a href="{% url 'admin_pharmacy_list' %}" class="btn">All Pharmacies</a></p>
+    <p><a href="{% url 'admin_payment_list' %}" class="btn">Payment History</a></p>
+    <p><a href="{% url 'admin_subscription_list' %}" class="btn">Subscriptions</a></p>
+    <p><a href="{% url 'admin_plan_list' %}" class="btn">Plans</a></p>
+</div>
+
+<div class="table-box">
+    <h3>Recent Pharmacies</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Date Joined</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pharmacy in recent_pharmacies %}
+            <tr>
+                <td>{{ pharmacy.name }}</td>
+                <td>{{ pharmacy.email }}</td>
+                <td>{{ pharmacy.phone }}</td>
+                <td>{{ pharmacy.created_at }}</td>
+                <td>
+                    <a href="{% url 'admin_pharmacy_detail' pharmacy.pk %}" class="btn-warning">View</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">No pharmacies yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="table-box">
+    <h3>Recent Payments</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Pharmacy</th>
+                <th>Plan</th>
+                <th>Amount</th>
+                <th>Reference</th>
+                <th>Status</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for payment in recent_payments %}
+            <tr>
+                <td>{{ payment.pharmacy.name }}</td>
+                <td>{% if payment.plan %}{{ payment.plan.name }}{% else %}-{% endif %}</td>
+                <td>₦{{ payment.amount }}</td>
+                <td>{{ payment.reference }}</td>
+                <td>{{ payment.status }}</td>
+                <td>{{ payment.created_at }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6">No payments yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="table-box">
+    <h3>Recent Subscriptions</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Pharmacy</th>
+                <th>Plan</th>
+                <th>Status</th>
+                <th>Start</th>
+                <th>End</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for subscription in recent_subscriptions %}
+            <tr>
+                <td>{{ subscription.pharmacy.name }}</td>
+                <td>{% if subscription.plan %}{{ subscription.plan.name }}{% else %}Trial{% endif %}</td>
+                <td>{{ subscription.status }}</td>
+                <td>{{ subscription.start_date }}</td>
+                <td>{{ subscription.end_date }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">No subscriptions yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    const revenueLabels = {{ revenue_labels|safe }};
+    const revenueValues = {{ revenue_values|safe }};
+
+    const pharmacyLabels = {{ pharmacy_labels|safe }};
+    const pharmacyValues = {{ pharmacy_values|safe }};
+
+    const subscriptionStatusLabels = {{ subscription_status_labels|safe }};
+    const subscriptionStatusValues = {{ subscription_status_values|safe }};
+
+    const paymentStatusLabels = {{ payment_status_labels|safe }};
+    const paymentStatusValues = {{ payment_status_values|safe }};
+
+    new Chart(document.getElementById('revenueChart'), {
+        type: 'bar',
+        data: {
+            labels: revenueLabels,
+            datasets: [{
+                label: 'Revenue',
+                data: revenueValues,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+
+    new Chart(document.getElementById('pharmacyChart'), {
+        type: 'line',
+        data: {
+            labels: pharmacyLabels,
+            datasets: [{
+                label: 'New Pharmacies',
+                data: pharmacyValues,
+                borderWidth: 2,
+                fill: false
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+
+    new Chart(document.getElementById('subscriptionChart'), {
+        type: 'pie',
+        data: {
+            labels: subscriptionStatusLabels,
+            datasets: [{
+                data: subscriptionStatusValues
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+
+    new Chart(document.getElementById('paymentChart'), {
+        type: 'doughnut',
+        data: {
+            labels: paymentStatusLabels,
+            datasets: [{
+                data: paymentStatusValues
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+</script>
+{% endblock %}

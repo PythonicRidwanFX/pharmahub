@@ -1,0 +1,16 @@
+{% extends 'superadmin_panel/superadmin_base.html' %}
+
+{% block content %}
+<h2>Suspend Pharmacy</h2>
+
+<div class="table-box">
+    <p>Are you sure you want to suspend <strong>{{ pharmacy.name }}</strong>?</p>
+    <p>Once suspended, users under this pharmacy will not be able to use the platform.</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn-warning">Yes, Suspend</button>
+        <a href="{% url 'admin_pharmacy_detail' pharmacy.pk %}" class="btn">Cancel</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Expiry Alerts</h2>
+
+<div class="table-box" style="margin-bottom: 20px;">
+    <h3>Expired Drugs</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Drug Name</th>
+                <th>Quantity</th>
+                <th>Expiry Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for drug in expired_drugs %}
+            <tr>
+                <td>{{ drug.drug_name }}</td>
+                <td>{{ drug.quantity }}</td>
+                <td><span class="status-danger">{{ drug.expiry_date }}</span></td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3">No expired drugs.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="table-box">
+    <h3>Expiring Soon</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Drug Name</th>
+                <th>Quantity</th>
+                <th>Expiry Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for drug in expiring_soon %}
+            <tr>
+                <td>{{ drug.drug_name }}</td>
+                <td>{{ drug.quantity }}</td>
+                <td><span class="status-warning">{{ drug.expiry_date }}</span></td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3">No drugs expiring soon.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

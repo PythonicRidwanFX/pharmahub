@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Print Stock Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        h2 { margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; }
+        table, th, td { border: 1px solid #000; }
+        th, td { padding: 10px; text-align: left; }
+        .print-btn { margin-bottom: 20px; }
+        @media print {
+            .print-btn { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <button class="print-btn" onclick="window.print()">Print</button>
+    <h2>Stock Report</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Drug Name</th>
+                <th>Category</th>
+                <th>Batch</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+                <th>Expiry Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for drug in drugs %}
+            <tr>
+                <td>{{ drug.drug_name }}</td>
+                <td>{{ drug.category }}</td>
+                <td>{{ drug.batch_number }}</td>
+                <td>{{ drug.quantity }}</td>
+                <td>₦{{ drug.unit_price }}</td>
+                <td>{{ drug.expiry_date }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Reports Dashboard</h2>
+
+<div class="cards">
+    <div class="card">
+        <h3>Total Stock Items</h3>
+        <p>{{ total_stock_items }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Low Stock</h3>
+        <p>{{ low_stock_count }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Expired Drugs</h3>
+        <p>{{ expired_count }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Expiring Soon</h3>
+        <p>{{ expiring_soon_count }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Total Sales</h3>
+        <p>₦{{ total_sales }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Total Purchases</h3>
+        <p>₦{{ total_purchases }}</p>
+    </div>
+</div>
+
+<div class="table-box">
+    <h3>Available Reports</h3>
+    <p><a href="{% url 'stock_report' %}" class="btn">Stock Report</a></p>
+    <p><a href="{% url 'sales_report' %}" class="btn">Sales Report</a></p>
+    <p><a href="{% url 'purchase_report' %}" class="btn">Purchase Report</a></p>
+    <p><a href="{% url 'expiry_report' %}" class="btn">Expiry Report</a></p>
+</div>
+{% endblock %}

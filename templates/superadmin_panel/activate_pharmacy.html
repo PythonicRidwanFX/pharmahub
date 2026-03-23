@@ -1,0 +1,16 @@
+{% extends 'superadmin_panel/superadmin_base.html' %}
+
+{% block content %}
+<h2>Activate Pharmacy</h2>
+
+<div class="table-box">
+    <p>Are you sure you want to activate <strong>{{ pharmacy.name }}</strong>?</p>
+    <p>This pharmacy will be able to use the platform again, subject to subscription rules.</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn">Yes, Activate</button>
+        <a href="{% url 'admin_pharmacy_detail' pharmacy.pk %}" class="btn-warning">Cancel</a>
+    </form>
+</div>
+{% endblock %}

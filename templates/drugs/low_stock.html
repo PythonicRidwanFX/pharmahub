@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Low Stock Drugs</h2>
+
+<div class="table-box">
+    <table>
+        <thead>
+            <tr>
+                <th>Drug Name</th>
+                <th>Category</th>
+                <th>Quantity</th>
+                <th>Expiry Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for drug in low_stock_drugs %}
+            <tr>
+                <td>{{ drug.drug_name }}</td>
+                <td>{{ drug.category }}</td>
+                <td><span class="status-warning">{{ drug.quantity }}</span></td>
+                <td>{{ drug.expiry_date }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">No low stock drugs.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

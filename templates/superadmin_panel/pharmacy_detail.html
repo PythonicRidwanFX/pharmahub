@@ -1,0 +1,150 @@
+{% extends 'superadmin_panel/superadmin_base.html' %}
+
+{% block content %}
+<h2>{{ pharmacy.name }}</h2>
+
+<div class="cards">
+    <div class="card">
+        <h3>Email</h3>
+        <p>{{ pharmacy.email }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Phone</h3>
+        <p>{{ pharmacy.phone }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Status</h3>
+        <p>
+            {% if pharmacy.is_suspended_by_owner %}
+                <strong style="color:red;">Suspended by Owner</strong>
+            {% elif pharmacy.is_active %}
+                <strong style="color:green;">Active</strong>
+            {% else %}
+                <strong style="color:orange;">Inactive / Subscription Expired</strong>
+            {% endif %}
+        </p>
+    </div>
+
+    <div class="card">
+        <h3>Total Users</h3>
+        <p>{{ users.count }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Total Drugs</h3>
+        <p>{{ drugs.count }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Total Revenue</h3>
+        <p>₦{{ total_revenue }}</p>
+    </div>
+</div>
+
+<div class="table-box" style="margin-bottom:20px;">
+    {% if pharmacy.is_active %}
+        <a href="{% url 'suspend_pharmacy' pharmacy.pk %}" class="btn-warning">Suspend Pharmacy</a>
+    {% else %}
+        <a href="{% url 'activate_pharmacy' pharmacy.pk %}" class="btn">Activate Pharmacy</a>
+    {% endif %}
+</div>
+
+<div class="table-box" style="margin-bottom:20px;">
+    <h3>Users</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Role</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.role }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3">No users found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="table-box" style="margin-bottom:20px;">
+    <h3>Subscriptions</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Plan</th>
+                <th>Status</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Current</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for subscription in subscriptions %}
+            <tr>
+                <td>{% if subscription.plan %}{{ subscription.plan.name }}{% else %}Trial{% endif %}</td>
+
+                <!-- Status with color-coded styling -->
+                <td>
+                    {% if subscription.status == 'suspended' or pharmacy.is_suspended_by_owner %}
+                        <strong style="color:red;">Suspended by Owner</strong>
+                    {% elif subscription.status == 'active' and subscription.end_date >= today %}
+                        <strong style="color:green;">Active</strong>
+                    {% else %}
+                        <strong style="color:orange;">Expired / Inactive</strong>
+                    {% endif %}
+                </td>
+
+                <td>{{ subscription.start_date }}</td>
+                <td>{{ subscription.end_date }}</td>
+                <td>{{ subscription.is_current }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">No subscriptions found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="table-box">
+    <h3>Payments</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Plan</th>
+                <th>Amount</th>
+                <th>Reference</th>
+                <th>Status</th>
+                <th>Paid At</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for payment in payments %}
+            <tr>
+                <td>{% if payment.plan %}{{ payment.plan.name }}{% else %}-{% endif %}</td>
+                <td>₦{{ payment.amount }}</td>
+                <td>{{ payment.reference }}</td>
+                <td>{{ payment.status }}</td>
+                <td>{{ payment.paid_at }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">No payments found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

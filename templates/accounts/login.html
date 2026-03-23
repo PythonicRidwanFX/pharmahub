@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block auth_content %}
+<style>
+/* ========================= */
+/* 🔥 AUTH (LOGIN FIX) */
+/* ========================= */
+
+.auth-container {
+    position: fixed;       /* position relative to viewport */
+    top: 50%;              /* vertical center reference */
+    left: 50%;             /* horizontal center reference */
+    transform: translate(-50%, -50%); /* truly center both axes */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;         /* full viewport height */
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.auth-box {
+    width: 420px;
+    max-width: 92%;
+    background: white;
+    padding: 22px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+/* Optional: style form elements */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #111827;
+}
+
+.error-box {
+    background: #fee2e2;
+    color: #b91c1c;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.btn {
+    background-color: #2563eb; /* Vibrant blue */
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: #1d4ed8;
+}
+</style>
+
+<div class="auth-container">
+    <div class="auth-box">
+
+        <!-- 🔷 Logo -->
+        <div style="text-align:center; margin-bottom:18px;">
+            <img src="{% static 'images/logo.png' %}"
+                 alt="PharmaHub Logo"
+                 style="width:90px; margin-bottom:5px;">
+        </div>
+
+        <!-- Welcome text -->
+        <div style="text-align:center; margin-bottom:20px;">
+            <h2 style="margin-bottom:8px;">Welcome to PharmaHub</h2>
+            <p style="color:#6b7280; font-size:14px;">
+                Login to manage your pharmacy operations.
+            </p>
+        </div>
+
+        {% if form.errors %}
+            <div class="error-box">
+                Invalid username or password.
+            </div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label>Username</label>
+                {{ form.username }}
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                {{ form.password }}
+            </div>
+
+            <button type="submit" class="btn" style="width:100%;">Login</button>
+        </form>
+
+        <div style="text-align:center; margin-top:10px;">
+            <a href="{% url 'password_reset' %}" style="color:#2563eb; text-decoration:none; font-size:14px;">
+                Forgot Password?
+            </a>
+        </div>
+
+        <div style="text-align:center; margin-top:10px;">
+            <span style="color:#6b7280;">No account yet?</span>
+            <a href="{% url 'register' %}" style="color:#2563eb; text-decoration:none;">Register</a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

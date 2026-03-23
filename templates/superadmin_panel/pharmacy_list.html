@@ -1,0 +1,46 @@
+{% extends 'superadmin_panel/superadmin_base.html' %}
+
+{% block content %}
+<h2>All Pharmacies</h2>
+
+<div class="table-box">
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Address</th>
+                <th>Status</th>
+                <th>Date Joined</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pharmacy in pharmacies %}
+            <tr>
+                <td>{{ pharmacy.name }}</td>
+                <td>{{ pharmacy.email }}</td>
+                <td>{{ pharmacy.phone }}</td>
+                <td>{{ pharmacy.address }}</td>
+                <td>
+                    {% if pharmacy.is_active %}
+                        <strong style="color:green;">Active</strong>
+                    {% else %}
+                        <strong style="color:red;">Suspended</strong>
+                    {% endif %}
+                </td>
+                <td>{{ pharmacy.created_at }}</td>
+                <td>
+                    <a href="{% url 'admin_pharmacy_detail' pharmacy.pk %}" class="btn-warning">View</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7">No pharmacies found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

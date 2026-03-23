@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Drug List</h2>
+
+<p>
+    <a href="{% url 'add_drug' %}" class="btn">Add Drug</a>
+</p>
+
+<div class="table-box">
+    <table>
+        <thead>
+            <tr>
+                <th>Drug</th>
+                <th>Category</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Expiry Date</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for drug in drugs %}
+            <tr>
+                <td>{{ drug.drug_name }}</td>
+                <td>{{ drug.category }}</td>
+                <td>{{ drug.quantity }}</td>
+                <td>{{ drug.unit_price }}</td>
+                <td>{{ drug.expiry_date }}</td>
+                <td>
+                    {% if drug.quantity < 10 %}
+                        <span class="status-warning">Low Stock</span>
+                    {% else %}
+                        <span class="status-safe">Normal</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'edit_drug' drug.pk %}" class="btn-warning">Edit</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7">No drugs found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

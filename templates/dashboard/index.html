@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Dashboard</h2>
+
+<div class="cards" style="overflow-x:auto; margin-bottom:20px;">
+    <div class="card">
+        <h3>Total Drugs</h3>
+        <p>{{ total_drugs }}</p>
+    </div>
+    <div class="card">
+        <h3>Expired Drugs</h3>
+        <p>{{ expired_count }}</p>
+    </div>
+    <div class="card">
+        <h3>Expiring Soon</h3>
+        <p>{{ expiring_soon_count }}</p>
+    </div>
+    <div class="card">
+        <h3>Low Stock</h3>
+        <p>{{ low_stock_count }}</p>
+    </div>
+    <div class="card">
+        <h3>Today's Sales</h3>
+        <p>₦{{ today_sales }}</p>
+    </div>
+    <div class="card">
+        <h3>Today's Purchases</h3>
+        <p>₦{{ today_purchases }}</p>
+    </div>
+</div>
+
+<!-- Role-based action buttons -->
+<div style="margin-bottom: 20px;">
+    {% if user.role == 'owner' or user.role == 'admin' or user.role == 'cashier' or user.role == 'pharmacist' %}
+        <a href="{% url 'add_sale' %}" class="btn">Add Sale</a>
+    {% endif %}
+
+    {% if user.role == 'owner' or user.role == 'admin' %}
+        <a href="{% url 'add_purchase' %}" class="btn">Add Purchase</a>
+    {% endif %}
+</div>
+
+<div class="content-scroll">
+
+    <!-- Recent Drugs Table -->
+    <div class="table-box" style="margin-bottom: 20px;">
+        <h3>Recent Drugs</h3>
+        <div style="overflow-x:auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Drug Name</th>
+                        <th>Quantity</th>
+                        <th>Expiry Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for drug in recent_drugs %}
+                    <tr>
+                        <td>{{ drug.drug_name }}</td>
+                        <td>{{ drug.quantity }}</td>
+                        <td>{{ drug.expiry_date }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3">No drugs added yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Recent Sales Table -->
+    <div class="table-box" style="margin-bottom: 20px;">
+        <h3>Recent Sales</h3>
+        <div style="overflow-x:auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Drug</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sale in recent_sales %}
+                    <tr>
+                        <td>{{ sale.drug.drug_name }}</td>
+                        <td>{{ sale.quantity }}</td>
+                        <td>₦{{ sale.total_price }}</td>
+                        <td>{{ sale.date }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4">No sales yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Recent Purchases Table -->
+    <div class="table-box">
+        <h3>Recent Purchases</h3>
+        <div style="overflow-x:auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Drug</th>
+                        <th>Quantity</th>
+                        <th>Total Cost</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for purchase in recent_purchases %}
+                    <tr>
+                        <td>{{ purchase.drug.drug_name }}</td>
+                        <td>{{ purchase.quantity }}</td>
+                        <td>₦{{ purchase.total_cost }}</td>
+                        <td>{{ purchase.date }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4">No purchases yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

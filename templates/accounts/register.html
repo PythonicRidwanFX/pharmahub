@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block auth_content %}
+<div class="auth-box" style="width:520px;">
+
+    <!-- ✅ LOGO -->
+    <div style="text-align:center; margin-bottom:10px;">
+        <img src="{% static 'images/logo.png' %}"
+             alt="PharmaHub Logo"
+             style="width:70px; height:auto; margin-bottom:8px;">
+
+        <h1 style="font-size:22px; color:#2563eb; margin:0;">PharmaHub</h1>
+    </div>
+
+    <!-- ✅ HEADER -->
+    <div style="text-align:center; margin-bottom:20px;">
+        <h2 style="margin-bottom:8px;">Create Pharmacy Account</h2>
+        <p style="color:#6b7280; font-size:14px;">
+            Set up your pharmacy and start managing stock, sales, and reports.
+        </p>
+    </div>
+
+    <!-- ✅ FORM -->
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label>Username</label>
+            {{ form.username }}
+        </div>
+
+        <div class="form-group">
+            <label>Email</label>
+            {{ form.email }}
+        </div>
+
+        <div class="form-group">
+            <label>Password</label>
+            {{ form.password1 }}
+        </div>
+
+        <div class="form-group">
+            <label>Confirm Password</label>
+            {{ form.password2 }}
+        </div>
+
+        <div class="form-group">
+            <label>Pharmacy Name</label>
+            {{ form.pharmacy_name }}
+        </div>
+
+        <div class="form-group">
+            <label>Pharmacy Email</label>
+            {{ form.pharmacy_email }}
+        </div>
+
+        <div class="form-group">
+            <label>Phone</label>
+            {{ form.pharmacy_phone }}
+        </div>
+
+        <div class="form-group">
+            <label>Address</label>
+            {{ form.pharmacy_address }}
+        </div>
+
+        <button type="submit" class="btn" style="width:100%;">Create Account</button>
+    </form>
+
+    <!-- ✅ FOOTER -->
+    <div style="text-align:center; margin-top:14px;">
+        <span style="color:#6b7280;">Already have an account?</span>
+        <a href="{% url 'login' %}" style="color:#2563eb; text-decoration:none;">Login</a>
+    </div>
+
+</div>
+{% endblock %}

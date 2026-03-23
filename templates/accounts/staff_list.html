@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Staff Members</h2>
+
+<p>
+    <a href="{% url 'add_staff' %}" class="btn">Add Staff</a>
+</p>
+
+<div class="table-box">
+    <table>
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Pharmacy</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for staff in staff_members %}
+            <tr>
+                <td>{{ staff.username }}</td>
+                <td>{{ staff.email }}</td>
+                <td>{{ staff.role }}</td>
+                <td>{{ staff.pharmacy.name }}</td>
+                <td>
+                    <a href="{% url 'edit_staff' staff.pk %}" class="btn-warning">Edit</a>
+                    {% if staff.role != 'owner' %}
+                        <a href="{% url 'delete_staff' staff.pk %}" class="btn-danger">Delete</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">No staff members found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
