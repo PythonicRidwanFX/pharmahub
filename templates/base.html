@@ -30,6 +30,7 @@
         overflow-y: auto;
         transition: all 0.3s ease;
         box-sizing: border-box;
+        z-index: 1000;
     }
 
     .sidebar h2 {
@@ -57,6 +58,22 @@
         min-height: 100vh;
         overflow-y: auto;
         box-sizing: border-box;
+    }
+
+    /* MENU BUTTON (NEW) */
+    .menu-btn {
+        display: none;
+        position: fixed;
+        top: 15px;
+        left: 15px;
+        background: #0f172a;
+        color: white;
+        border: none;
+        padding: 10px 12px;
+        border-radius: 8px;
+        font-size: 18px;
+        z-index: 1100;
+        cursor: pointer;
     }
 
     .page-header {
@@ -280,19 +297,21 @@
         margin-bottom: 15px;
     }
 
+    /* MOBILE FIX (IMPORTANT) */
     @media (max-width: 900px) {
-        .cards {
-            grid-template-columns: 1fr 1fr;
-        }
 
-        .layout {
-            flex-direction: column;
+        .menu-btn {
+            display: block;
         }
 
         .sidebar {
-            position: relative;
-            width: 100%;
-            height: auto;
+            left: -100%;
+            width: 70%;
+            position: fixed;
+        }
+
+        .sidebar.active {
+            left: 0;
         }
 
         .main {
@@ -300,26 +319,8 @@
             width: 100%;
         }
 
-        .topbar {
-            padding: 10px;
-            font-size: 18px;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .message-success {
-            background: #dcfce7;
-            color: #166534;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-        }
-
-        .message-error {
-            background: #fee2e2;
-            color: #991b1b;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
+        .cards {
+            grid-template-columns: 1fr 1fr;
         }
 
         .auth-container {
@@ -338,6 +339,7 @@
 
 {% if user.is_authenticated %}
 <div class="layout">
+    <button class="menu-btn" onclick="toggleSidebar()">☰</button>
     <div class="sidebar">
         <div style="text-align:center; margin-bottom:10px;">
             <h1 style="font-size:22px; color:#2563eb; margin:0;">PharmaHub</h1>
@@ -407,4 +409,9 @@
 {% endif %}
 
 </body>
+<script>
+function toggleSidebar() {
+    document.querySelector('.sidebar').classList.toggle('active');
+}
+</script>
 </html>
