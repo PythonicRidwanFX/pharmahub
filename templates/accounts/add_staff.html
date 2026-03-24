@@ -82,20 +82,6 @@
                 Staff Management
             </div>
 
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert-box {{ message.tags }}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
-
-            {% if form.errors %}
-                <div class="error-box">
-                    Please correct the errors below and try again.
-                </div>
-            {% endif %}
-
             <form method="post">
                 {% csrf_token %}
 
@@ -135,10 +121,9 @@
             </form>
 
             <div class="staff-help-box">
-                Create team accounts for pharmacists, cashiers, or staff members.
+                Create team accounts for admins, pharmacists, cashiers, or other staff based on the role permissions available in your system.
             </div>
         </div>
     </div>
 </div>
-
 {% endblock %}

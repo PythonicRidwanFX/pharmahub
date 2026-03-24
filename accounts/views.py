@@ -13,24 +13,26 @@ from django.contrib.auth.views import LoginView
 from subscriptions.access import sync_pharmacy_access
 from .forms import PharmacyRegistrationForm, StaffCreateForm, CustomLoginForm
 
-from django.contrib.auth import login
-from django.contrib import messages
-from django.shortcuts import render, redirect
-from django.utils import timezone
-
-from .forms import PharmacyRegistrationForm
-from subscriptions.models import Subscription
-
-
 def register_pharmacy(request):
     if request.method == 'POST':
         form = PharmacyRegistrationForm(request.POST)
         if form.is_valid():
-            user = form.save()
+            pharmacy = Pharmacy.objects.create(
+                name=form.cleaned_data['pharmacy_name'],
+                email=form.cleaned_data['pharmacy_email'],
+                phone=form.cleaned_data['pharmacy_phone'],
+                address=form.cleaned_data['pharmacy_address'],
+            )
+
+            user = form.save(commit=False)
+            user.pharmacy = pharmacy
+            user.role = 'owner'
+            user.email = form.cleaned_data['email']
+            user.save()
 
             today = timezone.now().date()
             Subscription.objects.create(
-                pharmacy=user.pharmacy,
+                pharmacy=pharmacy,
                 plan=None,
                 status='trial',
                 start_date=today,
@@ -39,15 +41,13 @@ def register_pharmacy(request):
             )
 
             login(request, user)
-            messages.success(
-                request,
-                'Account created successfully. Your 14-day trial has started.'
-            )
+            messages.success(request, 'Account created successfully. Your 14-day trial has started.')
             return redirect('dashboard')
     else:
         form = PharmacyRegistrationForm()
 
     return render(request, 'accounts/register.html', {'form': form})
+
 @login_required
 @user_passes_test(admin_required)
 def staff_list(request):

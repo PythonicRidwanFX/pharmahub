@@ -248,19 +248,9 @@
                 </p>
             </div>
 
-            <!-- ✅ DJANGO MESSAGES -->
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert-box {{ message.tags }}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
-
-            <!-- ✅ FORM ERRORS -->
             {% if form.errors %}
                 <div class="error-box">
-                    Invalid username/email or password.
+                    Invalid username or password.
                 </div>
             {% endif %}
 
@@ -268,16 +258,16 @@
                 {% csrf_token %}
 
                 <div class="form-group">
-                    <label for="id_username">Username or Email</label>
+                    <label for="{{ form.username.id_for_label }}">Username</label>
                     {{ form.username }}
                 </div>
 
                 <div class="form-group">
-                    <label for="id_password">Password</label>
+                    <label for="{{ form.password.id_for_label }}">Password</label>
                     {{ form.password }}
                 </div>
 
-                <button type="submit" class="login-btn">Login</button>
+                <button type="submit" class="login-btn">Login to Dashboard</button>
             </form>
 
             <div class="login-meta">
@@ -292,7 +282,7 @@
             </div>
 
             <div class="security-note">
-                Secure access for pharmacy owners, pharmacists, cashiers, and staff.
+                Secure access for pharmacy owners, admins, cashiers, and pharmacists.
             </div>
 
         </div>
