@@ -74,4 +74,4 @@ def dashboard_view(request):
 @pharmacy_active_required
 @subscription_required
 def help_view(request):
-    return render(request, 'dashboard/help.html')
+    return render(request, 'help.html')
