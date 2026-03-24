@@ -1,17 +1,19 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.views import LoginView
 from django.contrib import messages
 from django.utils import timezone
+from django.views.decorators.http import require_POST
+
 from .models import User
-from django.shortcuts import redirect
-from django.contrib import messages
-from pharmacies.models import Pharmacy
-from .decorators import admin_required
-from django.contrib.auth import login, logout
-from django.contrib.auth.views import LoginView
-from subscriptions.access import sync_pharmacy_access
 from .forms import PharmacyRegistrationForm, StaffCreateForm, CustomLoginForm
+from .decorators import admin_required
+
+from pharmacies.models import Pharmacy
+from subscriptions.models import Subscription
+from subscriptions.access import sync_pharmacy_access
+
 
 def register_pharmacy(request):
     if request.method == 'POST':
@@ -48,19 +50,20 @@ def register_pharmacy(request):
 
     return render(request, 'accounts/register.html', {'form': form})
 
+
 @login_required
 @user_passes_test(admin_required)
 def staff_list(request):
     staff_members = User.objects.filter(
         pharmacy=request.user.pharmacy
+    ).exclude(
+        role='owner'
     ).order_by('username')
 
     return render(request, 'accounts/staff_list.html', {
         'staff_members': staff_members
     })
 
-
-from subscriptions.models import Subscription
 
 @login_required
 @user_passes_test(admin_required)
@@ -72,7 +75,12 @@ def add_staff(request):
     ).first()
 
     if current_subscription and current_subscription.plan:
-        current_staff_count = User.objects.filter(pharmacy=request.user.pharmacy).count()
+        current_staff_count = User.objects.filter(
+            pharmacy=request.user.pharmacy
+        ).exclude(
+            role='owner'
+        ).count()
+
         if current_staff_count >= current_subscription.plan.max_staff:
             messages.error(request, 'You have reached the maximum staff limit for your plan.')
             return redirect('staff_list')
@@ -99,10 +107,19 @@ def edit_staff(request, pk):
         pharmacy=request.user.pharmacy
     )
 
+    if staff.role == 'owner':
+        messages.error(request, 'Owner account cannot be edited here.')
+        return redirect('staff_list')
+
     if request.method == 'POST':
         staff.username = request.POST.get('username')
         staff.email = request.POST.get('email')
         staff.role = request.POST.get('role')
+
+        if staff.role == 'owner':
+            messages.error(request, 'You cannot assign owner role here.')
+            return redirect('staff_list')
+
         staff.save()
         messages.success(request, 'Staff updated successfully.')
         return redirect('staff_list')
@@ -129,7 +146,6 @@ def delete_staff(request, pk):
         return redirect('staff_list')
 
     return render(request, 'accounts/delete_staff.html', {'staff': staff})
-
 
 
 class CustomLoginView(LoginView):
@@ -170,9 +186,6 @@ class CustomLoginView(LoginView):
 
         return redirect('dashboard')
 
-
-
-from django.views.decorators.http import require_POST
 
 @require_POST
 def logout_view(request):
