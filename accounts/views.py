@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -38,7 +40,7 @@ def register_pharmacy(request):
                 plan=None,
                 status='trial',
                 start_date=today,
-                end_date=today + timezone.timedelta(days=14),
+                end_date=today + timedelta(days=14),
                 is_current=True
             )
 
@@ -97,6 +99,7 @@ def add_staff(request):
         form = StaffCreateForm()
 
     return render(request, 'accounts/add_staff.html', {'form': form})
+
 
 @login_required
 @user_passes_test(admin_required)
