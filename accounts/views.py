@@ -10,7 +10,6 @@ from .models import User
 from .decorators import admin_required
 from .forms import PharmacyRegistrationForm, StaffCreateForm, CustomLoginForm
 
-from pharmacies.models import Pharmacy
 from subscriptions.models import Subscription
 from subscriptions.access import sync_pharmacy_access
 
@@ -19,22 +18,11 @@ def register_pharmacy(request):
     if request.method == 'POST':
         form = PharmacyRegistrationForm(request.POST)
         if form.is_valid():
-            pharmacy = Pharmacy.objects.create(
-                name=form.cleaned_data['pharmacy_name'],
-                email=form.cleaned_data['pharmacy_email'],
-                phone=form.cleaned_data['pharmacy_phone'],
-                address=form.cleaned_data['pharmacy_address'],
-            )
-
-            user = form.save(commit=False)
-            user.pharmacy = pharmacy
-            user.role = 'owner'
-            user.email = form.cleaned_data['email']
-            user.save()
+            user = form.save()
 
             today = timezone.now().date()
             Subscription.objects.create(
-                pharmacy=pharmacy,
+                pharmacy=user.pharmacy,
                 plan=None,
                 status='trial',
                 start_date=today,
@@ -43,7 +31,10 @@ def register_pharmacy(request):
             )
 
             login(request, user)
-            messages.success(request, 'Account created successfully. Your 14-day trial has started.')
+            messages.success(
+                request,
+                'Account created successfully. Your 14-day trial has started.'
+            )
             return redirect('dashboard')
     else:
         form = PharmacyRegistrationForm()
@@ -73,21 +64,25 @@ def add_staff(request):
     ).first()
 
     if current_subscription and current_subscription.plan:
-        current_staff_count = User.objects.filter(pharmacy=request.user.pharmacy).count()
+        current_staff_count = User.objects.filter(
+            pharmacy=request.user.pharmacy
+        ).count()
+
         if current_staff_count >= current_subscription.plan.max_staff:
-            messages.error(request, 'You have reached the maximum staff limit for your plan.')
+            messages.error(
+                request,
+                'You have reached the maximum staff limit for your plan.'
+            )
             return redirect('staff_list')
 
     if request.method == 'POST':
-        form = StaffCreateForm(request.POST)
+        form = StaffCreateForm(request.POST, pharmacy=request.user.pharmacy)
         if form.is_valid():
-            staff = form.save(commit=False)
-            staff.pharmacy = request.user.pharmacy
-            staff.save()
+            form.save()
             messages.success(request, 'Staff account created successfully.')
             return redirect('staff_list')
     else:
-        form = StaffCreateForm()
+        form = StaffCreateForm(pharmacy=request.user.pharmacy)
 
     return render(request, 'accounts/add_staff.html', {'form': form})
 
@@ -101,11 +96,29 @@ def edit_staff(request, pk):
         pharmacy=request.user.pharmacy
     )
 
+    if staff.is_owner:
+        messages.error(request, 'Owner account cannot be edited here.')
+        return redirect('staff_list')
+
     if request.method == 'POST':
-        staff.username = request.POST.get('username')
-        staff.email = request.POST.get('email')
-        staff.role = request.POST.get('role')
+        username = request.POST.get('username', '').strip()
+        email = request.POST.get('email', '').strip()
+        role = request.POST.get('role', '').strip()
+
+        if not username or not email or not role:
+            messages.error(request, 'All fields are required.')
+            return render(request, 'accounts/edit_staff.html', {'staff': staff})
+
+        valid_roles = [choice[0] for choice in User.ROLE_CHOICES]
+        if role not in valid_roles:
+            messages.error(request, 'Invalid role selected.')
+            return render(request, 'accounts/edit_staff.html', {'staff': staff})
+
+        staff.username = username
+        staff.email = email
+        staff.role = role
         staff.save()
+
         messages.success(request, 'Staff updated successfully.')
         return redirect('staff_list')
 
@@ -121,7 +134,7 @@ def delete_staff(request, pk):
         pharmacy=request.user.pharmacy
     )
 
-    if staff.role == 'owner':
+    if staff.is_owner:
         messages.error(request, 'Owner account cannot be deleted.')
         return redirect('staff_list')
 
@@ -153,7 +166,10 @@ class CustomLoginView(LoginView):
 
         if not pharmacy:
             logout(self.request)
-            messages.error(self.request, 'No pharmacy account is linked to this user.')
+            messages.error(
+                self.request,
+                'No pharmacy account is linked to this user.'
+            )
             return redirect('login')
 
         sync_pharmacy_access(pharmacy)
@@ -168,11 +184,12 @@ class CustomLoginView(LoginView):
             return redirect('login')
 
         if not pharmacy.is_active:
+            logout(self.request)
             messages.warning(
                 self.request,
                 'Your subscription is inactive or expired. Please renew to continue.'
             )
-            return redirect('plan_list')
+            return redirect('login')
 
         return redirect('dashboard')
 

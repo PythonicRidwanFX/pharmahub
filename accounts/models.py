@@ -1,6 +1,5 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from pharmacies.models import Pharmacy
 
 
 class User(AbstractUser):
@@ -11,12 +10,13 @@ class User(AbstractUser):
     )
 
     pharmacy = models.ForeignKey(
-        Pharmacy,
+        'pharmacies.Pharmacy',
         on_delete=models.CASCADE,
         related_name='users',
         null=True,
         blank=True
     )
+
     role = models.CharField(
         max_length=20,
         choices=ROLE_CHOICES,
@@ -28,7 +28,7 @@ class User(AbstractUser):
 
     @property
     def is_owner(self):
-        return self.pharmacy is not None and self.pharmacy.owner == self
+        return hasattr(self, 'owned_pharmacy')
 
     @property
     def is_admin_user(self):

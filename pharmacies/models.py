@@ -7,6 +7,13 @@ class Pharmacy(models.Model):
     phone = models.CharField(max_length=20, blank=True, null=True)
     address = models.TextField(blank=True, null=True)
 
+    # ✅ ADD THIS (CRITICAL)
+    owner = models.OneToOneField(
+        'accounts.User',  # change if your app name is different
+        on_delete=models.CASCADE,
+        related_name='owned_pharmacy'
+    )
+
     is_active = models.BooleanField(default=True)
     is_suspended_by_owner = models.BooleanField(default=False)
     suspension_reason = models.CharField(max_length=255, blank=True, null=True)

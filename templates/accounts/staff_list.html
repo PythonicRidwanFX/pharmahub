@@ -190,6 +190,14 @@
         <a href="{% url 'add_staff' %}" class="btn-main">+ Add Staff</a>
     </div>
 
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert-box {{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
     <div class="table-card">
         <div class="table-card-header">
             <h3>Staff Directory</h3>
@@ -210,15 +218,36 @@
                 <tbody>
                     {% for staff in staff_members %}
                     <tr>
-                        <td><strong>{{ staff.username }}</strong></td>
+                        <td>
+                            <strong>{{ staff.username }}</strong>
+                            {% if staff.is_owner %}
+                                <span class="role-badge">Owner</span>
+                            {% endif %}
+                        </td>
                         <td>{{ staff.email }}</td>
-                        <td><span class="role-badge">{{ staff.role }}</span></td>
-                        <td>{{ staff.pharmacy.name }}</td>
+                        <td>
+                            <span class="role-badge">
+                                {% if staff.is_owner %}
+                                    Owner
+                                {% else %}
+                                    {{ staff.get_role_display }}
+                                {% endif %}
+                            </span>
+                        </td>
+                        <td>
+                            {% if staff.pharmacy %}
+                                {{ staff.pharmacy.name }}
+                            {% else %}
+                                No Pharmacy
+                            {% endif %}
+                        </td>
                         <td>
                             <div class="action-group">
-                                <a href="{% url 'edit_staff' staff.pk %}" class="action-btn edit">Edit</a>
-                                {% if staff.role != 'owner' %}
+                                {% if not staff.is_owner %}
+                                    <a href="{% url 'edit_staff' staff.pk %}" class="action-btn edit">Edit</a>
                                     <a href="{% url 'delete_staff' staff.pk %}" class="action-btn delete">Delete</a>
+                                {% else %}
+                                    <span class="text-muted">Owner account</span>
                                 {% endif %}
                             </div>
                         </td>

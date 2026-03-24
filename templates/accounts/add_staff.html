@@ -82,6 +82,20 @@
                 Staff Management
             </div>
 
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert-box {{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            {% if form.errors %}
+                <div class="error-box">
+                    Please correct the errors below and try again.
+                </div>
+            {% endif %}
+
             <form method="post">
                 {% csrf_token %}
 
@@ -89,28 +103,53 @@
 
                 <div class="form-grid">
                     <div class="form-group">
-                        <label>Username</label>
+                        <label for="id_username">Username</label>
                         {{ form.username }}
+                        {% if form.username.errors %}
+                            <div class="field-error">
+                                {{ form.username.errors|join:", " }}
+                            </div>
+                        {% endif %}
                     </div>
 
                     <div class="form-group">
-                        <label>Email</label>
+                        <label for="id_email">Email</label>
                         {{ form.email }}
+                        {% if form.email.errors %}
+                            <div class="field-error">
+                                {{ form.email.errors|join:", " }}
+                            </div>
+                        {% endif %}
                     </div>
 
                     <div class="form-group">
-                        <label>Role</label>
+                        <label for="id_role">Role</label>
                         {{ form.role }}
+                        {% if form.role.errors %}
+                            <div class="field-error">
+                                {{ form.role.errors|join:", " }}
+                            </div>
+                        {% endif %}
                     </div>
 
                     <div class="form-group">
-                        <label>Password</label>
+                        <label for="id_password1">Password</label>
                         {{ form.password1 }}
+                        {% if form.password1.errors %}
+                            <div class="field-error">
+                                {{ form.password1.errors|join:", " }}
+                            </div>
+                        {% endif %}
                     </div>
 
                     <div class="form-group full">
-                        <label>Confirm Password</label>
+                        <label for="id_password2">Confirm Password</label>
                         {{ form.password2 }}
+                        {% if form.password2.errors %}
+                            <div class="field-error">
+                                {{ form.password2.errors|join:", " }}
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
 
@@ -121,7 +160,7 @@
             </form>
 
             <div class="staff-help-box">
-                Create team accounts for admins, pharmacists, cashiers, or other staff based on the role permissions available in your system.
+                Create team accounts for pharmacists, cashiers, or staff members based on the role permissions available in your system.
             </div>
         </div>
     </div>
