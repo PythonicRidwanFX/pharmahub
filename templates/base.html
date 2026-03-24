@@ -631,6 +631,56 @@
                 flex-direction: column;
             }
         }
+
+
+        .nav-link.help-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            color: #334155;
+            transition: 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link.help-link .nav-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            background: #eff6ff;
+            color: #1d4ed8;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .nav-link.help-link:hover {
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            color: #1d4ed8;
+            transform: translateX(4px);
+        }
+
+        .nav-link.help-link:hover .nav-icon {
+            background: #2563eb;
+            color: white;
+        }
+
+        .nav-link.help-link.active {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.22);
+        }
+
+        .nav-link.help-link.active .nav-icon {
+            background: rgba(255, 255, 255, 0.18);
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -667,10 +717,45 @@
                     <a href="{% url 'staff_list' %}">Staff</a>
                     <a href="{% url 'add_staff' %}">Add Staff</a>
                     <a href="{% url 'plan_list' %}">Plans</a>
+                    <a href="{% url 'help' %}">Help</a>
                     <a href="{% url 'subscription_status' %}">Subscription</a>
                 {% elif user.role == 'cashier' or user.role == 'pharmacist' %}
                     <a href="{% url 'sale_list' %}">Sales</a>
                     <a href="{% url 'add_sale' %}">Add Sale</a>
+                    <div class="nav-section">
+                <div class="nav-label">Main Menu</div>
+
+                {% if user.role == 'owner' or user.role == 'admin' or user.role == 'cashier' or user.role == 'pharmacist' %}
+                    <a href="{% url 'dashboard' %}">Dashboard</a>
+                    <a href="{% url 'drug_list' %}">Drugs</a>
+                {% endif %}
+
+                {% if user.role == 'owner' or user.role == 'admin' %}
+                    <a href="{% url 'add_drug' %}">Add Drug</a>
+                    <a href="{% url 'purchase_list' %}">Purchases</a>
+                    <a href="{% url 'add_purchase' %}">Add Purchase</a>
+                    <a href="{% url 'sale_list' %}">Sales</a>
+                    <a href="{% url 'add_sale' %}">Add Sale</a>
+                    <a href="{% url 'expiry_alerts' %}">Expiry Alerts</a>
+                    <a href="{% url 'low_stock' %}">Low Stock</a>
+                    <a href="{% url 'report_home' %}">Reports</a>
+                    <a href="{% url 'staff_list' %}">Staff</a>
+                    <a href="{% url 'add_staff' %}">Add Staff</a>
+                    <a href="{% url 'plan_list' %}">Plans</a>
+                    <a href="{% url 'subscription_status' %}">Subscription</a>
+                    <a href="{% url 'help' %}" class="nav-link help-link {% if request.path == '/help/' %}active{% endif %}">
+                        <span class="nav-icon">❔</span>
+                        <span>Help</span>
+                    </a>
+                {% elif user.role == 'cashier' or user.role == 'pharmacist' %}
+                    <a href="{% url 'sale_list' %}">Sales</a>
+                    <a href="{% url 'add_sale' %}">Add Sale</a>
+                    <a href="{% url 'help' %}" class="nav-link help-link {% if request.path == '/help/' %}active{% endif %}">
+                        <span class="nav-icon">❔</span>
+                        <span>Help</span>
+                    </a>
+                {% endif %}
+            </div>
                 {% endif %}
             </div>
 

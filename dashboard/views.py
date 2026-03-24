@@ -63,3 +63,8 @@ def dashboard_view(request):
     }
 
     return render(request, 'dashboard/index.html', context)
+
+
+
+def help_view(request):
+    return render(request, 'help.html')
