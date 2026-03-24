@@ -65,6 +65,8 @@ def dashboard_view(request):
     return render(request, 'dashboard/index.html', context)
 
 
-
+@login_required
+@pharmacy_active_required
+@subscription_required
 def help_view(request):
     return render(request, 'help.html')
