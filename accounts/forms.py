@@ -30,21 +30,35 @@ class StaffCreateForm(UserCreationForm):
 
 
 
-
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 
+
 class CustomLoginForm(AuthenticationForm):
     username = forms.CharField(
+        label="Username or Email",
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Enter username or email'
+            'placeholder': 'Enter username or email',
+            'autocomplete': 'username',
         })
     )
 
     password = forms.CharField(
+        label="Password",
         widget=forms.PasswordInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Enter password'
+            'placeholder': 'Enter password',
+            'autocomplete': 'current-password',
         })
     )
+
+    def confirm_login_allowed(self, user):
+        """
+        Extra security check (very professional)
+        """
+        if not user.is_active:
+            raise forms.ValidationError(
+                "This account is inactive. Please contact support.",
+                code='inactive',
+            )
