@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .models import User
 
 
@@ -22,22 +22,38 @@ class PharmacyRegistrationForm(UserCreationForm):
             'pharmacy_address',
         ]
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'form-control'})
+
 
 class StaffCreateForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'role', 'password1', 'password2']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
-
-from django import forms
-from django.contrib.auth.forms import AuthenticationForm
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'form-control'})
 
 
 class CustomLoginForm(AuthenticationForm):
-    username = forms.CharField(widget=forms.TextInput(attrs={
-        'placeholder': 'Username',
-    }))
-    password = forms.CharField(widget=forms.PasswordInput(attrs={
-        'placeholder': 'Password',
-    }))
+    username = forms.CharField(
+        label="Username or Email",
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter username or email',
+        })
+    )
+
+    password = forms.CharField(
+        label="Password",
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter password',
+        })
+    )

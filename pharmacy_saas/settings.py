@@ -137,5 +137,5 @@ DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", default=EMAIL_HOST_USER)
 PASSWORD_RESET_TIMEOUT = 60 * 60 * 24  # 1 day
 
 AUTHENTICATION_BACKENDS = [
-    'users.backends.UsernameOrEmailBackend',
+    'accounts.backends.UsernameOrEmailBackend'
 ]
