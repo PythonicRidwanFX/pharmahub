@@ -743,14 +743,16 @@
                     <a href="{% url 'add_staff' %}">Add Staff</a>
                     <a href="{% url 'plan_list' %}">Plans</a>
                     <a href="{% url 'subscription_status' %}">Subscription</a>
-                    <a href="{% url 'help' %}" class="nav-link help-link {% if request.path == '/help/' %}active{% endif %}">
+                    {% url 'help' as help_url %}
+                    <a href="{{ help_url }}" class="nav-link help-link {% if request.path == help_url %}active{% endif %}">
                         <span class="nav-icon">❔</span>
                         <span>Help</span>
                     </a>
                 {% elif user.role == 'cashier' or user.role == 'pharmacist' %}
                     <a href="{% url 'sale_list' %}">Sales</a>
                     <a href="{% url 'add_sale' %}">Add Sale</a>
-                    <a href="{% url 'help' %}" class="nav-link help-link {% if request.path == '/help/' %}active{% endif %}">
+                    {% url 'help' as help_url %}
+                    <a href="{{ help_url }}" class="nav-link help-link {% if request.path == help_url %}active{% endif %}">
                         <span class="nav-icon">❔</span>
                         <span>Help</span>
                     </a>
