@@ -5,8 +5,6 @@ from pharmacies.models import Pharmacy
 
 class User(AbstractUser):
     ROLE_CHOICES = (
-        ('owner', 'Owner'),
-        ('admin', 'Admin'),
         ('pharmacist', 'Pharmacist'),
         ('cashier', 'Cashier'),
         ('staff', 'Staff'),
@@ -19,15 +17,19 @@ class User(AbstractUser):
         null=True,
         blank=True
     )
-    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='staff')
+    role = models.CharField(
+        max_length=20,
+        choices=ROLE_CHOICES,
+        default='staff'
+    )
 
     def __str__(self):
         return f"{self.username} - {self.role}"
 
     @property
     def is_owner(self):
-        return self.role == 'owner'
+        return self.pharmacy is not None and self.pharmacy.owner == self
 
     @property
     def is_admin_user(self):
-        return self.role in ['owner', 'admin']
+        return self.is_owner or self.role == 'pharmacist'
