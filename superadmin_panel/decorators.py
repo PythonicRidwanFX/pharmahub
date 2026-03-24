@@ -1,19 +1,28 @@
+from functools import wraps
 from django.shortcuts import redirect
 from django.contrib import messages
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
 
 def superadmin_required(view_func):
+    @wraps(view_func)
     def wrapper(request, *args, **kwargs):
+        superadmin_id = request.session.get('superadmin_id')
 
-        # ❌ Not logged in → go to login page
-        if not request.user.is_authenticated:
-            return redirect('login')
+        if not superadmin_id:
+            messages.error(request, 'Please log in as superadmin.')
+            return redirect('superadmin_login')
 
-        # ❌ Logged in but not superadmin → block nicely
-        if not request.user.is_superuser:
-            messages.error(request, "You do not have permission to access this page.")
-            return redirect('dashboard')  # send normal users to their dashboard
+        try:
+            superadmin_user = User.objects.get(id=superadmin_id, is_superuser=True)
+        except User.DoesNotExist:
+            request.session.pop('superadmin_id', None)
+            messages.error(request, 'Superadmin session is invalid. Please log in again.')
+            return redirect('superadmin_login')
 
-        # ✅ Superadmin → allow access
+        request.superadmin_user = superadmin_user
         return view_func(request, *args, **kwargs)
 
     return wrapper

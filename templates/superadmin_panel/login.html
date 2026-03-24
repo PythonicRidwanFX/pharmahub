@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Superadmin Login - PharmaHub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #0f172a, #1e293b, #2563eb);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-wrapper {
+            width: 100%;
+            max-width: 1100px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(14px);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .login-left {
+            padding: 60px 50px;
+            color: white;
+            background: linear-gradient(160deg, rgba(37, 99, 235, 0.95), rgba(15, 23, 42, 0.95));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .brand-badge {
+            display: inline-block;
+            padding: 8px 14px;
+            background: rgba(255, 255, 255, 0.14);
+            border-radius: 999px;
+            font-size: 13px;
+            margin-bottom: 20px;
+            width: fit-content;
+        }
+
+        .login-left h1 {
+            font-size: 40px;
+            line-height: 1.2;
+            margin-bottom: 18px;
+        }
+
+        .login-left p {
+            font-size: 16px;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.88);
+            margin-bottom: 28px;
+        }
+
+        .feature-list {
+            list-style: none;
+            margin-top: 10px;
+        }
+
+        .feature-list li {
+            margin-bottom: 14px;
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-list li::before {
+            content: "✓";
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .login-right {
+            background: #ffffff;
+            padding: 60px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-header {
+            margin-bottom: 28px;
+        }
+
+        .form-header h2 {
+            font-size: 30px;
+            color: #0f172a;
+            margin-bottom: 10px;
+        }
+
+        .form-header p {
+            color: #64748b;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .message-box {
+            margin-bottom: 18px;
+        }
+
+        .alert {
+            padding: 14px 16px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .alert.success {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .alert.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .alert.warning {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fde68a;
+        }
+
+        .alert.info {
+            background: #dbeafe;
+            color: #1d4ed8;
+            border: 1px solid #bfdbfe;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #1e293b;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px 16px;
+            border: 1px solid #cbd5e1;
+            border-radius: 14px;
+            font-size: 15px;
+            outline: none;
+            transition: 0.3s ease;
+            background: #f8fafc;
+        }
+
+        .form-control:focus {
+            border-color: #2563eb;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+        }
+
+        .btn-login {
+            width: 100%;
+            border: none;
+            padding: 15px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s ease;
+            margin-top: 8px;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.28);
+        }
+
+        .form-footer {
+            margin-top: 22px;
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .form-footer a {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 900px) {
+            .login-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .login-left,
+            .login-right {
+                padding: 40px 28px;
+            }
+
+            .login-left h1 {
+                font-size: 30px;
+            }
+
+            .form-header h2 {
+                font-size: 25px;
+            }
+        }
+
+        @media (max-width: 500px) {
+            body {
+                padding: 12px;
+            }
+
+            .login-left,
+            .login-right {
+                padding: 28px 20px;
+            }
+
+            .login-left h1 {
+                font-size: 26px;
+            }
+
+            .form-header h2 {
+                font-size: 22px;
+            }
+
+            .form-control,
+            .btn-login {
+                padding: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-wrapper">
+        <div class="login-left">
+            <span class="brand-badge">PharmaHub Platform Control</span>
+            <h1>Superadmin Access Panel</h1>
+            <p>
+                Securely manage all pharmacies, subscriptions, payments, and platform activity
+                from one professional control center.
+            </p>
+
+            <ul class="feature-list">
+                <li>Monitor all registered pharmacies</li>
+                <li>Track subscription and payment activity</li>
+                <li>Suspend or activate pharmacy accounts</li>
+                <li>Access platform-level business insights</li>
+            </ul>
+        </div>
+
+        <div class="login-right">
+            <div class="form-header">
+                <h2>Admin Sign In</h2>
+                <p>Enter your superadmin credentials to continue to the control dashboard.</p>
+            </div>
+
+            {% if messages %}
+                <div class="message-box">
+                    {% for message in messages %}
+                        <div class="alert {% if message.tags %}{{ message.tags }}{% else %}info{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        class="form-control"
+                        placeholder="Enter superadmin username"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        class="form-control"
+                        placeholder="Enter password"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="btn-login">Login to Dashboard</button>
+            </form>
+
+            <div class="form-footer">
+                Back to user login?
+                <a href="{% url 'login' %}">Owner / Staff Login</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -6,153 +6,320 @@
     <title>Platform Admin - PharmaHub</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body {
+        * {
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            min-height: 100%;
             font-family: Arial, sans-serif;
-            background: #f4f6f9;
+            background: #f8fafc;
+            color: #0f172a;
+        }
+
+        body {
+            overflow-x: hidden;
         }
 
         .layout {
             display: flex;
             min-height: 100vh;
+            background:
+                radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 28%),
+                radial-gradient(circle at bottom right, rgba(15, 23, 42, 0.06), transparent 24%),
+                #f8fafc;
         }
 
         .menu-btn {
             display: none;
             position: fixed;
-            top: 15px;
-            left: 15px;
-            background: #111827;
+            top: 16px;
+            left: 16px;
+            background: linear-gradient(135deg, #0f172a, #1d4ed8);
             color: white;
             border: none;
             font-size: 22px;
-            padding: 8px 12px;
-            border-radius: 6px;
-            z-index: 1001;
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            z-index: 1101;
             cursor: pointer;
+            box-shadow: 0 10px 20px rgba(15, 23, 42, 0.18);
+        }
+
+        .sidebar-overlay {
+            display: none;
         }
 
         .sidebar {
-            width: 240px;
-            background: #111827;
+            width: 270px;
+            background: linear-gradient(180deg, #0f172a 0%, #111827 60%, #1e293b 100%);
             color: white;
-            padding: 20px;
+            padding: 24px 18px;
+            position: relative;
+            box-shadow: 10px 0 30px rgba(15, 23, 42, 0.12);
             transition: left 0.3s ease;
+            z-index: 1100;
+        }
+
+        .brand-box {
+            padding: 10px 10px 22px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            margin-bottom: 22px;
+        }
+
+        .brand-badge {
+            display: inline-block;
+            padding: 7px 12px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.10);
+            color: #cbd5e1;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 14px;
         }
 
         .sidebar h2 {
-            font-size: 22px;
-            color: #60a5fa;
-            margin-bottom: 25px;
+            font-size: 24px;
+            color: #ffffff;
+            margin-bottom: 8px;
+            font-weight: 800;
+            letter-spacing: 0.3px;
+        }
+
+        .brand-text {
+            color: #94a3b8;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .nav-title {
+            font-size: 12px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            padding: 0 10px;
+            margin-bottom: 12px;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
 
         .sidebar a {
-            display: block;
-            color: #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #e2e8f0;
             text-decoration: none;
-            padding: 10px 0;
+            padding: 13px 14px;
+            border-radius: 14px;
+            transition: 0.25s ease;
+            font-size: 15px;
+            font-weight: 600;
         }
 
         .sidebar a:hover {
-            color: #60a5fa;
+            background: rgba(255,255,255,0.08);
+            color: #ffffff;
+            transform: translateX(2px);
+        }
+
+        .sidebar a.active-link {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.26), rgba(59, 130, 246, 0.18));
+            color: #ffffff;
+            border: 1px solid rgba(96, 165, 250, 0.25);
+        }
+
+        .nav-icon {
+            width: 18px;
+            text-align: center;
+            font-size: 15px;
+            opacity: 0.95;
+        }
+
+        .sidebar-footer {
+            margin-top: 28px;
+            padding: 18px 12px 0;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .sidebar-footer .footer-card {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 16px;
+        }
+
+        .sidebar-footer .footer-card strong {
+            display: block;
+            font-size: 14px;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        .sidebar-footer .footer-card p {
+            font-size: 13px;
+            color: #cbd5e1;
+            line-height: 1.6;
         }
 
         .main {
             flex: 1;
-            padding: 20px;
+            padding: 26px;
+            min-width: 0;
         }
 
         .topbar {
-            background: white;
-            padding: 15px 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            background: rgba(255, 255, 255, 0.82);
+            backdrop-filter: blur(12px);
+            padding: 18px 22px;
+            border-radius: 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.07);
+            border: 1px solid rgba(226, 232, 240, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
         }
 
-        .cards {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
+        .topbar-left h1 {
+            font-size: 24px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 4px;
         }
 
-        .card {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        .topbar-left p {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.5;
         }
 
-        .table-box {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-            margin-bottom: 20px;
-            overflow-x: auto;
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        .topbar-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            background: #eff6ff;
+            color: #1d4ed8;
+            border: 1px solid #dbeafe;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 700;
         }
 
-        table th, table td {
-            padding: 12px;
-            border-bottom: 1px solid #ddd;
-            text-align: left;
-        }
-
-        .btn {
-            display: inline-block;
-            background: #2563eb;
-            color: white;
-            padding: 10px 16px;
-            border-radius: 8px;
+        .topbar-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             text-decoration: none;
             border: none;
             cursor: pointer;
-        }
-
-        .btn-warning {
-            background: #ea580c;
-            color: white;
-            padding: 6px 10px;
-            border-radius: 6px;
-            text-decoration: none;
-        }
-
-        .chart-box {
-            background: white;
-            padding: 20px;
+            padding: 11px 16px;
             border-radius: 12px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-            margin-bottom: 20px;
+            font-size: 14px;
+            font-weight: 700;
+            transition: 0.25s ease;
         }
 
-        @media (max-width: 1100px) {
-            .cards {
-                grid-template-columns: repeat(2, 1fr);
-            }
+        .topbar-btn.primary {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.18);
         }
 
-        @media (max-width: 800px) {
+        .topbar-btn.primary:hover {
+            transform: translateY(-2px);
+            opacity: 0.97;
+        }
+
+        .topbar-btn.light {
+            background: white;
+            color: #0f172a;
+            border: 1px solid #e2e8f0;
+        }
+
+        .topbar-btn.light:hover {
+            background: #f8fafc;
+        }
+
+        .messages-wrap {
+            margin-bottom: 18px;
+        }
+
+        .alert-box {
+            padding: 14px 16px;
+            border-radius: 14px;
+            margin-bottom: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            border: 1px solid transparent;
+            box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
+        }
+
+        .alert-box.success {
+            background: #dcfce7;
+            color: #166534;
+            border-color: #bbf7d0;
+        }
+
+        .alert-box.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-color: #fecaca;
+        }
+
+        .alert-box.warning {
+            background: #fef3c7;
+            color: #92400e;
+            border-color: #fde68a;
+        }
+
+        .alert-box.info {
+            background: #dbeafe;
+            color: #1d4ed8;
+            border-color: #bfdbfe;
+        }
+
+        .content-shell {
+            min-width: 0;
+        }
+
+        @media (max-width: 980px) {
             .menu-btn {
-                display: block;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
             }
 
-            .layout {
-                flex-direction: column;
+            .sidebar-overlay.active {
+                display: block;
+                position: fixed;
+                inset: 0;
+                background: rgba(15, 23, 42, 0.45);
+                z-index: 1090;
             }
 
             .sidebar {
                 position: fixed;
                 top: 0;
-                left: -260px;
-                width: 240px;
+                left: -290px;
+                width: 270px;
                 height: 100vh;
-                z-index: 1000;
                 overflow-y: auto;
             }
 
@@ -161,11 +328,34 @@
             }
 
             .main {
-                padding: 70px 15px 20px 15px;
+                padding: 78px 14px 20px;
             }
 
-            .cards {
-                grid-template-columns: 1fr;
+            .topbar {
+                padding: 18px 16px;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .topbar-left h1 {
+                font-size: 22px;
+            }
+
+            .topbar-right {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .topbar-right {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .topbar-btn,
+            .topbar-chip {
+                width: 100%;
+                justify-content: center;
             }
         }
     </style>
@@ -173,39 +363,106 @@
 <body>
 <div class="layout">
     <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 
-    <div class="sidebar">
-        <h2>PharmaHub Admin</h2>
-        <a href="{% url 'admin_dashboard' %}">Dashboard</a>
-        <a href="{% url 'admin_pharmacy_list' %}">All Pharmacies</a>
-        <a href="{% url 'admin_payment_list' %}">Payments</a>
-        <a href="{% url 'admin_subscription_list' %}">Subscriptions</a>
-        <a href="{% url 'admin_plan_list' %}">Plans</a>
-        <a href="/admin/">Django Admin</a>
-        <a href="{% url 'logout' %}">Logout</a>
-    </div>
+    <aside class="sidebar" id="sidebar">
+        <div class="brand-box">
+            <span class="brand-badge">Platform Owner Panel</span>
+            <h2>PharmaHub Admin</h2>
+            <p class="brand-text">
+                Manage pharmacies, monitor subscriptions, review payments, and control platform activity.
+            </p>
+        </div>
 
-    <div class="main">
+        <div class="nav-title">Navigation</div>
+
+        <nav class="sidebar-nav">
+            <a href="{% url 'admin_dashboard' %}" class="{% if request.resolver_match.url_name == 'admin_dashboard' %}active-link{% endif %}">
+                <span class="nav-icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="{% url 'admin_pharmacy_list' %}" class="{% if request.resolver_match.url_name == 'admin_pharmacy_list' or request.resolver_match.url_name == 'admin_pharmacy_detail' or request.resolver_match.url_name == 'suspend_pharmacy' or request.resolver_match.url_name == 'activate_pharmacy' %}active-link{% endif %}">
+                <span class="nav-icon">🏥</span>
+                <span>All Pharmacies</span>
+            </a>
+
+            <a href="{% url 'admin_payment_list' %}" class="{% if request.resolver_match.url_name == 'admin_payment_list' %}active-link{% endif %}">
+                <span class="nav-icon">💳</span>
+                <span>Payments</span>
+            </a>
+
+            <a href="{% url 'admin_subscription_list' %}" class="{% if request.resolver_match.url_name == 'admin_subscription_list' %}active-link{% endif %}">
+                <span class="nav-icon">📦</span>
+                <span>Subscriptions</span>
+            </a>
+
+            <a href="{% url 'admin_plan_list' %}" class="{% if request.resolver_match.url_name == 'admin_plan_list' %}active-link{% endif %}">
+                <span class="nav-icon">🧾</span>
+                <span>Plans</span>
+            </a>
+
+            <a href="/admin/">
+                <span class="nav-icon">⚙️</span>
+                <span>Django Admin</span>
+            </a>
+
+            <a href="{% url 'superadmin_logout' %}">
+                <span class="nav-icon">🚪</span>
+                <span>Logout</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="footer-card">
+                <strong>Admin Access</strong>
+                <p>
+                    You are using the platform owner interface with access to platform-wide controls.
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main">
         <div class="topbar">
-            <strong>Platform Owner Dashboard</strong>
+            <div class="topbar-left">
+                <h1>Platform Owner Dashboard</h1>
+                <p>Welcome to PharmaHub’s premium superadmin control center.</p>
+            </div>
+
+            <div class="topbar-right">
+                <span class="topbar-chip">🔒 Secure Admin Area</span>
+                <a href="{% url 'admin_pharmacy_list' %}" class="topbar-btn light">View Pharmacies</a>
+                <a href="{% url 'admin_payment_list' %}" class="topbar-btn primary">Open Payments</a>
+            </div>
         </div>
 
         {% if messages %}
-            {% for message in messages %}
-                <div style="background:#dcfce7; color:#166534; padding:12px; border-radius:8px; margin-bottom:15px;">
-                    {{ message }}
-                </div>
-            {% endfor %}
+            <div class="messages-wrap">
+                {% for message in messages %}
+                    <div class="alert-box {% if message.tags %}{{ message.tags }}{% else %}info{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
         {% endif %}
 
-        {% block content %}{% endblock %}
-    </div>
+        <div class="content-shell">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
 </div>
 
 <script>
-function toggleSidebar() {
-    document.querySelector('.sidebar').classList.toggle('active');
-}
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('active');
+        document.getElementById('sidebarOverlay').classList.toggle('active');
+    }
+
+    function closeSidebar() {
+        document.getElementById('sidebar').classList.remove('active');
+        document.getElementById('sidebarOverlay').classList.remove('active');
+    }
 </script>
 </body>
 </html>

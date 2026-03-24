@@ -142,7 +142,12 @@ class CustomLoginView(LoginView):
         user = self.request.user
 
         if user.is_superuser:
-            return redirect('admin_dashboard')
+            logout(self.request)
+            messages.warning(
+                self.request,
+                'Superadmin should log in through the superadmin login page.'
+            )
+            return redirect('superadmin_login')
 
         pharmacy = getattr(user, 'pharmacy', None)
 

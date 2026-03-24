@@ -3,15 +3,14 @@ from django.db.models import Sum, Count
 from django.utils import timezone
 from django.db.models.functions import TruncMonth
 import json
-
+from django.contrib.auth import authenticate
+from django.contrib import messages
 from pharmacies.models import Pharmacy
 from accounts.models import User
 from drugs.models import Drug
 from subscriptions.models import Subscription, Payment, Plan
-
+from subscriptions.access import sync_pharmacy_access
 from superadmin_panel.decorators import superadmin_required
-from django.contrib import messages
-from django.http import HttpResponse
 
 
 # ================= DASHBOARD ================= #
@@ -88,7 +87,6 @@ def admin_dashboard(request):
         'recent_pharmacies': recent_pharmacies,
         'recent_payments': recent_payments,
         'recent_subscriptions': recent_subscriptions,
-
         'revenue_labels': json.dumps(revenue_labels),
         'revenue_values': json.dumps(revenue_values),
         'pharmacy_labels': json.dumps(pharmacy_labels),
@@ -179,8 +177,6 @@ def suspend_pharmacy(request, pk):
     return render(request, 'superadmin_panel/suspend_pharmacy.html', {'pharmacy': pharmacy})
 
 
-from subscriptions.access import sync_pharmacy_access
-
 @superadmin_required
 def activate_pharmacy(request, pk):
     pharmacy = get_object_or_404(Pharmacy, pk=pk)
@@ -198,3 +194,25 @@ def activate_pharmacy(request, pk):
     return render(request, 'superadmin_panel/activate_pharmacy.html', {'pharmacy': pharmacy})
 
 
+
+def superadmin_login(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None and user.is_superuser:
+            request.session['superadmin_id'] = user.id
+            messages.success(request, 'Superadmin login successful.')
+            return redirect('admin_dashboard')
+        else:
+            messages.error(request, 'Invalid superadmin username or password.')
+
+    return render(request, 'superadmin_panel/login.html')
+
+
+def superadmin_logout(request):
+    request.session.pop('superadmin_id', None)
+    messages.success(request, 'Superadmin logged out successfully.')
+    return redirect('superadmin_login')
