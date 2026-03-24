@@ -227,7 +227,39 @@
             color: var(--muted);
             font-size: 13px;
         }
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
 
+        .topbar-help {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border-radius: 999px;
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            color: #1d4ed8;
+            border: 1px solid #bfdbfe;
+            transition: 0.25s ease;
+        }
+
+        .topbar-help:hover {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.22);
+        }
+
+        .topbar-help.active {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+        }
         .user-badge {
             display: inline-flex;
             align-items: center;
@@ -633,54 +665,7 @@
         }
 
 
-        .nav-link.help-link {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 14px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: 700;
-            color: #334155;
-            transition: 0.25s ease;
-            position: relative;
-            overflow: hidden;
-        }
 
-        .nav-link.help-link .nav-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 28px;
-            height: 28px;
-            border-radius: 8px;
-            background: #eff6ff;
-            color: #1d4ed8;
-            font-size: 14px;
-            flex-shrink: 0;
-        }
-
-        .nav-link.help-link:hover {
-            background: linear-gradient(135deg, #eff6ff, #dbeafe);
-            color: #1d4ed8;
-            transform: translateX(4px);
-        }
-
-        .nav-link.help-link:hover .nav-icon {
-            background: #2563eb;
-            color: white;
-        }
-
-        .nav-link.help-link.active {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            color: white;
-            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.22);
-        }
-
-        .nav-link.help-link.active .nav-icon {
-            background: rgba(255, 255, 255, 0.18);
-            color: white;
-        }
     </style>
 </head>
 <body>
@@ -743,19 +728,9 @@
                     <a href="{% url 'add_staff' %}">Add Staff</a>
                     <a href="{% url 'plan_list' %}">Plans</a>
                     <a href="{% url 'subscription_status' %}">Subscription</a>
-                    {% url 'help' as help_url %}
-                    <a href="{{ help_url }}" class="nav-link help-link {% if request.path == help_url %}active{% endif %}">
-                        <span class="nav-icon">❔</span>
-                        <span>Help</span>
-                    </a>
                 {% elif user.role == 'cashier' or user.role == 'pharmacist' %}
                     <a href="{% url 'sale_list' %}">Sales</a>
                     <a href="{% url 'add_sale' %}">Add Sale</a>
-                    {% url 'help' as help_url %}
-                    <a href="{{ help_url }}" class="nav-link help-link {% if request.path == help_url %}active{% endif %}">
-                        <span class="nav-icon">❔</span>
-                        <span>Help</span>
-                    </a>
                 {% endif %}
             </div>
                 {% endif %}
@@ -774,7 +749,7 @@
                 <div class="topbar-content">
                     <div class="topbar-left">
                         <h2>
-                            {% if user.pharmacy %}
+                            {% if user.is_authenticated and user.pharmacy %}
                                 {{ user.pharmacy.name }}
                             {% else %}
                                 Dashboard
@@ -783,9 +758,17 @@
                         <p>Manage your pharmacy operations with a professional owner workspace.</p>
                     </div>
 
-                    <div class="user-badge">
-                        <span class="dot"></span>
-                        {{ user.role|title }}
+                    <div class="topbar-right">
+                        {% url 'help' as help_url %}
+                        <a href="{{ help_url }}" class="topbar-help-btn {% if request.path == help_url %}active{% endif %}">
+                            <span>❔</span>
+                            <span>Help</span>
+                        </a>
+
+                        <div class="user-badge">
+                            <span class="dot"></span>
+                            {{ user.role|title }}
+                        </div>
                     </div>
                 </div>
             </div>
