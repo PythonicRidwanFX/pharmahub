@@ -11,7 +11,7 @@ from django.views.decorators.http import require_POST
 from .models import User
 from .forms import PharmacyRegistrationForm, StaffCreateForm, CustomLoginForm
 from .decorators import admin_required
-
+from django.db import transaction
 from pharmacies.models import Pharmacy
 from subscriptions.models import Subscription
 from subscriptions.access import sync_pharmacy_access
@@ -22,37 +22,35 @@ def register_pharmacy(request):
         form = PharmacyRegistrationForm(request.POST)
         if form.is_valid():
             try:
-                pharmacy = Pharmacy.objects.create(
-                    name=form.cleaned_data['pharmacy_name'],
-                    email=form.cleaned_data['pharmacy_email'],
-                    phone=form.cleaned_data['pharmacy_phone'],
-                    address=form.cleaned_data['pharmacy_address'],
-                )
+                with transaction.atomic():
+                    pharmacy = Pharmacy.objects.create(
+                        name=form.cleaned_data['pharmacy_name'],
+                        email=form.cleaned_data['pharmacy_email'],
+                        phone=form.cleaned_data['pharmacy_phone'],
+                        address=form.cleaned_data['pharmacy_address'],
+                    )
 
-                user = form.save(commit=False)
-                user.pharmacy = pharmacy
-                user.role = 'owner'
-                user.email = form.cleaned_data['email']
-                user.save()
+                    user = form.save(commit=False)
+                    user.pharmacy = pharmacy
+                    user.role = 'owner'
+                    user.email = form.cleaned_data['email']
+                    user.save()
 
-                today = timezone.now().date()
-                Subscription.objects.create(
-                    pharmacy=pharmacy,
-                    plan=None,
-                    status='trial',
-                    start_date=today,
-                    end_date=today + timedelta(days=14),
-                    is_current=True
-                )
+                    today = timezone.now().date()
+                    Subscription.objects.create(
+                        pharmacy=pharmacy,
+                        plan=None,
+                        status='trial',
+                        start_date=today,
+                        end_date=today + timedelta(days=14),
+                        is_current=True
+                    )
 
-                login(request, user)
-                messages.success(request, 'Account created successfully. Your 14-day trial has started.')
-                return redirect('dashboard')
+                messages.success(request, 'Account created successfully. Please log in to continue.')
+                return redirect('login')
 
             except Exception as e:
-                messages.error(request, f"Registration error: {e}")
-        else:
-            messages.error(request, 'Please correct the errors below.')
+                messages.error(request, f'Registration error: {e}')
     else:
         form = PharmacyRegistrationForm()
 

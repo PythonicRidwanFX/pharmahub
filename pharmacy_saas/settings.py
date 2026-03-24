@@ -139,5 +139,4 @@ PASSWORD_RESET_TIMEOUT = 60 * 60 * 24  # 1 day
 
 AUTHENTICATION_BACKENDS = [
     'accounts.backends.EmailOrUsernameBackend',
-    'django.contrib.auth.backends.ModelBackend',
 ]

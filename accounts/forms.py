@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .models import User
+from pharmacies.models import Pharmacy
 
 
 class PharmacyRegistrationForm(UserCreationForm):
@@ -21,6 +22,18 @@ class PharmacyRegistrationForm(UserCreationForm):
             'pharmacy_phone',
             'pharmacy_address',
         ]
+
+    def clean_pharmacy_email(self):
+        pharmacy_email = self.cleaned_data.get('pharmacy_email')
+        if Pharmacy.objects.filter(email__iexact=pharmacy_email).exists():
+            raise forms.ValidationError('A pharmacy with this email already exists.')
+        return pharmacy_email
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email__iexact=email).exists():
+            raise forms.ValidationError('A user with this email already exists.')
+        return email
 
 
 class StaffCreateForm(UserCreationForm):
