@@ -1,46 +1,129 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="page-header">
-    <h2>Add Staff</h2>
-    <p>Create a new staff account for this pharmacy.</p>
-</div>
+<style>
+    .staff-page-wrap {
+        max-width: 900px;
+    }
 
-<div class="form-card">
-    <form method="post">
-        {% csrf_token %}
+    .staff-form-card {
+        position: relative;
+        overflow: hidden;
+    }
 
-        <div class="form-grid">
-            <div class="form-group">
-                <label>Username</label>
-                {{ form.username }}
+    .staff-form-card::before {
+        content: "";
+        position: absolute;
+        top: -70px;
+        right: -70px;
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        background: rgba(37, 99, 235, 0.06);
+    }
+
+    .staff-form-card-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .staff-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 14px;
+        background: #eff6ff;
+        color: #1d4ed8;
+        border: 1px solid #bfdbfe;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 16px;
+    }
+
+    .staff-badge-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #2563eb;
+    }
+
+    .staff-section-title {
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: #64748b;
+        margin: 6px 0 16px;
+    }
+
+    .staff-help-box {
+        margin-top: 22px;
+        padding: 14px 16px;
+        border-radius: 14px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        color: #64748b;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+</style>
+
+<div class="staff-page-wrap">
+    <div class="page-header">
+        <h2>Add Staff</h2>
+        <p>Create a new staff account for this pharmacy and assign the right access level.</p>
+    </div>
+
+    <div class="form-card staff-form-card">
+        <div class="staff-form-card-content">
+            <div class="staff-badge">
+                <span class="staff-badge-dot"></span>
+                Staff Management
             </div>
 
-            <div class="form-group">
-                <label>Email</label>
-                {{ form.email }}
-            </div>
+            <form method="post">
+                {% csrf_token %}
 
-            <div class="form-group">
-                <label>Role</label>
-                {{ form.role }}
-            </div>
+                <div class="staff-section-title">Account Information</div>
 
-            <div class="form-group">
-                <label>Password</label>
-                {{ form.password1 }}
-            </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Username</label>
+                        {{ form.username }}
+                    </div>
 
-            <div class="form-group full">
-                <label>Confirm Password</label>
-                {{ form.password2 }}
+                    <div class="form-group">
+                        <label>Email</label>
+                        {{ form.email }}
+                    </div>
+
+                    <div class="form-group">
+                        <label>Role</label>
+                        {{ form.role }}
+                    </div>
+
+                    <div class="form-group">
+                        <label>Password</label>
+                        {{ form.password1 }}
+                    </div>
+
+                    <div class="form-group full">
+                        <label>Confirm Password</label>
+                        {{ form.password2 }}
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn">Create Staff Account</button>
+                    <a href="{% url 'staff_list' %}" class="btn-secondary">Cancel</a>
+                </div>
+            </form>
+
+            <div class="staff-help-box">
+                Create team accounts for admins, pharmacists, cashiers, or other staff based on the role permissions available in your system.
             </div>
         </div>
-
-        <div class="form-actions">
-            <button type="submit" class="btn">Create Staff Account</button>
-            <a href="{% url 'staff_list' %}" class="btn-secondary">Cancel</a>
-        </div>
-    </form>
+    </div>
 </div>
 {% endblock %}

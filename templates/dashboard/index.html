@@ -1,138 +1,459 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Dashboard</h2>
+<style>
+    :root {
+        --bg: #f4f7fb;
+        --card: #ffffff;
+        --text: #0f172a;
+        --muted: #64748b;
+        --line: #e2e8f0;
+        --primary: #2563eb;
+        --primary-dark: #1d4ed8;
+        --success: #16a34a;
+        --warning: #f59e0b;
+        --danger: #dc2626;
+        --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+        --radius-lg: 20px;
+        --radius-md: 14px;
+        --radius-sm: 10px;
+    }
 
-<div class="cards" style="overflow-x:auto; margin-bottom:20px;">
-    <div class="card">
-        <h3>Total Drugs</h3>
-        <p>{{ total_drugs }}</p>
-    </div>
-    <div class="card">
-        <h3>Expired Drugs</h3>
-        <p>{{ expired_count }}</p>
-    </div>
-    <div class="card">
-        <h3>Expiring Soon</h3>
-        <p>{{ expiring_soon_count }}</p>
-    </div>
-    <div class="card">
-        <h3>Low Stock</h3>
-        <p>{{ low_stock_count }}</p>
-    </div>
-    <div class="card">
-        <h3>Today's Sales</h3>
-        <p>₦{{ today_sales }}</p>
-    </div>
-    <div class="card">
-        <h3>Today's Purchases</h3>
-        <p>₦{{ today_purchases }}</p>
-    </div>
-</div>
+    .owner-dashboard {
+        padding: 10px 0 30px;
+    }
 
-<!-- Role-based action buttons -->
-<div style="margin-bottom: 20px;">
-    {% if user.role == 'owner' or user.role == 'admin' or user.role == 'cashier' or user.role == 'pharmacist' %}
-        <a href="{% url 'add_sale' %}" class="btn">Add Sale</a>
-    {% endif %}
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 24px;
+    }
 
-    {% if user.role == 'owner' or user.role == 'admin' %}
-        <a href="{% url 'add_purchase' %}" class="btn">Add Purchase</a>
-    {% endif %}
-</div>
+    .dashboard-title h2 {
+        margin: 0;
+        font-size: 30px;
+        font-weight: 800;
+        color: var(--text);
+        letter-spacing: -0.5px;
+    }
 
-<div class="content-scroll">
+    .dashboard-title p {
+        margin: 6px 0 0;
+        color: var(--muted);
+        font-size: 15px;
+    }
 
-    <!-- Recent Drugs Table -->
-    <div class="table-box" style="margin-bottom: 20px;">
-        <h3>Recent Drugs</h3>
-        <div style="overflow-x:auto;">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Drug Name</th>
-                        <th>Quantity</th>
-                        <th>Expiry Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for drug in recent_drugs %}
-                    <tr>
-                        <td>{{ drug.drug_name }}</td>
-                        <td>{{ drug.quantity }}</td>
-                        <td>{{ drug.expiry_date }}</td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="3">No drugs added yet.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+    .dashboard-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        border: none;
+        padding: 12px 18px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 700;
+        transition: 0.25s ease;
+        cursor: pointer;
+        box-shadow: var(--shadow);
+    }
+
+    .action-btn.primary {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white;
+    }
+
+    .action-btn.primary:hover {
+        transform: translateY(-2px);
+        opacity: 0.96;
+    }
+
+    .action-btn.secondary {
+        background: white;
+        color: var(--text);
+        border: 1px solid var(--line);
+    }
+
+    .action-btn.secondary:hover {
+        background: #f8fafc;
+        transform: translateY(-2px);
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 18px;
+        margin-bottom: 28px;
+    }
+
+    .stat-card {
+        background: var(--card);
+        border: 1px solid #eef2f7;
+        border-radius: var(--radius-lg);
+        padding: 22px 18px;
+        box-shadow: var(--shadow);
+        position: relative;
+        overflow: hidden;
+        min-height: 130px;
+    }
+
+    .stat-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary), #60a5fa);
+    }
+
+    .stat-label {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        margin-bottom: 14px;
+    }
+
+    .stat-value {
+        font-size: 28px;
+        font-weight: 800;
+        color: var(--text);
+        margin: 0;
+        line-height: 1.1;
+    }
+
+    .stat-hint {
+        margin-top: 10px;
+        font-size: 13px;
+        color: var(--muted);
+    }
+
+    .stat-card.expired::before {
+        background: linear-gradient(90deg, var(--danger), #fb7185);
+    }
+
+    .stat-card.warning::before {
+        background: linear-gradient(90deg, var(--warning), #fbbf24);
+    }
+
+    .stat-card.success::before {
+        background: linear-gradient(90deg, var(--success), #4ade80);
+    }
+
+    .dashboard-sections {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 22px;
+    }
+
+    .section-card {
+        background: var(--card);
+        border: 1px solid #eef2f7;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+    }
+
+    .section-header {
+        padding: 20px 22px;
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        background: linear-gradient(to right, #ffffff, #f8fbff);
+    }
+
+    .section-header h3 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 800;
+        color: var(--text);
+    }
+
+    .section-header p {
+        margin: 4px 0 0;
+        color: var(--muted);
+        font-size: 14px;
+    }
+
+    .table-wrap {
+        overflow-x: auto;
+        width: 100%;
+    }
+
+    .premium-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 700px;
+    }
+
+    .premium-table thead th {
+        background: #f8fafc;
+        color: #334155;
+        font-size: 13px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        padding: 14px 18px;
+        border-bottom: 1px solid var(--line);
+        text-align: left;
+        white-space: nowrap;
+    }
+
+    .premium-table tbody td {
+        padding: 16px 18px;
+        border-bottom: 1px solid #eef2f7;
+        color: #1e293b;
+        font-size: 14px;
+        vertical-align: middle;
+    }
+
+    .premium-table tbody tr:hover {
+        background: #f8fbff;
+    }
+
+    .empty-state {
+        text-align: center;
+        color: var(--muted);
+        padding: 28px 16px;
+        font-size: 14px;
+    }
+
+    .amount {
+        font-weight: 800;
+        color: var(--text);
+    }
+
+    .pill {
+        display: inline-block;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+        background: #eff6ff;
+        color: var(--primary-dark);
+    }
+
+    @media (max-width: 1200px) {
+        .stats-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .dashboard-title h2 {
+            font-size: 24px;
+        }
+
+        .section-header {
+            padding: 18px;
+        }
+
+        .stat-card {
+            min-height: auto;
+        }
+    }
+
+    @media (max-width: 520px) {
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .dashboard-actions {
+            width: 100%;
+        }
+
+        .action-btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="owner-dashboard">
+    <div class="dashboard-header">
+        <div class="dashboard-title">
+            <h2>Dashboard</h2>
+            <p>Track inventory, sales, purchases, and pharmacy activity in one place.</p>
+        </div>
+
+        <div class="dashboard-actions">
+            {% if user.role == 'owner' or user.role == 'admin' or user.role == 'cashier' or user.role == 'pharmacist' %}
+                <a href="{% url 'add_sale' %}" class="action-btn primary">+ Add Sale</a>
+            {% endif %}
+
+            {% if user.role == 'owner' or user.role == 'admin' %}
+                <a href="{% url 'add_purchase' %}" class="action-btn secondary">+ Add Purchase</a>
+            {% endif %}
         </div>
     </div>
 
-    <!-- Recent Sales Table -->
-    <div class="table-box" style="margin-bottom: 20px;">
-        <h3>Recent Sales</h3>
-        <div style="overflow-x:auto;">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Drug</th>
-                        <th>Quantity</th>
-                        <th>Total</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for sale in recent_sales %}
-                    <tr>
-                        <td>{{ sale.drug.drug_name }}</td>
-                        <td>{{ sale.quantity }}</td>
-                        <td>₦{{ sale.total_price }}</td>
-                        <td>{{ sale.date }}</td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="4">No sales yet.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-label">Total Drugs</div>
+            <p class="stat-value">{{ total_drugs }}</p>
+            <div class="stat-hint">All drugs currently in your system</div>
+        </div>
+
+        <div class="stat-card expired">
+            <div class="stat-label">Expired Drugs</div>
+            <p class="stat-value">{{ expired_count }}</p>
+            <div class="stat-hint">Requires immediate attention</div>
+        </div>
+
+        <div class="stat-card warning">
+            <div class="stat-label">Expiring Soon</div>
+            <p class="stat-value">{{ expiring_soon_count }}</p>
+            <div class="stat-hint">Monitor upcoming expiry dates</div>
+        </div>
+
+        <div class="stat-card warning">
+            <div class="stat-label">Low Stock</div>
+            <p class="stat-value">{{ low_stock_count }}</p>
+            <div class="stat-hint">Items that may need restocking</div>
+        </div>
+
+        <div class="stat-card success">
+            <div class="stat-label">Today's Sales</div>
+            <p class="stat-value">₦{{ today_sales }}</p>
+            <div class="stat-hint">Revenue recorded today</div>
+        </div>
+
+        <div class="stat-card success">
+            <div class="stat-label">Today's Purchases</div>
+            <p class="stat-value">₦{{ today_purchases }}</p>
+            <div class="stat-hint">Stock purchases made today</div>
         </div>
     </div>
 
-    <!-- Recent Purchases Table -->
-    <div class="table-box">
-        <h3>Recent Purchases</h3>
-        <div style="overflow-x:auto;">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Drug</th>
-                        <th>Quantity</th>
-                        <th>Total Cost</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for purchase in recent_purchases %}
-                    <tr>
-                        <td>{{ purchase.drug.drug_name }}</td>
-                        <td>{{ purchase.quantity }}</td>
-                        <td>₦{{ purchase.total_cost }}</td>
-                        <td>{{ purchase.date }}</td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="4">No purchases yet.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
+    <div class="dashboard-sections">
 
+        <div class="section-card">
+            <div class="section-header">
+                <div>
+                    <h3>Recent Drugs</h3>
+                    <p>Latest drug records added to inventory</p>
+                </div>
+                <span class="pill">Inventory</span>
+            </div>
+
+            <div class="table-wrap">
+                <table class="premium-table">
+                    <thead>
+                        <tr>
+                            <th>Drug Name</th>
+                            <th>Quantity</th>
+                            <th>Expiry Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for drug in recent_drugs %}
+                        <tr>
+                            <td>{{ drug.drug_name }}</td>
+                            <td>{{ drug.quantity }}</td>
+                            <td>{{ drug.expiry_date }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" class="empty-state">No drugs added yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <div class="section-header">
+                <div>
+                    <h3>Recent Sales</h3>
+                    <p>Latest completed sales transactions</p>
+                </div>
+                <span class="pill">Sales</span>
+            </div>
+
+            <div class="table-wrap">
+                <table class="premium-table">
+                    <thead>
+                        <tr>
+                            <th>Drug</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for sale in recent_sales %}
+                        <tr>
+                            <td>{{ sale.drug.drug_name }}</td>
+                            <td>{{ sale.quantity }}</td>
+                            <td class="amount">₦{{ sale.total_price }}</td>
+                            <td>{{ sale.date }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="empty-state">No sales yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <div class="section-header">
+                <div>
+                    <h3>Recent Purchases</h3>
+                    <p>Latest stock purchase records</p>
+                </div>
+                <span class="pill">Purchases</span>
+            </div>
+
+            <div class="table-wrap">
+                <table class="premium-table">
+                    <thead>
+                        <tr>
+                            <th>Drug</th>
+                            <th>Quantity</th>
+                            <th>Total Cost</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for purchase in recent_purchases %}
+                        <tr>
+                            <td>{{ purchase.drug.drug_name }}</td>
+                            <td>{{ purchase.quantity }}</td>
+                            <td class="amount">₦{{ purchase.total_cost }}</td>
+                            <td>{{ purchase.date }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="empty-state">No purchases yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
 </div>
 {% endblock %}

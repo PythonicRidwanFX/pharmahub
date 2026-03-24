@@ -1,49 +1,221 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Print Sales Report</title>
+    <title>Sales Report - PharmaHub</title>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        h2 { margin-bottom: 10px; }
-        table { width: 100%; border-collapse: collapse; }
-        table, th, td { border: 1px solid #000; }
-        th, td { padding: 10px; text-align: left; }
-        .print-btn { margin-bottom: 20px; }
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            padding: 30px;
+            background: #f8fafc;
+            color: #0f172a;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1050px;
+            margin: auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 18px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+
+        .header-left h2 {
+            margin: 0 0 6px;
+            font-size: 28px;
+            font-weight: 800;
+        }
+
+        .header-left p {
+            margin: 0;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .print-btn {
+            padding: 11px 18px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .print-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .summary-card {
+            background: linear-gradient(135deg, #ecfdf5, #f0fdf4);
+            border: 1px solid #bbf7d0;
+            border-radius: 14px;
+            padding: 18px 20px;
+            margin-bottom: 24px;
+        }
+
+        .summary-label {
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+
+        .summary-value {
+            font-size: 28px;
+            font-weight: 900;
+            color: #15803d;
+        }
+
+        .table-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        thead th {
+            background: #f8fafc;
+            text-transform: uppercase;
+            font-size: 12px;
+            padding: 14px 12px;
+            text-align: left;
+            color: #334155;
+        }
+
+        tbody td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #f9fafb;
+        }
+
+        .drug {
+            font-weight: 700;
+        }
+
+        .amount {
+            font-weight: 800;
+        }
+
+        .customer {
+            background: #f1f5f9;
+            padding: 4px 8px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .staff {
+            background: #ecfdf3;
+            color: #15803d;
+            padding: 4px 8px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 20px;
+            color: #64748b;
+        }
+
+        /* PRINT MODE */
         @media print {
-            .print-btn { display: none; }
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+                padding: 0;
+            }
+
+            .print-btn {
+                display: none;
+            }
+
+            .customer,
+            .staff {
+                background: transparent;
+                padding: 0;
+            }
         }
     </style>
 </head>
-<body>
-    <button class="print-btn" onclick="window.print()">Print</button>
-    <h2>Sales Report</h2>
-    <p><strong>Total Sales:</strong> ₦{{ total_sales }}</p>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Drug</th>
-                <th>Customer</th>
-                <th>Quantity</th>
-                <th>Unit Price</th>
-                <th>Total</th>
-                <th>Sold By</th>
-                <th>Date</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for sale in sales %}
-            <tr>
-                <td>{{ sale.drug.drug_name }}</td>
-                <td>{{ sale.customer_name }}</td>
-                <td>{{ sale.quantity }}</td>
-                <td>₦{{ sale.unit_price }}</td>
-                <td>₦{{ sale.total_price }}</td>
-                <td>{{ sale.sold_by }}</td>
-                <td>{{ sale.date }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<body>
+    <div class="container">
+
+        <div class="header">
+            <div class="header-left">
+                <h2>Sales Report</h2>
+                <p>Generated from PharmaHub system</p>
+            </div>
+            <button class="print-btn" onclick="window.print()">Print</button>
+        </div>
+
+        <!-- SUMMARY -->
+        <div class="summary-card">
+            <div class="summary-label">Total Sales</div>
+            <div class="summary-value">₦{{ total_sales }}</div>
+        </div>
+
+        <!-- TABLE -->
+        <div class="table-card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Drug</th>
+                        <th>Customer</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Total</th>
+                        <th>Sold By</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for sale in sales %}
+                    <tr>
+                        <td class="drug">{{ sale.drug.drug_name }}</td>
+                        <td><span class="customer">{{ sale.customer_name }}</span></td>
+                        <td>{{ sale.quantity }}</td>
+                        <td class="amount">₦{{ sale.unit_price }}</td>
+                        <td class="amount">₦{{ sale.total_price }}</td>
+                        <td><span class="staff">{{ sale.sold_by }}</span></td>
+                        <td>{{ sale.date }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="empty">No sales recorded.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
 </body>
 </html>

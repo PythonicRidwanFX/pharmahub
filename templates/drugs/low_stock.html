@@ -1,32 +1,161 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Low Stock Drugs</h2>
+<style>
+    :root {
+        --card: #ffffff;
+        --text: #0f172a;
+        --muted: #64748b;
+        --line: #e2e8f0;
+        --warning: #d97706;
+        --warning-bg: #fff7ed;
+        --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+        --radius-lg: 22px;
+    }
 
-<div class="table-box">
-    <table>
-        <thead>
-            <tr>
-                <th>Drug Name</th>
-                <th>Category</th>
-                <th>Quantity</th>
-                <th>Expiry Date</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for drug in low_stock_drugs %}
-            <tr>
-                <td>{{ drug.drug_name }}</td>
-                <td>{{ drug.category }}</td>
-                <td><span class="status-warning">{{ drug.quantity }}</span></td>
-                <td>{{ drug.expiry_date }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="4">No low stock drugs.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    .page-shell {
+        padding: 8px 0 30px;
+    }
+
+    .page-header {
+        margin-bottom: 22px;
+    }
+
+    .page-header h2 {
+        margin: 0;
+        font-size: 30px;
+        font-weight: 800;
+        color: var(--text);
+    }
+
+    .page-header p {
+        margin: 6px 0 0;
+        font-size: 15px;
+        color: var(--muted);
+    }
+
+    .table-card {
+        background: var(--card);
+        border: 1px solid #eef2f7;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+    }
+
+    .table-card-header {
+        padding: 20px 22px;
+        border-bottom: 1px solid var(--line);
+        background: linear-gradient(to right, #fffaf0, #ffffff);
+    }
+
+    .table-card-header h3 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 800;
+        color: var(--text);
+    }
+
+    .table-card-header p {
+        margin: 6px 0 0;
+        font-size: 14px;
+        color: var(--muted);
+    }
+
+    .table-wrap {
+        overflow-x: auto;
+    }
+
+    .premium-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 700px;
+    }
+
+    .premium-table thead th {
+        background: #f8fafc;
+        color: #334155;
+        padding: 14px 18px;
+        text-align: left;
+        font-size: 12px;
+        font-weight: 800;
+        text-transform: uppercase;
+        border-bottom: 1px solid var(--line);
+    }
+
+    .premium-table tbody td {
+        padding: 16px 18px;
+        border-bottom: 1px solid #eef2f7;
+        font-size: 14px;
+        color: #1e293b;
+    }
+
+    .premium-table tbody tr:hover {
+        background: #f8fbff;
+    }
+
+    .status-warning {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+        background: var(--warning-bg);
+        color: var(--warning);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 28px 16px;
+        color: var(--muted);
+        font-size: 14px;
+    }
+
+    @media (max-width: 768px) {
+        .page-header h2 {
+            font-size: 24px;
+        }
+    }
+</style>
+
+<div class="page-shell">
+    <div class="page-header">
+        <h2>Low Stock Drugs</h2>
+        <p>Review inventory items that are running low and may need restocking soon.</p>
+    </div>
+
+    <div class="table-card">
+        <div class="table-card-header">
+            <h3>Low Stock Inventory</h3>
+            <p>These drugs currently have low quantity available in stock.</p>
+        </div>
+
+        <div class="table-wrap">
+            <table class="premium-table">
+                <thead>
+                    <tr>
+                        <th>Drug Name</th>
+                        <th>Category</th>
+                        <th>Quantity</th>
+                        <th>Expiry Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for drug in low_stock_drugs %}
+                    <tr>
+                        <td><strong>{{ drug.drug_name }}</strong></td>
+                        <td>{{ drug.category }}</td>
+                        <td><span class="status-warning">{{ drug.quantity }}</span></td>
+                        <td>{{ drug.expiry_date }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="empty-state">No low stock drugs.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 {% endblock %}

@@ -1,69 +1,189 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Print Expiry Report</title>
+    <title>Expiry Report - PharmaHub</title>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        h2, h3 { margin-bottom: 10px; }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        table, th, td { border: 1px solid #000; }
-        th, td { padding: 10px; text-align: left; }
-        .print-btn { margin-bottom: 20px; }
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            padding: 30px;
+            background: #f8fafc;
+            color: #0f172a;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .header h2 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 800;
+        }
+
+        .header small {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .print-btn {
+            padding: 10px 16px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        h3 {
+            margin-top: 25px;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .section {
+            margin-bottom: 25px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th {
+            background: #f1f5f9;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.3px;
+            padding: 12px;
+            text-align: left;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .status-expired {
+            color: #dc2626;
+            font-weight: 700;
+        }
+
+        .status-warning {
+            color: #d97706;
+            font-weight: 700;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 15px;
+            color: #64748b;
+        }
+
+        /* PRINT STYLING */
         @media print {
-            .print-btn { display: none; }
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+                padding: 0;
+            }
+
+            .print-btn {
+                display: none;
+            }
         }
     </style>
 </head>
+
 <body>
-    <button class="print-btn" onclick="window.print()">Print</button>
-    <h2>Expiry Report</h2>
+    <div class="container">
 
-    <h3>Expired Drugs</h3>
-    <table>
-        <thead>
-            <tr>
-                <th>Drug Name</th>
-                <th>Quantity</th>
-                <th>Expiry Date</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for drug in expired_drugs %}
-            <tr>
-                <td>{{ drug.drug_name }}</td>
-                <td>{{ drug.quantity }}</td>
-                <td>{{ drug.expiry_date }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="3">No expired drugs.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+        <div class="header">
+            <div>
+                <h2>Expiry Report</h2>
+                <small>Generated from PharmaHub System</small>
+            </div>
+            <button class="print-btn" onclick="window.print()">Print</button>
+        </div>
 
-    <h3>Expiring Soon</h3>
-    <table>
-        <thead>
-            <tr>
-                <th>Drug Name</th>
-                <th>Quantity</th>
-                <th>Expiry Date</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for drug in expiring_soon %}
-            <tr>
-                <td>{{ drug.drug_name }}</td>
-                <td>{{ drug.quantity }}</td>
-                <td>{{ drug.expiry_date }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="3">No drugs expiring soon.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+        <!-- EXPIRED -->
+        <div class="section">
+            <h3>Expired Drugs</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Drug Name</th>
+                        <th>Quantity</th>
+                        <th>Expiry Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for drug in expired_drugs %}
+                    <tr>
+                        <td><strong>{{ drug.drug_name }}</strong></td>
+                        <td>{{ drug.quantity }}</td>
+                        <td class="status-expired">{{ drug.expiry_date }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="empty">No expired drugs.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- EXPIRING SOON -->
+        <div class="section">
+            <h3>Expiring Soon</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Drug Name</th>
+                        <th>Quantity</th>
+                        <th>Expiry Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for drug in expiring_soon %}
+                    <tr>
+                        <td><strong>{{ drug.drug_name }}</strong></td>
+                        <td>{{ drug.quantity }}</td>
+                        <td class="status-warning">{{ drug.expiry_date }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="empty">No drugs expiring soon.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
 </body>
 </html>

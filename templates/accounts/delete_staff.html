@@ -1,15 +1,122 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Delete Staff</h2>
+<style>
+    .delete-wrap {
+        max-width: 760px;
+    }
 
-<div class="table-box">
-    <p>Are you sure you want to delete <strong>{{ staff.username }}</strong>?</p>
+    .delete-card {
+        position: relative;
+        overflow: hidden;
+        border-radius: 22px;
+    }
 
-    <form method="post">
-        {% csrf_token %}
-        <button type="submit" class="btn-danger">Yes, Delete</button>
-        <a href="{% url 'staff_list' %}" class="btn">Cancel</a>
-    </form>
+    .delete-card::before {
+        content: "";
+        position: absolute;
+        top: -65px;
+        right: -65px;
+        width: 170px;
+        height: 170px;
+        border-radius: 50%;
+        background: rgba(220, 38, 38, 0.06);
+    }
+
+    .delete-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .danger-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 14px;
+        background: #fef2f2;
+        color: #b91c1c;
+        border: 1px solid #fecaca;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 18px;
+    }
+
+    .danger-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #dc2626;
+    }
+
+    .delete-title {
+        margin: 0 0 10px;
+        font-size: 28px;
+        color: #0f172a;
+    }
+
+    .delete-text {
+        margin: 0 0 10px;
+        color: #475569;
+        font-size: 15px;
+        line-height: 1.7;
+    }
+
+    .delete-warning-box {
+        margin-top: 18px;
+        background: #fff7ed;
+        border: 1px solid #fed7aa;
+        color: #9a3412;
+        padding: 15px 16px;
+        border-radius: 14px;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .delete-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 24px;
+    }
+
+    .delete-actions .btn-danger,
+    .delete-actions .btn-secondary {
+        min-width: 160px;
+        text-align: center;
+    }
+</style>
+
+<div class="delete-wrap">
+    <div class="table-box delete-card">
+        <div class="delete-content">
+            <div class="danger-badge">
+                <span class="danger-dot"></span>
+                Confirm Deletion
+            </div>
+
+            <h2 class="delete-title">Delete Staff</h2>
+
+            <p class="delete-text">
+                Are you sure you want to delete <strong>{{ staff.username }}</strong> from this pharmacy?
+            </p>
+
+            <p class="delete-text">
+                This action will remove the staff account access from your system.
+            </p>
+
+            <div class="delete-warning-box">
+                Please review carefully before continuing. Deleted staff accounts may lose access immediately depending on your system logic.
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="delete-actions">
+                    <button type="submit" class="btn-danger">Yes, Delete</button>
+                    <a href="{% url 'staff_list' %}" class="btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 {% endblock %}

@@ -1,57 +1,218 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Expiry Alerts</h2>
+<style>
+    :root {
+        --card: #ffffff;
+        --text: #0f172a;
+        --muted: #64748b;
+        --line: #e2e8f0;
+        --danger: #dc2626;
+        --warning: #d97706;
+        --danger-bg: #fef2f2;
+        --warning-bg: #fff7ed;
+        --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+        --radius-lg: 22px;
+    }
 
-<div class="table-box" style="margin-bottom: 20px;">
-    <h3>Expired Drugs</h3>
-    <table>
-        <thead>
-            <tr>
-                <th>Drug Name</th>
-                <th>Quantity</th>
-                <th>Expiry Date</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for drug in expired_drugs %}
-            <tr>
-                <td>{{ drug.drug_name }}</td>
-                <td>{{ drug.quantity }}</td>
-                <td><span class="status-danger">{{ drug.expiry_date }}</span></td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="3">No expired drugs.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+    .page-shell {
+        padding: 8px 0 30px;
+    }
 
-<div class="table-box">
-    <h3>Expiring Soon</h3>
-    <table>
-        <thead>
-            <tr>
-                <th>Drug Name</th>
-                <th>Quantity</th>
-                <th>Expiry Date</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for drug in expiring_soon %}
-            <tr>
-                <td>{{ drug.drug_name }}</td>
-                <td>{{ drug.quantity }}</td>
-                <td><span class="status-warning">{{ drug.expiry_date }}</span></td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="3">No drugs expiring soon.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    .page-header {
+        margin-bottom: 22px;
+    }
+
+    .page-header h2 {
+        margin: 0;
+        font-size: 30px;
+        font-weight: 800;
+        color: var(--text);
+    }
+
+    .page-header p {
+        margin: 6px 0 0;
+        font-size: 15px;
+        color: var(--muted);
+    }
+
+    .alert-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 22px;
+    }
+
+    .table-card {
+        background: var(--card);
+        border: 1px solid #eef2f7;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+    }
+
+    .table-card-header {
+        padding: 20px 22px;
+        border-bottom: 1px solid var(--line);
+    }
+
+    .table-card-header.danger {
+        background: linear-gradient(to right, #fff5f5, #ffffff);
+    }
+
+    .table-card-header.warning {
+        background: linear-gradient(to right, #fffaf0, #ffffff);
+    }
+
+    .table-card-header h3 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 800;
+        color: var(--text);
+    }
+
+    .table-card-header p {
+        margin: 6px 0 0;
+        font-size: 14px;
+        color: var(--muted);
+    }
+
+    .table-wrap {
+        overflow-x: auto;
+    }
+
+    .premium-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 500px;
+    }
+
+    .premium-table thead th {
+        background: #f8fafc;
+        color: #334155;
+        padding: 14px 18px;
+        text-align: left;
+        font-size: 12px;
+        font-weight: 800;
+        text-transform: uppercase;
+        border-bottom: 1px solid var(--line);
+    }
+
+    .premium-table tbody td {
+        padding: 16px 18px;
+        border-bottom: 1px solid #eef2f7;
+        font-size: 14px;
+        color: #1e293b;
+    }
+
+    .premium-table tbody tr:hover {
+        background: #f8fbff;
+    }
+
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .status-danger {
+        background: var(--danger-bg);
+        color: var(--danger);
+    }
+
+    .status-warning {
+        background: var(--warning-bg);
+        color: var(--warning);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 28px 16px;
+        color: var(--muted);
+        font-size: 14px;
+    }
+
+    @media (max-width: 900px) {
+        .alert-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .page-header h2 {
+            font-size: 24px;
+        }
+    }
+</style>
+
+<div class="page-shell">
+    <div class="page-header">
+        <h2>Expiry Alerts</h2>
+        <p>Monitor expired drugs and items that are close to their expiry date.</p>
+    </div>
+
+    <div class="alert-grid">
+        <div class="table-card">
+            <div class="table-card-header danger">
+                <h3>Expired Drugs</h3>
+                <p>These drugs have passed their expiry date and need urgent action.</p>
+            </div>
+            <div class="table-wrap">
+                <table class="premium-table">
+                    <thead>
+                        <tr>
+                            <th>Drug Name</th>
+                            <th>Quantity</th>
+                            <th>Expiry Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for drug in expired_drugs %}
+                        <tr>
+                            <td><strong>{{ drug.drug_name }}</strong></td>
+                            <td>{{ drug.quantity }}</td>
+                            <td><span class="status-pill status-danger">{{ drug.expiry_date }}</span></td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" class="empty-state">No expired drugs.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="table-card">
+            <div class="table-card-header warning">
+                <h3>Expiring Soon</h3>
+                <p>These drugs are approaching their expiry date and should be monitored.</p>
+            </div>
+            <div class="table-wrap">
+                <table class="premium-table">
+                    <thead>
+                        <tr>
+                            <th>Drug Name</th>
+                            <th>Quantity</th>
+                            <th>Expiry Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for drug in expiring_soon %}
+                        <tr>
+                            <td><strong>{{ drug.drug_name }}</strong></td>
+                            <td>{{ drug.quantity }}</td>
+                            <td><span class="status-pill status-warning">{{ drug.expiry_date }}</span></td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" class="empty-state">No drugs expiring soon.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

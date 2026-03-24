@@ -1,46 +1,284 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="page-header">
-    <h2>Add Sale</h2>
-    <p>Record a new sales transaction.</p>
-</div>
+<style>
+    :root {
+        --bg: #f4f7fb;
+        --card: #ffffff;
+        --text: #0f172a;
+        --muted: #64748b;
+        --line: #e2e8f0;
+        --primary: #2563eb;
+        --primary-dark: #1d4ed8;
+        --success: #16a34a;
+        --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+        --radius-lg: 22px;
+        --radius-md: 14px;
+    }
 
-<div class="form-card">
-    <form method="post">
-        {% csrf_token %}
+    .page-shell {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 8px 0 30px;
+    }
 
-        <div class="form-grid">
-            <div class="form-group">
-                <label>Drug</label>
-                {{ form.drug }}
-            </div>
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 18px;
+        flex-wrap: wrap;
+        margin-bottom: 24px;
+    }
 
-            <div class="form-group">
-                <label>Customer Name</label>
-                {{ form.customer_name }}
-            </div>
+    .page-header h2 {
+        margin: 0;
+        font-size: 30px;
+        font-weight: 800;
+        color: var(--text);
+        letter-spacing: -0.5px;
+    }
 
-            <div class="form-group">
-                <label>Quantity</label>
-                {{ form.quantity }}
-            </div>
+    .page-header p {
+        margin: 6px 0 0;
+        color: var(--muted);
+        font-size: 15px;
+    }
 
-            <div class="form-group">
-                <label>Unit Price</label>
-                {{ form.unit_price }}
-            </div>
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        color: var(--primary-dark);
+        background: #eff6ff;
+        border: 1px solid #dbeafe;
+        padding: 10px 14px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 14px;
+        transition: 0.2s ease;
+    }
 
-            <div class="form-group full">
-                <label>Note</label>
-                {{ form.note }}
-            </div>
+    .back-link:hover {
+        background: #dbeafe;
+    }
+
+    .form-card {
+        background: var(--card);
+        border: 1px solid #eef2f7;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+    }
+
+    .form-card-header {
+        padding: 22px 24px;
+        border-bottom: 1px solid var(--line);
+        background: linear-gradient(to right, #ffffff, #f8fbff);
+    }
+
+    .form-card-header h3 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 800;
+        color: var(--text);
+    }
+
+    .form-card-header p {
+        margin: 6px 0 0;
+        color: var(--muted);
+        font-size: 14px;
+    }
+
+    .form-body {
+        padding: 24px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group.full {
+        grid-column: 1 / -1;
+    }
+
+    .form-group label {
+        font-size: 14px;
+        font-weight: 700;
+        color: #334155;
+        margin-bottom: 8px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        border: 1px solid #dbe3ee;
+        border-radius: 12px;
+        padding: 13px 14px;
+        font-size: 14px;
+        background: #fff;
+        color: var(--text);
+        outline: none;
+        transition: 0.2s ease;
+        box-sizing: border-box;
+    }
+
+    .form-group textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        border-color: #93c5fd;
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.10);
+    }
+
+    .info-strip {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 22px;
+        padding: 14px 16px;
+        border-radius: 14px;
+        background: #eff6ff;
+        border: 1px solid #dbeafe;
+        color: #1d4ed8;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 28px;
+        padding-top: 22px;
+        border-top: 1px solid var(--line);
+    }
+
+    .btn-main,
+    .btn-alt {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        padding: 13px 18px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 700;
+        transition: 0.2s ease;
+    }
+
+    .btn-main {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white;
+        box-shadow: var(--shadow);
+    }
+
+    .btn-main:hover {
+        transform: translateY(-1px);
+    }
+
+    .btn-alt {
+        background: #fff;
+        color: var(--text);
+        border: 1px solid var(--line);
+    }
+
+    .btn-alt:hover {
+        background: #f8fafc;
+    }
+
+    @media (max-width: 768px) {
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .page-header h2 {
+            font-size: 24px;
+        }
+
+        .form-body,
+        .form-card-header {
+            padding: 18px;
+        }
+
+        .info-strip {
+            align-items: flex-start;
+        }
+    }
+</style>
+
+<div class="page-shell">
+    <div class="page-header">
+        <div>
+            <h2>Add Sale</h2>
+            <p>Record a new sales transaction.</p>
+        </div>
+        <a href="{% url 'sale_list' %}" class="back-link">← Back to Sales History</a>
+    </div>
+
+    <div class="form-card">
+        <div class="form-card-header">
+            <h3>Sales Information</h3>
+            <p>Enter the transaction details below to save a new pharmacy sale.</p>
         </div>
 
-        <div class="form-actions">
-            <button type="submit" class="btn">Save Sale</button>
-            <a href="{% url 'sale_list' %}" class="btn-secondary">Cancel</a>
+        <div class="form-body">
+            <div class="info-strip">
+                <span>💳</span>
+                <span>Make sure the selected drug, quantity, and selling price are correct before saving the transaction.</span>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Drug</label>
+                        {{ form.drug }}
+                    </div>
+
+                    <div class="form-group">
+                        <label>Customer Name</label>
+                        {{ form.customer_name }}
+                    </div>
+
+                    <div class="form-group">
+                        <label>Quantity</label>
+                        {{ form.quantity }}
+                    </div>
+
+                    <div class="form-group">
+                        <label>Unit Price</label>
+                        {{ form.unit_price }}
+                    </div>
+
+                    <div class="form-group full">
+                        <label>Note</label>
+                        {{ form.note }}
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-main">Save Sale</button>
+                    <a href="{% url 'sale_list' %}" class="btn-alt">Cancel</a>
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
 </div>
 {% endblock %}
