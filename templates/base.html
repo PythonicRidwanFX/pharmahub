@@ -710,7 +710,6 @@
                     <a href="{% url 'add_purchase' %}">Add Purchase</a>
                 {% endif %}
             </div>
-                {% endif %}
 
             <form method="post" action="{% url 'logout' %}" class="logout-form">
                 {% csrf_token %}
@@ -785,7 +784,6 @@
         </div>
     </div>
 {% endif %}
-
 <script>
     function toggleSidebar() {
         document.querySelector('.sidebar').classList.toggle('active');
