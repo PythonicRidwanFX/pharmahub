@@ -215,20 +215,17 @@
 <div class="auth-box register-card">
     <div class="register-content">
 
-        <!-- LOGO -->
         <div class="register-logo">
             <div class="logo-circle">
                 <img src="{% static 'images/logo.png' %}" alt="Logo">
             </div>
         </div>
 
-        <!-- TITLE -->
         <div class="register-title">
             <h2>Create Pharmacy Account</h2>
             <p>Start managing inventory, sales, and reports in one smart platform.</p>
         </div>
 
-        <!-- GLOBAL ERRORS -->
         {% if form.non_field_errors %}
             <div class="error-box">
                 {% for error in form.non_field_errors %}
@@ -237,13 +234,18 @@
             </div>
         {% endif %}
 
+        {% if messages %}
+            {% for message in messages %}
+                <div class="error-box">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
         <form method="post">
             {% csrf_token %}
 
             <div class="section-title">Account Details</div>
 
             <div class="form-grid">
-
                 <div class="form-group">
                     <label>Username</label>
                     {{ form.username }}
@@ -260,20 +262,16 @@
                     {% endfor %}
                 </div>
 
-                <!-- PASSWORD -->
                 <div class="form-group">
                     <label>Password</label>
                     <div class="password-wrap">
                         {{ form.password1 }}
                         <button type="button" class="toggle-password" onclick="togglePassword('id_password1', this)">
                             <span class="eye-icon">
-                                <!-- OPEN -->
                                 <svg class="eye-open" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/>
                                     <circle cx="12" cy="12" r="3"/>
                                 </svg>
-
-                                <!-- CLOSED -->
                                 <svg class="eye-closed" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" style="display:none;">
                                     <path d="M1 1l22 22"/>
                                     <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20C5 20 1 12 1 12"/>
@@ -286,7 +284,6 @@
                     {% endfor %}
                 </div>
 
-                <!-- CONFIRM PASSWORD -->
                 <div class="form-group">
                     <label>Confirm Password</label>
                     <div class="password-wrap">
@@ -297,7 +294,6 @@
                                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/>
                                     <circle cx="12" cy="12" r="3"/>
                                 </svg>
-
                                 <svg class="eye-closed" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" style="display:none;">
                                     <path d="M1 1l22 22"/>
                                 </svg>
@@ -305,40 +301,48 @@
                         </button>
                     </div>
 
-                    <!-- MATCH MESSAGE -->
                     <div id="password-match-message" class="match-message"></div>
 
                     {% for error in form.password2.errors %}
                         <div class="field-error">{{ error }}</div>
                     {% endfor %}
                 </div>
-
             </div>
 
             <div class="section-title">Pharmacy Details</div>
 
             <div class="form-grid">
-
                 <div class="form-group full">
                     <label>Pharmacy Name</label>
                     {{ form.pharmacy_name }}
+                    {% for error in form.pharmacy_name.errors %}
+                        <div class="field-error">{{ error }}</div>
+                    {% endfor %}
                 </div>
 
                 <div class="form-group">
                     <label>Pharmacy Email</label>
                     {{ form.pharmacy_email }}
+                    {% for error in form.pharmacy_email.errors %}
+                        <div class="field-error">{{ error }}</div>
+                    {% endfor %}
                 </div>
 
                 <div class="form-group">
                     <label>Phone</label>
                     {{ form.pharmacy_phone }}
+                    {% for error in form.pharmacy_phone.errors %}
+                        <div class="field-error">{{ error }}</div>
+                    {% endfor %}
                 </div>
 
                 <div class="form-group full">
                     <label>Address</label>
                     {{ form.pharmacy_address }}
+                    {% for error in form.pharmacy_address.errors %}
+                        <div class="field-error">{{ error }}</div>
+                    {% endfor %}
                 </div>
-
             </div>
 
             <button type="submit" class="submit-btn">
@@ -350,11 +354,8 @@
             Already have an account?
             <a href="{% url 'login' %}">Login</a>
         </div>
-
     </div>
 </div>
-
-
 <script>
 function togglePassword(fieldId, btn) {
     const field = document.getElementById(fieldId);

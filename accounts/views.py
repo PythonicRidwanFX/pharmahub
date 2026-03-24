@@ -21,37 +21,42 @@ def register_pharmacy(request):
     if request.method == 'POST':
         form = PharmacyRegistrationForm(request.POST)
         if form.is_valid():
-            pharmacy = Pharmacy.objects.create(
-                name=form.cleaned_data['pharmacy_name'],
-                email=form.cleaned_data['pharmacy_email'],
-                phone=form.cleaned_data['pharmacy_phone'],
-                address=form.cleaned_data['pharmacy_address'],
-            )
+            try:
+                pharmacy = Pharmacy.objects.create(
+                    name=form.cleaned_data['pharmacy_name'],
+                    email=form.cleaned_data['pharmacy_email'],
+                    phone=form.cleaned_data['pharmacy_phone'],
+                    address=form.cleaned_data['pharmacy_address'],
+                )
 
-            user = form.save(commit=False)
-            user.pharmacy = pharmacy
-            user.role = 'owner'
-            user.email = form.cleaned_data['email']
-            user.save()
+                user = form.save(commit=False)
+                user.pharmacy = pharmacy
+                user.role = 'owner'
+                user.email = form.cleaned_data['email']
+                user.save()
 
-            today = timezone.now().date()
-            Subscription.objects.create(
-                pharmacy=pharmacy,
-                plan=None,
-                status='trial',
-                start_date=today,
-                end_date=today + timedelta(days=14),
-                is_current=True
-            )
+                today = timezone.now().date()
+                Subscription.objects.create(
+                    pharmacy=pharmacy,
+                    plan=None,
+                    status='trial',
+                    start_date=today,
+                    end_date=today + timedelta(days=14),
+                    is_current=True
+                )
 
-            login(request, user)
-            messages.success(request, 'Account created successfully. Your 14-day trial has started.')
-            return redirect('dashboard')
+                login(request, user)
+                messages.success(request, 'Account created successfully. Your 14-day trial has started.')
+                return redirect('dashboard')
+
+            except Exception as e:
+                messages.error(request, f"Registration error: {e}")
+        else:
+            messages.error(request, 'Please correct the errors below.')
     else:
         form = PharmacyRegistrationForm()
 
     return render(request, 'accounts/register.html', {'form': form})
-
 
 @login_required
 @user_passes_test(admin_required)
