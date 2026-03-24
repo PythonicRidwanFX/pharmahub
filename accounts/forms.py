@@ -30,13 +30,12 @@ class StaffCreateForm(UserCreationForm):
 
 
 
+
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 
-
 class CustomLoginForm(AuthenticationForm):
     username = forms.CharField(
-        label="Username or Email",
         widget=forms.TextInput(attrs={
             'class': 'form-control',
             'placeholder': 'Enter username or email'
