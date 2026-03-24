@@ -1,44 +1,195 @@
 {% extends 'superadmin_panel/superadmin_base.html' %}
 
 {% block content %}
-<h2>Payment History</h2>
+<style>
+    .page-hero {
+        background: linear-gradient(135deg, #0f172a, #1e293b, #2563eb);
+        border-radius: 24px;
+        padding: 28px 24px;
+        color: #fff;
+        margin-bottom: 24px;
+        box-shadow: 0 18px 45px rgba(15, 23, 42, 0.16);
+    }
 
-<div class="table-box" style="margin-bottom:20px;">
-    <h3>Total Revenue: ₦{{ total_revenue }}</h3>
+    .page-hero h2 {
+        font-size: 30px;
+        font-weight: 800;
+        margin-bottom: 8px;
+    }
+
+    .page-hero p {
+        font-size: 15px;
+        color: rgba(255,255,255,0.88);
+    }
+
+    .stats-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 18px;
+        margin-bottom: 24px;
+    }
+
+    .stat-card {
+        background: #fff;
+        border-radius: 20px;
+        padding: 22px;
+        box-shadow: 0 12px 30px rgba(15,23,42,0.08);
+        border: 1px solid #e2e8f0;
+    }
+
+    .stat-card .label {
+        font-size: 13px;
+        font-weight: 700;
+        color: #64748b;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+    }
+
+    .stat-card .value {
+        font-size: 28px;
+        font-weight: 800;
+        color: #0f172a;
+    }
+
+    .table-card {
+        background: #fff;
+        border-radius: 22px;
+        box-shadow: 0 12px 30px rgba(15,23,42,0.08);
+        border: 1px solid #e2e8f0;
+        overflow: hidden;
+    }
+
+    .table-header {
+        padding: 22px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .table-header h3 {
+        font-size: 22px;
+        font-weight: 800;
+        color: #0f172a;
+        margin-bottom: 6px;
+    }
+
+    .table-header p {
+        font-size: 14px;
+        color: #64748b;
+    }
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .payment-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 1000px;
+    }
+
+    .payment-table th {
+        background: #f8fafc;
+        padding: 14px;
+        font-size: 13px;
+        text-transform: uppercase;
+        color: #334155;
+        border-bottom: 1px solid #e2e8f0;
+        text-align: left;
+    }
+
+    .payment-table td {
+        padding: 15px;
+        border-bottom: 1px solid #edf2f7;
+        font-size: 14px;
+    }
+
+    .payment-table tr:hover {
+        background: #f8fbff;
+    }
+
+    .status {
+        padding: 7px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .success { background:#dcfce7; color:#166534; }
+    .pending { background:#fef3c7; color:#92400e; }
+    .failed { background:#fee2e2; color:#991b1b; }
+
+    .empty {
+        text-align: center;
+        padding: 24px;
+        color: #94a3b8;
+    }
+</style>
+
+<div class="page-hero">
+    <h2>Payment History</h2>
+    <p>Track all platform transactions, payment status, and revenue performance.</p>
 </div>
 
-<div class="table-box">
-    <table>
-        <thead>
-            <tr>
-                <th>Pharmacy</th>
-                <th>Plan</th>
-                <th>Amount</th>
-                <th>Reference</th>
-                <th>Status</th>
-                <th>Email</th>
-                <th>Paid At</th>
-                <th>Created At</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for payment in payments %}
-            <tr>
-                <td>{{ payment.pharmacy.name }}</td>
-                <td>{% if payment.plan %}{{ payment.plan.name }}{% else %}-{% endif %}</td>
-                <td>₦{{ payment.amount }}</td>
-                <td>{{ payment.reference }}</td>
-                <td>{{ payment.status }}</td>
-                <td>{{ payment.email }}</td>
-                <td>{{ payment.paid_at }}</td>
-                <td>{{ payment.created_at }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="8">No payments found.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div class="stats-row">
+    <div class="stat-card">
+        <div class="label">Total Revenue</div>
+        <div class="value">₦{{ total_revenue }}</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="label">Total Transactions</div>
+        <div class="value">{{ payments|length }}</div>
+    </div>
 </div>
+
+<div class="table-card">
+    <div class="table-header">
+        <h3>All Payments</h3>
+        <p>Detailed transaction records across all pharmacies.</p>
+    </div>
+
+    <div class="table-responsive">
+        <table class="payment-table">
+            <thead>
+                <tr>
+                    <th>Pharmacy</th>
+                    <th>Plan</th>
+                    <th>Amount</th>
+                    <th>Reference</th>
+                    <th>Status</th>
+                    <th>Email</th>
+                    <th>Paid At</th>
+                    <th>Created</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for payment in payments %}
+                <tr>
+                    <td>{{ payment.pharmacy.name }}</td>
+                    <td>{% if payment.plan %}{{ payment.plan.name }}{% else %}-{% endif %}</td>
+                    <td>₦{{ payment.amount }}</td>
+                    <td>{{ payment.reference }}</td>
+                    <td>
+                        {% if payment.status == 'success' %}
+                            <span class="status success">Success</span>
+                        {% elif payment.status == 'pending' %}
+                            <span class="status pending">Pending</span>
+                        {% else %}
+                            <span class="status failed">{{ payment.status }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ payment.email }}</td>
+                    <td>{{ payment.paid_at }}</td>
+                    <td>{{ payment.created_at }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="empty">No payments found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
 {% endblock %}

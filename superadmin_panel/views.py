@@ -104,8 +104,16 @@ def admin_dashboard(request):
 @superadmin_required
 def pharmacy_list(request):
     pharmacies = Pharmacy.objects.all().order_by('-created_at')
-    return render(request, 'superadmin_panel/pharmacy_list.html', {'pharmacies': pharmacies})
+    total_pharmacies = pharmacies.count()
+    active_pharmacies = pharmacies.filter(is_active=True).count()
+    suspended_pharmacies = pharmacies.filter(is_active=False).count()
 
+    return render(request, 'superadmin_panel/pharmacy_list.html', {
+        'pharmacies': pharmacies,
+        'total_pharmacies': total_pharmacies,
+        'active_pharmacies': active_pharmacies,
+        'suspended_pharmacies': suspended_pharmacies,
+    })
 
 @superadmin_required
 def pharmacy_detail(request, pk):

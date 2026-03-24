@@ -1,46 +1,356 @@
 {% extends 'superadmin_panel/superadmin_base.html' %}
 
 {% block content %}
-<h2>All Pharmacies</h2>
+<style>
+    .page-header-card {
+        background: linear-gradient(135deg, #0f172a, #1e293b, #2563eb);
+        border-radius: 24px;
+        padding: 28px 24px;
+        color: #fff;
+        margin-bottom: 24px;
+        box-shadow: 0 18px 45px rgba(15, 23, 42, 0.16);
+        position: relative;
+        overflow: hidden;
+    }
 
-<div class="table-box">
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Address</th>
-                <th>Status</th>
-                <th>Date Joined</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for pharmacy in pharmacies %}
-            <tr>
-                <td>{{ pharmacy.name }}</td>
-                <td>{{ pharmacy.email }}</td>
-                <td>{{ pharmacy.phone }}</td>
-                <td>{{ pharmacy.address }}</td>
-                <td>
-                    {% if pharmacy.is_active %}
-                        <strong style="color:green;">Active</strong>
-                    {% else %}
-                        <strong style="color:red;">Suspended</strong>
-                    {% endif %}
-                </td>
-                <td>{{ pharmacy.created_at }}</td>
-                <td>
-                    <a href="{% url 'admin_pharmacy_detail' pharmacy.pk %}" class="btn-warning">View</a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="7">No pharmacies found.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    .page-header-card::before {
+        content: "";
+        position: absolute;
+        top: -40px;
+        right: -40px;
+        width: 180px;
+        height: 180px;
+        background: rgba(255,255,255,0.08);
+        border-radius: 50%;
+    }
+
+    .page-header-card::after {
+        content: "";
+        position: absolute;
+        bottom: -50px;
+        left: -50px;
+        width: 220px;
+        height: 220px;
+        background: rgba(255,255,255,0.05);
+        border-radius: 50%;
+    }
+
+    .page-header-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .page-badge {
+        display: inline-block;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.14);
+        font-size: 12px;
+        font-weight: 700;
+        margin-bottom: 12px;
+    }
+
+    .page-title {
+        font-size: 30px;
+        font-weight: 800;
+        margin-bottom: 10px;
+    }
+
+    .page-subtitle {
+        font-size: 15px;
+        color: rgba(255,255,255,0.88);
+        line-height: 1.7;
+        max-width: 760px;
+    }
+
+    .stats-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+        gap: 18px;
+        margin-bottom: 24px;
+    }
+
+    .stat-box {
+        background: #ffffff;
+        border-radius: 20px;
+        padding: 22px 20px;
+        box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+        border: 1px solid #e2e8f0;
+    }
+
+    .stat-box .label {
+        font-size: 13px;
+        font-weight: 700;
+        color: #64748b;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+        letter-spacing: 0.3px;
+    }
+
+    .stat-box .value {
+        font-size: 28px;
+        font-weight: 800;
+        color: #0f172a;
+        margin-bottom: 6px;
+    }
+
+    .stat-box .note {
+        font-size: 13px;
+        color: #94a3b8;
+    }
+
+    .table-section {
+        background: #ffffff;
+        border-radius: 24px;
+        box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+        border: 1px solid #e2e8f0;
+        overflow: hidden;
+    }
+
+    .table-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 22px 22px 16px;
+        border-bottom: 1px solid #e2e8f0;
+        flex-wrap: wrap;
+    }
+
+    .table-header h3 {
+        font-size: 22px;
+        font-weight: 800;
+        color: #0f172a;
+        margin-bottom: 6px;
+    }
+
+    .table-header p {
+        font-size: 14px;
+        color: #64748b;
+        line-height: 1.6;
+    }
+
+    .table-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .action-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 11px 15px;
+        background: #eff6ff;
+        border: 1px solid #dbeafe;
+        color: #1d4ed8;
+        border-radius: 12px;
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .pharmacy-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 980px;
+    }
+
+    .pharmacy-table thead th {
+        background: #f8fafc;
+        color: #334155;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        padding: 15px 16px;
+        text-align: left;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .pharmacy-table tbody td {
+        padding: 16px;
+        border-bottom: 1px solid #edf2f7;
+        color: #0f172a;
+        font-size: 14px;
+        vertical-align: middle;
+    }
+
+    .pharmacy-table tbody tr:hover {
+        background: #f8fbff;
+    }
+
+    .pharmacy-name {
+        font-weight: 700;
+        color: #0f172a;
+    }
+
+    .sub-text {
+        display: block;
+        font-size: 12px;
+        color: #94a3b8;
+        margin-top: 4px;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 8px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .status-active {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .status-suspended {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .btn-view {
+        display: inline-block;
+        padding: 10px 15px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        color: #fff;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 700;
+        transition: 0.25s ease;
+    }
+
+    .btn-view:hover {
+        color: #fff;
+        text-decoration: none;
+        transform: translateY(-1px);
+        opacity: 0.97;
+    }
+
+    .empty-row {
+        text-align: center;
+        padding: 28px 12px;
+        color: #94a3b8;
+        font-size: 14px;
+    }
+
+    @media (max-width: 768px) {
+        .page-title {
+            font-size: 25px;
+        }
+
+        .page-header-card {
+            padding: 22px 18px;
+        }
+
+        .table-header {
+            padding: 18px;
+        }
+
+        .table-header h3 {
+            font-size: 20px;
+        }
+    }
+</style>
+
+<div class="page-header-card">
+    <div class="page-header-content">
+        <span class="page-badge">Pharmacy Management</span>
+        <h2 class="page-title">All Registered Pharmacies</h2>
+        <p class="page-subtitle">
+            View every pharmacy on the PharmaHub platform, monitor account status, and open full details for deeper management actions.
+        </p>
+    </div>
+</div>
+
+<div class="stats-row">
+    <div class="stat-box">
+        <div class="label">Total Pharmacies</div>
+        <div class="value">{{ pharmacies|length }}</div>
+        <div class="note">All pharmacies currently registered</div>
+    </div>
+
+    <div class="stat-box">
+        <div class="label">Active Accounts</div>
+        <div class="value">
+            {% with active_count=0 %}
+                {% for pharmacy in pharmacies %}
+                    {% if pharmacy.is_active %}{{ forloop.counter0|add:1 }}{% endif %}
+                {% endfor %}
+            {% endwith %}
+            {{ pharmacies|length }}
+        </div>
+        <div class="note">Use detail page to suspend or reactivate</div>
+    </div>
+
+    <div class="stat-box">
+        <div class="label">Management Area</div>
+        <div class="value">Live</div>
+        <div class="note">Platform owner control is active</div>
+    </div>
+</div>
+
+<div class="table-section">
+    <div class="table-header">
+        <div>
+            <h3>Pharmacy Directory</h3>
+            <p>Review pharmacy identity, contact details, status, and joined date from one clean table.</p>
+        </div>
+
+        <div class="table-actions">
+            <a href="{% url 'admin_dashboard' %}" class="action-chip">📊 Dashboard</a>
+            <a href="{% url 'admin_subscription_list' %}" class="action-chip">📦 Subscriptions</a>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="pharmacy-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Address</th>
+                    <th>Status</th>
+                    <th>Date Joined</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pharmacy in pharmacies %}
+                <tr>
+                    <td>
+                        <span class="pharmacy-name">{{ pharmacy.name }}</span>
+                        <span class="sub-text">Platform pharmacy account</span>
+                    </td>
+                    <td>{{ pharmacy.email }}</td>
+                    <td>{{ pharmacy.phone }}</td>
+                    <td>{{ pharmacy.address }}</td>
+                    <td>
+                        {% if pharmacy.is_active %}
+                            <span class="status-badge status-active">Active</span>
+                        {% else %}
+                            <span class="status-badge status-suspended">Suspended</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ pharmacy.created_at }}</td>
+                    <td>
+                        <a href="{% url 'admin_pharmacy_detail' pharmacy.pk %}" class="btn-view">View Details</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="empty-row">No pharmacies found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endblock %}
