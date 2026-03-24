@@ -4,14 +4,23 @@ from .models import User
 from pharmacies.models import Pharmacy
 
 
-# ===============================
-# PHARMACY REGISTRATION (OWNER)
-# ===============================
 class PharmacyRegistrationForm(UserCreationForm):
-    pharmacy_name = forms.CharField(max_length=255)
-    pharmacy_email = forms.EmailField()
-    pharmacy_phone = forms.CharField(max_length=20, required=False)
-    pharmacy_address = forms.CharField(widget=forms.Textarea, required=False)
+    pharmacy_name = forms.CharField(
+        max_length=255,
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    pharmacy_email = forms.EmailField(
+        widget=forms.EmailInput(attrs={'class': 'form-control'})
+    )
+    pharmacy_phone = forms.CharField(
+        max_length=20,
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    pharmacy_address = forms.CharField(
+        required=False,
+        widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 3})
+    )
 
     class Meta:
         model = User
@@ -26,41 +35,35 @@ class PharmacyRegistrationForm(UserCreationForm):
             'pharmacy_address',
         ]
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs.update({'class': 'form-control'})
+        self.fields['email'].widget.attrs.update({'class': 'form-control'})
+        self.fields['password1'].widget.attrs.update({'class': 'form-control'})
+        self.fields['password2'].widget.attrs.update({'class': 'form-control'})
+
     def save(self, commit=True):
-        # ✅ Save user first
         user = super().save(commit=False)
+        user.role = 'owner'
 
         if commit:
             user.save()
 
-            # ✅ Create pharmacy and link owner
             pharmacy = Pharmacy.objects.create(
                 name=self.cleaned_data['pharmacy_name'],
                 email=self.cleaned_data['pharmacy_email'],
                 phone=self.cleaned_data.get('pharmacy_phone'),
                 address=self.cleaned_data.get('pharmacy_address'),
-                owner=user  # 🔥 THIS IS THE FIX
+                owner=user
             )
 
-            # ✅ Attach user to pharmacy
             user.pharmacy = pharmacy
             user.save()
 
         return user
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
-        for field in self.fields.values():
-            field.widget.attrs.update({'class': 'form-control'})
-
-
-# ===============================
-# STAFF CREATION (BY OWNER)
-# ===============================
 class StaffCreateForm(UserCreationForm):
-
-    # ❗ Restrict roles (no owner here)
     role = forms.ChoiceField(
         choices=[
             ('pharmacist', 'Pharmacist'),
@@ -75,20 +78,17 @@ class StaffCreateForm(UserCreationForm):
         fields = ['username', 'email', 'role', 'password1', 'password2']
 
     def __init__(self, *args, **kwargs):
-        # 🔥 Get pharmacy from view
         self.pharmacy = kwargs.pop('pharmacy', None)
-
         super().__init__(*args, **kwargs)
 
-        for field in self.fields.values():
-            field.widget.attrs.update({'class': 'form-control'})
+        self.fields['username'].widget.attrs.update({'class': 'form-control'})
+        self.fields['email'].widget.attrs.update({'class': 'form-control'})
+        self.fields['password1'].widget.attrs.update({'class': 'form-control'})
+        self.fields['password2'].widget.attrs.update({'class': 'form-control'})
 
     def save(self, commit=True):
         user = super().save(commit=False)
-
-        # ✅ Assign pharmacy automatically
-        if self.pharmacy:
-            user.pharmacy = self.pharmacy
+        user.pharmacy = self.pharmacy
 
         if commit:
             user.save()
@@ -96,9 +96,6 @@ class StaffCreateForm(UserCreationForm):
         return user
 
 
-# ===============================
-# LOGIN FORM
-# ===============================
 class CustomLoginForm(AuthenticationForm):
     username = forms.CharField(
         label="Username or Email",

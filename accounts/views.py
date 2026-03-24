@@ -1,17 +1,25 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login, logout
+from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib.auth.views import LoginView
 from django.contrib import messages
 from django.utils import timezone
-from django.views.decorators.http import require_POST
-
 from .models import User
+from django.shortcuts import redirect
+from django.contrib import messages
+from pharmacies.models import Pharmacy
 from .decorators import admin_required
+from django.contrib.auth import login, logout
+from django.contrib.auth.views import LoginView
+from subscriptions.access import sync_pharmacy_access
 from .forms import PharmacyRegistrationForm, StaffCreateForm, CustomLoginForm
 
+from django.contrib.auth import login
+from django.contrib import messages
+from django.shortcuts import render, redirect
+from django.utils import timezone
+
+from .forms import PharmacyRegistrationForm
 from subscriptions.models import Subscription
-from subscriptions.access import sync_pharmacy_access
 
 
 def register_pharmacy(request):
@@ -40,8 +48,6 @@ def register_pharmacy(request):
         form = PharmacyRegistrationForm()
 
     return render(request, 'accounts/register.html', {'form': form})
-
-
 @login_required
 @user_passes_test(admin_required)
 def staff_list(request):
@@ -54,6 +60,8 @@ def staff_list(request):
     })
 
 
+from subscriptions.models import Subscription
+
 @login_required
 @user_passes_test(admin_required)
 def add_staff(request):
@@ -64,28 +72,23 @@ def add_staff(request):
     ).first()
 
     if current_subscription and current_subscription.plan:
-        current_staff_count = User.objects.filter(
-            pharmacy=request.user.pharmacy
-        ).count()
-
+        current_staff_count = User.objects.filter(pharmacy=request.user.pharmacy).count()
         if current_staff_count >= current_subscription.plan.max_staff:
-            messages.error(
-                request,
-                'You have reached the maximum staff limit for your plan.'
-            )
+            messages.error(request, 'You have reached the maximum staff limit for your plan.')
             return redirect('staff_list')
 
     if request.method == 'POST':
-        form = StaffCreateForm(request.POST, pharmacy=request.user.pharmacy)
+        form = StaffCreateForm(request.POST)
         if form.is_valid():
-            form.save()
+            staff = form.save(commit=False)
+            staff.pharmacy = request.user.pharmacy
+            staff.save()
             messages.success(request, 'Staff account created successfully.')
             return redirect('staff_list')
     else:
-        form = StaffCreateForm(pharmacy=request.user.pharmacy)
+        form = StaffCreateForm()
 
     return render(request, 'accounts/add_staff.html', {'form': form})
-
 
 @login_required
 @user_passes_test(admin_required)
@@ -96,29 +99,11 @@ def edit_staff(request, pk):
         pharmacy=request.user.pharmacy
     )
 
-    if staff.is_owner:
-        messages.error(request, 'Owner account cannot be edited here.')
-        return redirect('staff_list')
-
     if request.method == 'POST':
-        username = request.POST.get('username', '').strip()
-        email = request.POST.get('email', '').strip()
-        role = request.POST.get('role', '').strip()
-
-        if not username or not email or not role:
-            messages.error(request, 'All fields are required.')
-            return render(request, 'accounts/edit_staff.html', {'staff': staff})
-
-        valid_roles = [choice[0] for choice in User.ROLE_CHOICES]
-        if role not in valid_roles:
-            messages.error(request, 'Invalid role selected.')
-            return render(request, 'accounts/edit_staff.html', {'staff': staff})
-
-        staff.username = username
-        staff.email = email
-        staff.role = role
+        staff.username = request.POST.get('username')
+        staff.email = request.POST.get('email')
+        staff.role = request.POST.get('role')
         staff.save()
-
         messages.success(request, 'Staff updated successfully.')
         return redirect('staff_list')
 
@@ -134,7 +119,7 @@ def delete_staff(request, pk):
         pharmacy=request.user.pharmacy
     )
 
-    if staff.is_owner:
+    if staff.role == 'owner':
         messages.error(request, 'Owner account cannot be deleted.')
         return redirect('staff_list')
 
@@ -146,6 +131,7 @@ def delete_staff(request, pk):
     return render(request, 'accounts/delete_staff.html', {'staff': staff})
 
 
+
 class CustomLoginView(LoginView):
     template_name = 'accounts/login.html'
     authentication_form = CustomLoginForm
@@ -155,21 +141,13 @@ class CustomLoginView(LoginView):
         user = self.request.user
 
         if user.is_superuser:
-            logout(self.request)
-            messages.warning(
-                self.request,
-                'Superadmin should log in through the superadmin login page.'
-            )
-            return redirect('superadmin_login')
+            return redirect('admin_dashboard')
 
         pharmacy = getattr(user, 'pharmacy', None)
 
         if not pharmacy:
             logout(self.request)
-            messages.error(
-                self.request,
-                'No pharmacy account is linked to this user.'
-            )
+            messages.error(self.request, 'No pharmacy account is linked to this user.')
             return redirect('login')
 
         sync_pharmacy_access(pharmacy)
@@ -184,15 +162,17 @@ class CustomLoginView(LoginView):
             return redirect('login')
 
         if not pharmacy.is_active:
-            logout(self.request)
             messages.warning(
                 self.request,
                 'Your subscription is inactive or expired. Please renew to continue.'
             )
-            return redirect('login')
+            return redirect('plan_list')
 
         return redirect('dashboard')
 
+
+
+from django.views.decorators.http import require_POST
 
 @require_POST
 def logout_view(request):

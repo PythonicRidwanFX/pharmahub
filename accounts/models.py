@@ -4,6 +4,7 @@ from django.db import models
 
 class User(AbstractUser):
     ROLE_CHOICES = (
+        ('owner', 'Owner'),
         ('pharmacist', 'Pharmacist'),
         ('cashier', 'Cashier'),
         ('staff', 'Staff'),
@@ -28,8 +29,8 @@ class User(AbstractUser):
 
     @property
     def is_owner(self):
-        return hasattr(self, 'owned_pharmacy')
+        return self.role == 'owner'
 
     @property
     def is_admin_user(self):
-        return self.is_owner or self.role == 'pharmacist'
+        return self.role in ['owner', 'pharmacist']

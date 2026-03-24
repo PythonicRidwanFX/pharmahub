@@ -103,53 +103,28 @@
 
                 <div class="form-grid">
                     <div class="form-group">
-                        <label for="id_username">Username</label>
+                        <label>Username</label>
                         {{ form.username }}
-                        {% if form.username.errors %}
-                            <div class="field-error">
-                                {{ form.username.errors|join:", " }}
-                            </div>
-                        {% endif %}
                     </div>
 
                     <div class="form-group">
-                        <label for="id_email">Email</label>
+                        <label>Email</label>
                         {{ form.email }}
-                        {% if form.email.errors %}
-                            <div class="field-error">
-                                {{ form.email.errors|join:", " }}
-                            </div>
-                        {% endif %}
                     </div>
 
                     <div class="form-group">
-                        <label for="id_role">Role</label>
+                        <label>Role</label>
                         {{ form.role }}
-                        {% if form.role.errors %}
-                            <div class="field-error">
-                                {{ form.role.errors|join:", " }}
-                            </div>
-                        {% endif %}
                     </div>
 
                     <div class="form-group">
-                        <label for="id_password1">Password</label>
+                        <label>Password</label>
                         {{ form.password1 }}
-                        {% if form.password1.errors %}
-                            <div class="field-error">
-                                {{ form.password1.errors|join:", " }}
-                            </div>
-                        {% endif %}
                     </div>
 
                     <div class="form-group full">
-                        <label for="id_password2">Confirm Password</label>
+                        <label>Confirm Password</label>
                         {{ form.password2 }}
-                        {% if form.password2.errors %}
-                            <div class="field-error">
-                                {{ form.password2.errors|join:", " }}
-                            </div>
-                        {% endif %}
                     </div>
                 </div>
 
@@ -160,9 +135,10 @@
             </form>
 
             <div class="staff-help-box">
-                Create team accounts for pharmacists, cashiers, or staff members based on the role permissions available in your system.
+                Create team accounts for pharmacists, cashiers, or staff members.
             </div>
         </div>
     </div>
 </div>
+
 {% endblock %}

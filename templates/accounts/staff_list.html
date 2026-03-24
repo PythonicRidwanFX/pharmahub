@@ -218,32 +218,17 @@
                 <tbody>
                     {% for staff in staff_members %}
                     <tr>
-                        <td>
-                            <strong>{{ staff.username }}</strong>
-                            {% if staff.is_owner %}
-                                <span class="role-badge">Owner</span>
-                            {% endif %}
-                        </td>
+                        <td><strong>{{ staff.username }}</strong></td>
                         <td>{{ staff.email }}</td>
                         <td>
                             <span class="role-badge">
-                                {% if staff.is_owner %}
-                                    Owner
-                                {% else %}
-                                    {{ staff.get_role_display }}
-                                {% endif %}
+                                {{ staff.get_role_display }}
                             </span>
                         </td>
-                        <td>
-                            {% if staff.pharmacy %}
-                                {{ staff.pharmacy.name }}
-                            {% else %}
-                                No Pharmacy
-                            {% endif %}
-                        </td>
+                        <td>{{ staff.pharmacy.name }}</td>
                         <td>
                             <div class="action-group">
-                                {% if not staff.is_owner %}
+                                {% if staff.role != 'owner' %}
                                     <a href="{% url 'edit_staff' staff.pk %}" class="action-btn edit">Edit</a>
                                     <a href="{% url 'delete_staff' staff.pk %}" class="action-btn delete">Delete</a>
                                 {% else %}
