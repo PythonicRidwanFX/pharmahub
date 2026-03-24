@@ -702,7 +702,6 @@
                     <a href="{% url 'staff_list' %}">Staff</a>
                     <a href="{% url 'add_staff' %}">Add Staff</a>
                     <a href="{% url 'plan_list' %}">Plans</a>
-                    <a href="{% url 'help' %}">Help</a>
                     <a href="{% url 'subscription_status' %}">Subscription</a>
                 {% elif user.role == 'cashier' or user.role == 'pharmacist' %}
                     <a href="{% url 'sale_list' %}">Sales</a>
