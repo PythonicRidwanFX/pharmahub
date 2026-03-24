@@ -685,12 +685,12 @@
             <div class="nav-section">
                 <div class="nav-label">Main Menu</div>
 
-                {% if user.role == 'owner' or user.role == 'admin' or user.role == 'cashier' or user.role == 'pharmacist' %}
+                {% if user.role == 'owner' or user.role == 'staff' or user.role == 'cashier' or user.role == 'pharmacist' %}
                     <a href="{% url 'dashboard' %}">Dashboard</a>
                     <a href="{% url 'drug_list' %}">Drugs</a>
                 {% endif %}
 
-                {% if user.role == 'owner' or user.role == 'admin' %}
+                {% if user.role == 'owner' %}
                     <a href="{% url 'add_drug' %}">Add Drug</a>
                     <a href="{% url 'purchase_list' %}">Purchases</a>
                     <a href="{% url 'add_purchase' %}">Add Purchase</a>
@@ -703,33 +703,11 @@
                     <a href="{% url 'add_staff' %}">Add Staff</a>
                     <a href="{% url 'plan_list' %}">Plans</a>
                     <a href="{% url 'subscription_status' %}">Subscription</a>
-                {% elif user.role == 'cashier' or user.role == 'pharmacist' %}
+                {% elif user.role == 'cashier' or user.role == 'pharmacist' or user.role == 'staff' %}
                     <a href="{% url 'sale_list' %}">Sales</a>
                     <a href="{% url 'add_sale' %}">Add Sale</a>
-                    <div class="nav-section">
-                <div class="nav-label">Main Menu</div>
-
-                {% if user.role == 'owner' or user.role == 'admin' or user.role == 'cashier' or user.role == 'pharmacist' %}
-                    <a href="{% url 'dashboard' %}">Dashboard</a>
-                    <a href="{% url 'drug_list' %}">Drugs</a>
-                {% endif %}
-
-                {% if user.role == 'owner' or user.role == 'admin' %}
-                    <a href="{% url 'add_drug' %}">Add Drug</a>
                     <a href="{% url 'purchase_list' %}">Purchases</a>
                     <a href="{% url 'add_purchase' %}">Add Purchase</a>
-                    <a href="{% url 'sale_list' %}">Sales</a>
-                    <a href="{% url 'add_sale' %}">Add Sale</a>
-                    <a href="{% url 'expiry_alerts' %}">Expiry Alerts</a>
-                    <a href="{% url 'low_stock' %}">Low Stock</a>
-                    <a href="{% url 'report_home' %}">Reports</a>
-                    <a href="{% url 'staff_list' %}">Staff</a>
-                    <a href="{% url 'add_staff' %}">Add Staff</a>
-                    <a href="{% url 'plan_list' %}">Plans</a>
-                    <a href="{% url 'subscription_status' %}">Subscription</a>
-                {% elif user.role == 'cashier' or user.role == 'pharmacist' %}
-                    <a href="{% url 'sale_list' %}">Sales</a>
-                    <a href="{% url 'add_sale' %}">Add Sale</a>
                 {% endif %}
             </div>
                 {% endif %}
