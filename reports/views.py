@@ -15,12 +15,11 @@ from pharmacies.decorators import pharmacy_active_required
 # 🔒 Allowed roles for reports
 ALLOWED_ROLES = ['owner', 'admin']
 
+
 def check_access(request):
-    # Role restriction
     if request.user.role not in ALLOWED_ROLES:
         raise PermissionDenied("You do not have permission to view reports.")
 
-    # Pharmacy check
     if not hasattr(request.user, 'pharmacy') or request.user.pharmacy is None:
         messages.error(request, "You are not assigned to any pharmacy.")
         return None
@@ -39,30 +38,23 @@ def report_home(request):
     today = now().date()
     soon = today + timedelta(days=30)
 
-    total_stock_items = Drug.objects.filter(pharmacy=pharmacy).count()
-    low_stock_count = Drug.objects.filter(pharmacy=pharmacy, quantity__lt=10).count()
-    expired_count = Drug.objects.filter(pharmacy=pharmacy, expiry_date__lt=today).count()
-    expiring_soon_count = Drug.objects.filter(
-        pharmacy=pharmacy,
-        expiry_date__range=[today, soon]
-    ).count()
-
-    total_sales = Sale.objects.filter(pharmacy=pharmacy).aggregate(
-        total=Sum('total_price')
-    )['total'] or 0
-
-    total_purchases = Purchase.objects.filter(pharmacy=pharmacy).aggregate(
-        total=Sum('total_cost')
-    )['total'] or 0
-
     context = {
-        'total_stock_items': total_stock_items,
-        'low_stock_count': low_stock_count,
-        'expired_count': expired_count,
-        'expiring_soon_count': expiring_soon_count,
-        'total_sales': total_sales,
-        'total_purchases': total_purchases,
+        'pharmacy_name': pharmacy.name,
+        'total_stock_items': Drug.objects.filter(pharmacy=pharmacy).count(),
+        'low_stock_count': Drug.objects.filter(pharmacy=pharmacy, quantity__lt=10).count(),
+        'expired_count': Drug.objects.filter(pharmacy=pharmacy, expiry_date__lt=today).count(),
+        'expiring_soon_count': Drug.objects.filter(
+            pharmacy=pharmacy,
+            expiry_date__range=[today, soon]
+        ).count(),
+        'total_sales': Sale.objects.filter(pharmacy=pharmacy).aggregate(
+            total=Sum('total_price')
+        )['total'] or 0,
+        'total_purchases': Purchase.objects.filter(pharmacy=pharmacy).aggregate(
+            total=Sum('total_cost')
+        )['total'] or 0,
     }
+
     return render(request, 'reports/report_home.html', context)
 
 
@@ -75,7 +67,11 @@ def stock_report(request):
         return redirect('dashboard')
 
     drugs = Drug.objects.filter(pharmacy=pharmacy).order_by('drug_name')
-    return render(request, 'reports/stock_report.html', {'drugs': drugs})
+
+    return render(request, 'reports/stock_report.html', {
+        'pharmacy_name': pharmacy.name,
+        'drugs': drugs
+    })
 
 
 @login_required
@@ -90,6 +86,7 @@ def sales_report(request):
     total_sales = sales.aggregate(total=Sum('total_price'))['total'] or 0
 
     return render(request, 'reports/sales_report.html', {
+        'pharmacy_name': pharmacy.name,
         'sales': sales,
         'total_sales': total_sales,
     })
@@ -107,6 +104,7 @@ def purchase_report(request):
     total_purchases = purchases.aggregate(total=Sum('total_cost'))['total'] or 0
 
     return render(request, 'reports/purchase_report.html', {
+        'pharmacy_name': pharmacy.name,
         'purchases': purchases,
         'total_purchases': total_purchases,
     })
@@ -133,12 +131,14 @@ def expiry_report(request):
         expiry_date__range=[today, soon]
     ).order_by('expiry_date')
 
-    context = {
+    return render(request, 'reports/expiry_report.html', {
+        'pharmacy_name': pharmacy.name,
         'expired_drugs': expired_drugs,
         'expiring_soon': expiring_soon,
-    }
-    return render(request, 'reports/expiry_report.html', context)
+    })
 
+
+# ================= PRINT VIEWS ================= #
 
 @login_required
 @subscription_required
@@ -149,7 +149,11 @@ def print_stock_report(request):
         return redirect('dashboard')
 
     drugs = Drug.objects.filter(pharmacy=pharmacy).order_by('drug_name')
-    return render(request, 'reports/print_stock_report.html', {'drugs': drugs})
+
+    return render(request, 'reports/print_stock_report.html', {
+        'pharmacy_name': pharmacy.name,
+        'drugs': drugs
+    })
 
 
 @login_required
@@ -164,6 +168,7 @@ def print_sales_report(request):
     total_sales = sales.aggregate(total=Sum('total_price'))['total'] or 0
 
     return render(request, 'reports/print_sales_report.html', {
+        'pharmacy_name': pharmacy.name,
         'sales': sales,
         'total_sales': total_sales,
     })
@@ -181,6 +186,7 @@ def print_purchase_report(request):
     total_purchases = purchases.aggregate(total=Sum('total_cost'))['total'] or 0
 
     return render(request, 'reports/print_purchase_report.html', {
+        'pharmacy_name': pharmacy.name,
         'purchases': purchases,
         'total_purchases': total_purchases,
     })
@@ -207,8 +213,8 @@ def print_expiry_report(request):
         expiry_date__range=[today, soon]
     ).order_by('expiry_date')
 
-    context = {
+    return render(request, 'reports/print_expiry_report.html', {
+        'pharmacy_name': pharmacy.name,
         'expired_drugs': expired_drugs,
         'expiring_soon': expiring_soon,
-    }
-    return render(request, 'reports/print_expiry_report.html', context)
+    })
