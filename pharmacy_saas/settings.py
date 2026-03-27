@@ -17,12 +17,16 @@ ALLOWED_HOSTS = [
     "pharmahub-k6gc.onrender.com",
     "127.0.0.1",
     "localhost",
+    'pharmahub.ng',
+    'www.pharmahub.ng',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     "https://pharmahub-k6gc.onrender.com",
-    "https://pharmahub.com",
+    'https://pharmahub.ng',
+    'https://www.pharmahub.ng',
 ]
+
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
@@ -131,12 +135,16 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+EMAIL_HOST_USER = config("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
+DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", default=EMAIL_HOST_USER)
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
 
-EMAIL_HOST_USER = "pharmahubsystem@gmail.com"
-EMAIL_HOST_PASSWORD = "tjbb okah mels gcbl"
-
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-SERVER_EMAIL = EMAIL_HOST_USER
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 AUTHENTICATION_BACKENDS = [
     'accounts.backends.EmailOrUsernameBackend',

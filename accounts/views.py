@@ -6,18 +6,21 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.views import LoginView
 from django.contrib import messages
 from django.utils import timezone
-from django.views.decorators.http import require_POST
+from django.db import transaction
 
 from .models import User
 from .forms import PharmacyRegistrationForm, StaffCreateForm, CustomLoginForm
 from .decorators import admin_required
-from django.db import transaction
+
 from pharmacies.models import Pharmacy
 from subscriptions.models import Subscription
 from subscriptions.access import sync_pharmacy_access
 
 
 def register_pharmacy(request):
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+
     if request.method == 'POST':
         form = PharmacyRegistrationForm(request.POST)
         if form.is_valid():
@@ -46,24 +49,70 @@ def register_pharmacy(request):
                         is_current=True
                     )
 
-                messages.success(request, 'Account created successfully. Please log in to continue.')
+                messages.success(request, 'Account created successfully. Please log in.')
                 return redirect('login')
 
             except Exception as e:
                 messages.error(request, f'Registration error: {e}')
+        else:
+            messages.error(request, 'Please correct the errors below.')
     else:
         form = PharmacyRegistrationForm()
 
     return render(request, 'accounts/register.html', {'form': form})
 
+
+class CustomLoginView(LoginView):
+    template_name = 'accounts/login.html'
+    authentication_form = CustomLoginForm
+    redirect_authenticated_user = True
+
+    def get_success_url(self):
+        user = self.request.user
+
+        if user.is_superuser:
+            return '/superadmin/'
+
+        return '/dashboard/'
+
+    def form_valid(self, form):
+        login(self.request, form.get_user())
+        user = self.request.user
+
+        if user.is_superuser:
+            messages.success(self.request, 'Welcome back, Super Admin.')
+            return redirect(self.get_success_url())
+
+        pharmacy = getattr(user, 'pharmacy', None)
+
+        if not pharmacy:
+            logout(self.request)
+            messages.error(self.request, 'No pharmacy linked to this account.')
+            return redirect('login')
+
+        sync_pharmacy_access(pharmacy)
+        pharmacy.refresh_from_db()
+
+        if getattr(pharmacy, 'is_suspended_by_owner', False):
+            logout(self.request)
+            messages.error(self.request, 'This pharmacy has been suspended.')
+            return redirect('login')
+
+        if not getattr(pharmacy, 'is_active', True):
+            messages.warning(self.request, 'Your subscription has expired.')
+            return redirect('plan_list')
+
+        messages.success(self.request, 'Login successful.')
+        return redirect(self.get_success_url())
+# ==============================
+# STAFF MANAGEMENT
+# ==============================
 @login_required
 @user_passes_test(admin_required)
 def staff_list(request):
     staff_members = User.objects.filter(
         pharmacy=request.user.pharmacy
-    ).exclude(
-        role='owner'
-    ).order_by('username')
+    ).exclude(role='owner').order_by('username')
 
     return render(request, 'accounts/staff_list.html', {
         'staff_members': staff_members
@@ -82,12 +131,10 @@ def add_staff(request):
     if current_subscription and current_subscription.plan:
         current_staff_count = User.objects.filter(
             pharmacy=request.user.pharmacy
-        ).exclude(
-            role='owner'
-        ).count()
+        ).exclude(role='owner').count()
 
         if current_staff_count >= current_subscription.plan.max_staff:
-            messages.error(request, 'You have reached the maximum staff limit for your plan.')
+            messages.error(request, 'You have reached the maximum staff limit.')
             return redirect('staff_list')
 
     if request.method == 'POST':
@@ -98,6 +145,8 @@ def add_staff(request):
             staff.save()
             messages.success(request, 'Staff account created successfully.')
             return redirect('staff_list')
+        else:
+            messages.error(request, 'Please correct the staff form errors.')
     else:
         form = StaffCreateForm()
 
@@ -107,26 +156,18 @@ def add_staff(request):
 @login_required
 @user_passes_test(admin_required)
 def edit_staff(request, pk):
-    staff = get_object_or_404(
-        User,
-        pk=pk,
-        pharmacy=request.user.pharmacy
-    )
+    staff = get_object_or_404(User, pk=pk, pharmacy=request.user.pharmacy)
 
     if staff.role == 'owner':
-        messages.error(request, 'Owner account cannot be edited here.')
+        messages.error(request, 'Owner cannot be edited.')
         return redirect('staff_list')
 
     if request.method == 'POST':
         staff.username = request.POST.get('username')
         staff.email = request.POST.get('email')
         staff.role = request.POST.get('role')
-
-        if staff.role == 'owner':
-            messages.error(request, 'You cannot assign owner role here.')
-            return redirect('staff_list')
-
         staff.save()
+
         messages.success(request, 'Staff updated successfully.')
         return redirect('staff_list')
 
@@ -136,14 +177,10 @@ def edit_staff(request, pk):
 @login_required
 @user_passes_test(admin_required)
 def delete_staff(request, pk):
-    staff = get_object_or_404(
-        User,
-        pk=pk,
-        pharmacy=request.user.pharmacy
-    )
+    staff = get_object_or_404(User, pk=pk, pharmacy=request.user.pharmacy)
 
     if staff.role == 'owner':
-        messages.error(request, 'Owner account cannot be deleted.')
+        messages.error(request, 'Owner cannot be deleted.')
         return redirect('staff_list')
 
     if request.method == 'POST':
@@ -154,47 +191,10 @@ def delete_staff(request, pk):
     return render(request, 'accounts/delete_staff.html', {'staff': staff})
 
 
-class CustomLoginView(LoginView):
-    template_name = 'accounts/login.html'
-    authentication_form = CustomLoginForm
-
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        user = self.request.user
-
-        if user.is_superuser:
-            return redirect('admin_dashboard')
-
-        pharmacy = getattr(user, 'pharmacy', None)
-
-        if not pharmacy:
-            logout(self.request)
-            messages.error(self.request, 'No pharmacy account is linked to this user.')
-            return redirect('login')
-
-        sync_pharmacy_access(pharmacy)
-        pharmacy.refresh_from_db()
-
-        if pharmacy.is_suspended_by_owner:
-            logout(self.request)
-            messages.error(
-                self.request,
-                'Your pharmacy account has been suspended by the platform owner. Please contact support.'
-            )
-            return redirect('login')
-
-        if not pharmacy.is_active:
-            messages.warning(
-                self.request,
-                'Your subscription is inactive or expired. Please renew to continue.'
-            )
-            return redirect('plan_list')
-
-        return redirect('dashboard')
-
-
-@require_POST
+# ==============================
+# LOGOUT
+# ==============================
 def logout_view(request):
     logout(request)
-    messages.success(request, 'You have been logged out successfully.')
-    return redirect('login')
+    messages.success(request, 'Logged out successfully.')
+    return redirect('landing_page')

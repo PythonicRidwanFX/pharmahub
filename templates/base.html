@@ -724,7 +724,7 @@
                 <div class="topbar-content">
                     <div class="topbar-left">
                         <h2>
-                            {% if user.is_authenticated and user.pharmacy %}
+                            {% if user.pharmacy %}
                                 {{ user.pharmacy.name }}
                             {% else %}
                                 Dashboard
@@ -784,15 +784,30 @@
         </div>
     </div>
 {% endif %}
+
 <script>
     function toggleSidebar() {
-        document.querySelector('.sidebar').classList.toggle('active');
-        document.querySelector('.mobile-overlay').classList.toggle('active');
+        const sidebar = document.querySelector('.sidebar');
+        const overlay = document.querySelector('.mobile-overlay');
+
+        if (sidebar) {
+            sidebar.classList.toggle('active');
+        }
+        if (overlay) {
+            overlay.classList.toggle('active');
+        }
     }
 
     function closeSidebar() {
-        document.querySelector('.sidebar').classList.remove('active');
-        document.querySelector('.mobile-overlay').classList.remove('active');
+        const sidebar = document.querySelector('.sidebar');
+        const overlay = document.querySelector('.mobile-overlay');
+
+        if (sidebar) {
+            sidebar.classList.remove('active');
+        }
+        if (overlay) {
+            overlay.classList.remove('active');
+        }
     }
 
     document.addEventListener('click', function(e) {
@@ -800,8 +815,18 @@
         const menuBtn = document.querySelector('.menu-btn');
         const overlay = document.querySelector('.mobile-overlay');
 
-        if (window.innerWidth <= 900 && sidebar && sidebar.classList.contains('active')) {
-            if (!sidebar.contains(e.target) && !menuBtn.contains(e.target) && !overlay.contains(e.target)) {
+        if (
+            window.innerWidth <= 900 &&
+            sidebar &&
+            menuBtn &&
+            overlay &&
+            sidebar.classList.contains('active')
+        ) {
+            if (
+                !sidebar.contains(e.target) &&
+                !menuBtn.contains(e.target) &&
+                !overlay.contains(e.target)
+            ) {
                 closeSidebar();
             }
         }
@@ -811,7 +836,7 @@
         const currentPath = window.location.pathname;
         const navLinks = document.querySelectorAll('.sidebar a');
 
-        navLinks.forEach(link => {
+        navLinks.forEach(function(link) {
             if (link.getAttribute('href') === currentPath) {
                 link.classList.add('active-link');
             }

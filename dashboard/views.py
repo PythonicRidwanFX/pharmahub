@@ -75,3 +75,10 @@ def dashboard_view(request):
 @subscription_required
 def help_view(request):
     return render(request, 'dashboard/help.html')
+
+from django.shortcuts import render, redirect
+
+def landing_page(request):
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+    return render(request, 'landing.html')

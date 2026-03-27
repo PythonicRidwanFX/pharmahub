@@ -1,369 +1,114 @@
-{% extends 'base.html' %}
-{% load static %}
-
-{% block auth_content %}
-<style>
-    .premium-login-wrap {
-        width: 100%;
-    }
-
-    .premium-login-card {
-        position: relative;
-        overflow: hidden;
-    }
-
-    .premium-login-card::before {
-        content: "";
-        position: absolute;
-        top: -60px;
-        right: -60px;
-        width: 180px;
-        height: 180px;
-        border-radius: 50%;
-        background: rgba(37, 99, 235, 0.08);
-    }
-
-    .premium-login-card::after {
-        content: "";
-        position: absolute;
-        bottom: -70px;
-        left: -70px;
-        width: 180px;
-        height: 180px;
-        border-radius: 50%;
-        background: rgba(59, 130, 246, 0.05);
-    }
-
-    .login-content {
-        position: relative;
-        z-index: 2;
-    }
-
-    .login-logo-wrap {
-        text-align: center;
-        margin-bottom: 18px;
-    }
-
-    .login-logo-circle {
-        width: 96px;
-        height: 96px;
-        margin: 0 auto 14px;
-        border-radius: 24px;
-        background: linear-gradient(135deg, #eff6ff, #dbeafe);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 14px 30px rgba(37, 99, 235, 0.12);
-        border: 1px solid #bfdbfe;
-    }
-
-    .login-logo-circle img {
-        width: 62px;
-        height: 62px;
-        object-fit: contain;
-    }
-
-    .login-title-box {
-        text-align: center;
-        margin-bottom: 24px;
-    }
-
-    .login-title-box h2 {
-        margin: 0 0 8px;
-        font-size: 28px;
-        color: #0f172a;
-    }
-
-    .login-title-box p {
-        margin: 0;
-        color: #64748b;
-        font-size: 14px;
-        line-height: 1.6;
-    }
-
-    .login-form {
-        margin-top: 10px;
-    }
-
-    .login-form .form-group {
-        margin-bottom: 18px;
-    }
-
-    .login-form label {
-        display: block;
-        margin-bottom: 8px;
-        font-size: 14px;
-        font-weight: 700;
-        color: #0f172a;
-    }
-
-    .login-form input {
-        width: 100%;
-        padding: 14px 15px;
-        border: 1px solid #dbe3ee;
-        border-radius: 14px;
-        background: #ffffff;
-        color: #0f172a;
-        font-size: 14px;
-        outline: none;
-        transition: all 0.25s ease;
-    }
-
-    .login-form input:focus {
-        border-color: #2563eb;
-        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
-    }
-
-    .login-form input::placeholder {
-        color: #94a3b8;
-    }
-
-    .error-box {
-        background: #fee2e2;
-        color: #991b1b;
-        padding: 13px 14px;
-        border-radius: 12px;
-        margin-bottom: 18px;
-        text-align: center;
-        font-size: 14px;
-        font-weight: 600;
-        border: 1px solid #fecaca;
-    }
-
-    .login-btn {
-        width: 100%;
-        background: linear-gradient(135deg, #2563eb, #1d4ed8);
-        color: white;
-        border: none;
-        padding: 14px 18px;
-        border-radius: 14px;
-        font-size: 15px;
-        font-weight: 700;
-        cursor: pointer;
-        transition: all 0.25s ease;
-        box-shadow: 0 14px 24px rgba(37, 99, 235, 0.18);
-        margin-top: 4px;
-    }
-
-    .login-btn:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 18px 30px rgba(37, 99, 235, 0.22);
-    }
-
-    .login-meta {
-        text-align: center;
-        margin-top: 18px;
-    }
-
-    .login-meta a {
-        color: #2563eb;
-        text-decoration: none;
-        font-size: 14px;
-        font-weight: 600;
-    }
-
-    .login-meta a:hover {
-        color: #1d4ed8;
-    }
-
-    .login-divider {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin: 20px 0 16px;
-        color: #94a3b8;
-        font-size: 13px;
-    }
-
-    .login-divider::before,
-    .login-divider::after {
-        content: "";
-        flex: 1;
-        height: 1px;
-        background: #e2e8f0;
-    }
-
-    .register-text {
-        text-align: center;
-        margin-top: 8px;
-        font-size: 14px;
-        color: #64748b;
-    }
-
-    .password-wrap {
-        position: relative;
-    }
-
-    .password-wrap input {
-        width: 100%;
-        padding-right: 48px;
-        box-sizing: border-box;
-    }
-
-    .toggle-password {
-        position: absolute;
-        right: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        border: none;
-        background: transparent;
-        padding: 0;
-        margin: 0;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #64748b;
-    }
-
-    .toggle-password:hover {
-        color: #2563eb;
-    }
-
-    .toggle-password:focus {
-        outline: none;
-    }
-
-    .eye-icon {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .register-text a {
-        color: #2563eb;
-        text-decoration: none;
-        font-weight: 700;
-        margin-left: 4px;
-    }
-
-    .register-text a:hover {
-        color: #1d4ed8;
-    }
-
-    .security-note {
-        margin-top: 22px;
-        padding: 12px 14px;
-        border-radius: 14px;
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        text-align: center;
-        font-size: 13px;
-        color: #64748b;
-    }
-
-    @media (max-width: 520px) {
-        .login-title-box h2 {
-            font-size: 24px;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - PharmaHub</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f8fafc;
+            margin: 0;
+            padding: 40px 20px;
         }
-
-        .login-logo-circle {
-            width: 82px;
-            height: 82px;
-            border-radius: 20px;
+        .box {
+            max-width: 420px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
         }
-
-        .login-logo-circle img {
-            width: 54px;
-            height: 54px;
+        h2 {
+            margin-top: 0;
+            text-align: center;
         }
-    }
-</style>
+        .form-group {
+            margin-bottom: 16px;
+        }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            background: #2563eb;
+            color: white;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #1d4ed8;
+        }
+        .msg {
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+        .err {
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        .links {
+            text-align: center;
+            margin-top: 14px;
+        }
+        .links a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>Login</h2>
 
-<div class="premium-login-wrap">
-    <div class="premium-login-card">
-        <div class="login-content">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="msg">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
 
-            <div class="login-logo-wrap">
-                <div class="login-logo-circle">
-                    <img src="{% static 'images/logoo.png' %}" alt="PharmaHub Logo">
-                </div>
+        {% if form.errors %}
+            <div class="err">Invalid username or password.</div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">Username or Email</label>
+                {{ form.username }}
             </div>
 
-            <div class="login-title-box">
-                <h2>Welcome to PharmaHub</h2>
-                <p>
-                    Sign in to access your pharmacy dashboard, manage operations,
-                    monitor records, and keep your business running smoothly.
-                </p>
+            <div class="form-group">
+                <label for="{{ form.password.id_for_label }}">Password</label>
+                {{ form.password }}
             </div>
 
-            {% if form.errors %}
-                <div class="error-box">
-                    Invalid username or password.
-                </div>
-            {% endif %}
+            <button type="submit">Login</button>
+        </form>
 
-            <form method="post" class="login-form">
-                {% csrf_token %}
-
-                <div class="form-group">
-                    <label for="{{ form.username.id_for_label }}">Username or Email</label>
-                    {{ form.username }}
-                </div>
-
-                <div class="form-group">
-                    <label for="{{ form.password.id_for_label }}">Password</label>
-                    <div class="password-wrap">
-                        {{ form.password }}
-                        <button type="button" class="toggle-password" onclick="togglePassword('id_password', this)" aria-label="Toggle password visibility">
-                            <span class="eye-icon">
-                                <svg class="eye-open" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"></path>
-                                    <circle cx="12" cy="12" r="3"></circle>
-                                </svg>
-                                <svg class="eye-closed" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;">
-                                    <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20C5 20 1 12 1 12a21.77 21.77 0 0 1 5.06-6.94"></path>
-                                    <path d="M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 8 11 8a21.8 21.8 0 0 1-3.17 4.59"></path>
-                                    <path d="M1 1l22 22"></path>
-                                    <path d="M10.58 10.58a2 2 0 0 0 2.83 2.83"></path>
-                                    <path d="M9.88 5.09 5.09 9.88"></path>
-                                </svg>
-                            </span>
-                        </button>
-                    </div>
-                </div>
-
-                <button type="submit" class="login-btn">Login</button>
-            </form>
-
-            <div class="login-meta">
-                <a href="{% url 'password_reset' %}">Forgot Password?</a>
-            </div>
-
-            <div class="login-divider">or</div>
-
-            <div class="register-text">
-                No account yet?
-                <a href="{% url 'register' %}">Register</a>
-            </div>
-
-            <div class="security-note">
-                Secure access for pharmacy owners, admins, cashiers, and pharmacists.
-            </div>
-
+        <div class="links">
+            <p><a href="{% url 'password_reset' %}">Forgot Password?</a></p>
+            <p>No account yet? <a href="{% url 'register' %}">Register</a></p>
         </div>
     </div>
-</div>
-
-
-<script>
-    function togglePassword(fieldId, button) {
-        const field = document.getElementById(fieldId);
-        if (!field) return;
-
-        const eyeOpen = button.querySelector('.eye-open');
-        const eyeClosed = button.querySelector('.eye-closed');
-
-        if (field.type === 'password') {
-            field.type = 'text';
-            if (eyeOpen) eyeOpen.style.display = 'none';
-            if (eyeClosed) eyeClosed.style.display = 'block';
-        } else {
-            field.type = 'password';
-            if (eyeOpen) eyeOpen.style.display = 'block';
-            if (eyeClosed) eyeClosed.style.display = 'none';
-        }
-    }
-</script>
-{% endblock %}
+</body>
+</html>
