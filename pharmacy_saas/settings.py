@@ -153,12 +153,12 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 # =========================
-# PAYSTACK
+# FLW
 # =========================
-PAYSTACK_PUBLIC_KEY = config("PAYSTACK_PUBLIC_KEY", default="")
-PAYSTACK_SECRET_KEY = config("PAYSTACK_SECRET_KEY", default="")
-PAYSTACK_BASE_URL = "https://api.paystack.co"
-
+FLW_PUBLIC_KEY = config("FLW_PUBLIC_KEY", default="")
+FLW_SECRET_KEY = config("FLW_SECRET_KEY", default="")
+FLW_WEBHOOK_SECRET_HASH = config("FLW_WEBHOOK_SECRET_HASH", default="")
+FLW_BASE_URL = config("FLW_BASE_URL", default="https://api.flutterwave.com/v3")
 # =========================
 # EMAIL (FIXED - NO CRASH)
 # =========================
@@ -189,3 +189,5 @@ SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

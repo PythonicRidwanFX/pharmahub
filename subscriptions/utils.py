@@ -1,3 +1,4 @@
+from datetime import timedelta
 from django.utils import timezone
 from .models import Subscription
 from .access import sync_pharmacy_access
@@ -11,10 +12,13 @@ def deactivate_old_subscriptions(pharmacy):
 
 
 def create_subscription(pharmacy, plan, status='active'):
+    if not plan:
+        raise ValueError("Plan is required to create a subscription.")
+
     deactivate_old_subscriptions(pharmacy)
 
     today = timezone.now().date()
-    end_date = today + timezone.timedelta(days=plan.duration_days)
+    end_date = today + timedelta(days=plan.duration_days)
 
     subscription = Subscription.objects.create(
         pharmacy=pharmacy,
