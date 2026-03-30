@@ -85,7 +85,7 @@ class Payment(models.Model):
     email = models.EmailField()
 
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
-    payment_gateway = models.CharField(max_length=50, default='flutterwave')
+    payment_gateway = models.CharField(max_length=50, default='paystack')
 
     access_code = models.CharField(max_length=255, blank=True, null=True)
     gateway_response = models.CharField(max_length=255, blank=True, null=True)

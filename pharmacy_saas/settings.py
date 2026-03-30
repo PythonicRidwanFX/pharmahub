@@ -153,12 +153,13 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 # =========================
-# FLW
+# Paystack
 # =========================
-FLW_PUBLIC_KEY = config("FLW_PUBLIC_KEY", default="")
-FLW_SECRET_KEY = config("FLW_SECRET_KEY", default="")
-FLW_WEBHOOK_SECRET_HASH = config("FLW_WEBHOOK_SECRET_HASH", default="")
-FLW_BASE_URL = config("FLW_BASE_URL", default="https://api.flutterwave.com/v3")
+from decouple import config
+
+PAYSTACK_PUBLIC_KEY = config("PAYSTACK_PUBLIC_KEY")
+PAYSTACK_SECRET_KEY = config("PAYSTACK_SECRET_KEY")
+PAYSTACK_BASE_URL = config("PAYSTACK_BASE_URL", default="https://api.paystack.co")
 # =========================
 # EMAIL (FIXED - NO CRASH)
 # =========================

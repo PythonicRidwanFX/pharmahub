@@ -17,9 +17,10 @@ def initialize_transaction(email, amount_kobo, reference, callback_url, metadata
     url = f"{settings.PAYSTACK_BASE_URL}/transaction/initialize"
     payload = {
         "email": email,
-        "amount": int(amount_kobo),   # Paystack expects amount in the lowest currency unit
+        "amount": int(amount_kobo),
         "reference": reference,
         "callback_url": callback_url,
+        "currency": "NGN",
     }
 
     if metadata:
