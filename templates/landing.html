@@ -7,806 +7,1003 @@
     <title>PharmaHub | Modern Pharmacy Management SaaS</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg: #081120;
-            --bg-soft: #0f1b33;
-            --panel: rgba(255, 255, 255, 0.08);
-            --panel-strong: rgba(255, 255, 255, 0.12);
-            --line: rgba(255, 255, 255, 0.12);
-            --text: #f8fafc;
-            --muted: #cbd5e1;
-            --muted-2: #94a3b8;
-            --primary: #22c55e;
-            --primary-dark: #16a34a;
-            --secondary: #3b82f6;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --shadow-xl: 0 30px 80px rgba(0, 0, 0, 0.35);
-            --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.25);
-            --radius-xl: 30px;
-            --radius-lg: 22px;
-            --radius-md: 16px;
-            --max-width: 1200px;
-        }
+    :root {
+        --bg: #081120;
+        --bg-soft: #0f1b33;
+        --panel: rgba(255, 255, 255, 0.08);
+        --panel-strong: rgba(255, 255, 255, 0.12);
+        --line: rgba(255, 255, 255, 0.12);
+        --text: #f8fafc;
+        --muted: #cbd5e1;
+        --muted-2: #94a3b8;
+        --primary: #22c55e;
+        --primary-dark: #16a34a;
+        --secondary: #3b82f6;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --shadow-xl: 0 30px 80px rgba(0, 0, 0, 0.35);
+        --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.25);
+        --radius-xl: 30px;
+        --radius-lg: 22px;
+        --radius-md: 16px;
+        --max-width: 1200px;
+    }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
 
-        html {
-            scroll-behavior: smooth;
-        }
+    html {
+        scroll-behavior: smooth;
+    }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background:
-                radial-gradient(circle at top left, rgba(59, 130, 246, 0.18), transparent 30%),
-                radial-gradient(circle at top right, rgba(34, 197, 94, 0.18), transparent 25%),
-                linear-gradient(180deg, #081120 0%, #0b1324 36%, #0a1120 100%);
-            color: var(--text);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
+    body {
+        font-family: 'Inter', sans-serif;
+        background:
+            radial-gradient(circle at top left, rgba(59, 130, 246, 0.18), transparent 30%),
+            radial-gradient(circle at top right, rgba(34, 197, 94, 0.18), transparent 25%),
+            linear-gradient(180deg, #081120 0%, #0b1324 36%, #0a1120 100%);
+        color: var(--text);
+        line-height: 1.6;
+        overflow-x: hidden;
+    }
 
-        a {
-            color: inherit;
-            text-decoration: none;
-        }
+    a {
+        color: inherit;
+        text-decoration: none;
+    }
 
-        img {
-            max-width: 100%;
-            display: block;
-        }
+    img {
+        max-width: 100%;
+        display: block;
+    }
 
-        .container {
-            width: min(var(--max-width), calc(100% - 32px));
-            margin: 0 auto;
-        }
+    .container {
+        width: min(var(--max-width), calc(100% - 32px));
+        margin: 0 auto;
+    }
 
-        .topbar {
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            backdrop-filter: blur(16px);
-            background: rgba(8, 17, 32, 0.72);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        }
+    .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        backdrop-filter: blur(16px);
+        background: rgba(8, 17, 32, 0.72);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
 
-        .nav {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 18px;
-            padding: 18px 0;
-        }
+    .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        padding: 18px 0;
+    }
 
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 800;
-            font-size: 20px;
-            letter-spacing: -0.03em;
-        }
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 800;
+        font-size: 20px;
+        letter-spacing: -0.03em;
+    }
 
-        .brand-logo {
-            width: 44px;
-            height: 44px;
-            display: grid;
-            place-items: center;
-            border-radius: 14px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            box-shadow: 0 12px 30px rgba(34, 197, 94, 0.28);
-            font-size: 20px;
-            font-weight: 900;
-            color: #fff;
-        }
+    .brand-logo {
+        width: 44px;
+        height: 44px;
+        display: grid;
+        place-items: center;
+        border-radius: 14px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        box-shadow: 0 12px 30px rgba(34, 197, 94, 0.28);
+        font-size: 20px;
+        font-weight: 900;
+        color: #fff;
+    }
 
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 26px;
-            color: var(--muted);
-            font-size: 15px;
-            font-weight: 500;
-        }
+    .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 26px;
+        color: var(--muted);
+        font-size: 15px;
+        font-weight: 500;
+    }
 
-        .nav-links a:hover {
-            color: #fff;
-        }
+    .nav-links a:hover {
+        color: #fff;
+    }
 
-        .nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+    .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
 
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            border: none;
-            cursor: pointer;
-            padding: 14px 22px;
-            border-radius: 999px;
-            font-size: 15px;
-            font-weight: 700;
-            transition: 0.25s ease;
-        }
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        border: none;
+        cursor: pointer;
+        padding: 14px 22px;
+        border-radius: 999px;
+        font-size: 15px;
+        font-weight: 700;
+        transition: 0.25s ease;
+    }
 
-        .btn-outline {
-            background: rgba(255, 255, 255, 0.06);
-            color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.12);
-        }
+    .btn-outline {
+        background: rgba(255, 255, 255, 0.06);
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+    }
 
-        .btn-outline:hover {
-            background: rgba(255, 255, 255, 0.12);
-        }
+    .btn-outline:hover {
+        background: rgba(255, 255, 255, 0.12);
+    }
 
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), #4ade80);
-            color: #03140a;
-            box-shadow: 0 16px 35px rgba(34, 197, 94, 0.28);
-        }
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary), #4ade80);
+        color: #03140a;
+        box-shadow: 0 16px 35px rgba(34, 197, 94, 0.28);
+    }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 20px 42px rgba(34, 197, 94, 0.35);
-        }
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 20px 42px rgba(34, 197, 94, 0.35);
+    }
 
-        .hero {
-            padding: 72px 0 54px;
-            position: relative;
+    .whatsapp-icon {
+        color: #25D366;
+        font-size: 22px;
+        margin-left: 10px;
+        transition: 0.3s ease;
+    }
+
+    .whatsapp-icon:hover {
+        color: #1ebe5d;
+        transform: scale(1.1);
+    }
+
+    .social-icon {
+        font-size: 20px;
+        margin-left: 12px;
+        transition: 0.3s ease;
+    }
+
+    .social-icon:hover {
+        transform: scale(1.15);
+    }
+
+    .whatsapp { color: #25D366; }
+    .instagram { color: #E4405F; }
+    .tiktok { color: #ffffff; }
+    .facebook { color: #1877F2; }
+
+    .whatsapp:hover { color: #1ebe5d; }
+    .instagram:hover { color: #c72e4c; }
+    .tiktok:hover { color: #cccccc; }
+    .facebook:hover { color: #145dbf; }
+
+    .hero {
+        padding: 72px 0 54px;
+        position: relative;
+    }
+
+    .hero-grid {
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+        gap: 42px;
+        align-items: center;
+    }
+
+    .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 16px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: #dbeafe;
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 22px;
+    }
+
+    .eyebrow-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--primary);
+        box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.12);
+    }
+
+    .hero h1 {
+        font-size: clamp(40px, 7vw, 72px);
+        line-height: 1.02;
+        letter-spacing: -0.05em;
+        font-weight: 900;
+        margin-bottom: 20px;
+        max-width: 720px;
+    }
+
+    .hero h1 .accent {
+        background: linear-gradient(135deg, #86efac, #60a5fa);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .hero-text {
+        color: var(--muted);
+        font-size: 18px;
+        max-width: 640px;
+        margin-bottom: 28px;
+    }
+
+    .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-bottom: 26px;
+    }
+
+    .hero-metrics {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .metric-pill {
+        padding: 12px 16px;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: #e2e8f0;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .hero-card {
+        position: relative;
+    }
+
+    .dashboard-shell {
+        position: relative;
+        border-radius: 34px;
+        padding: 18px;
+        background: linear-gradient(180deg, rgba(255,255,255,0.14), rgba(255,255,255,0.03));
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        box-shadow: var(--shadow-xl);
+    }
+
+    .dashboard-panel {
+        border-radius: 28px;
+        overflow: hidden;
+        background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+        color: #0f172a;
+    }
+
+    .panel-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 18px 22px;
+        border-bottom: 1px solid #e2e8f0;
+        background: #f8fafc;
+    }
+
+    .panel-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 800;
+    }
+
+    .panel-brand span:first-child {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: #fff;
+    }
+
+    .panel-grid {
+        padding: 22px;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+    }
+
+    .stat-card {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 20px;
+        padding: 18px;
+        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+    }
+
+    .stat-label {
+        color: #64748b;
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+    }
+
+    .stat-value {
+        font-size: 28px;
+        font-weight: 900;
+        line-height: 1;
+        margin-bottom: 8px;
+    }
+
+    .stat-note {
+        color: #475569;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .table-card,
+    .mini-chart {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 22px;
+        padding: 18px;
+        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+    }
+
+    .table-card h4,
+    .mini-chart h4 {
+        font-size: 16px;
+        margin-bottom: 14px;
+        color: #0f172a;
+    }
+
+    .activity-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 12px 0;
+        border-bottom: 1px solid #f1f5f9;
+        font-size: 14px;
+        color: #334155;
+    }
+
+    .activity-row:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .tag {
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+    .tag-success {
+        background: rgba(34, 197, 94, 0.12);
+        color: #15803d;
+    }
+
+    .tag-warning {
+        background: rgba(245, 158, 11, 0.14);
+        color: #b45309;
+    }
+
+    .tag-danger {
+        background: rgba(239, 68, 68, 0.12);
+        color: #b91c1c;
+    }
+
+    .chart-bars {
+        display: flex;
+        align-items: end;
+        gap: 12px;
+        height: 160px;
+        padding-top: 10px;
+    }
+
+    .bar-wrap {
+        flex: 1;
+        text-align: center;
+        font-size: 12px;
+        color: #64748b;
+        font-weight: 700;
+    }
+
+    .bar {
+        width: 100%;
+        border-radius: 14px 14px 8px 8px;
+        background: linear-gradient(180deg, #60a5fa, #22c55e);
+        margin-bottom: 10px;
+    }
+
+    .floating-card {
+        position: absolute;
+        border-radius: 20px;
+        padding: 16px;
+        background: rgba(11, 19, 36, 0.9);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        box-shadow: var(--shadow-lg);
+        backdrop-filter: blur(12px);
+    }
+
+    .floating-card.one {
+        left: -24px;
+        bottom: 24px;
+        width: 220px;
+    }
+
+    .floating-card.two {
+        right: -18px;
+        top: 42px;
+        width: 200px;
+    }
+
+    .float-label {
+        font-size: 12px;
+        color: var(--muted-2);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .float-value {
+        font-size: 26px;
+        font-weight: 900;
+        margin-bottom: 8px;
+    }
+
+    .section {
+        padding: 54px 0;
+    }
+
+    .section-heading {
+        max-width: 720px;
+        margin: 0 auto 34px;
+        text-align: center;
+    }
+
+    .section-heading h2 {
+        font-size: clamp(30px, 5vw, 48px);
+        line-height: 1.08;
+        letter-spacing: -0.04em;
+        margin-bottom: 14px;
+    }
+
+    .section-heading p {
+        color: var(--muted);
+        font-size: 17px;
+    }
+
+    .logo-strip {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 16px;
+    }
+
+    .logo-card {
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 18px;
+        text-align: center;
+        color: #dbeafe;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+    }
+
+    .feature-card {
+        border-radius: 24px;
+        padding: 24px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .feature-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 18px;
+        display: grid;
+        place-items: center;
+        margin-bottom: 18px;
+        font-size: 24px;
+        background: linear-gradient(135deg, rgba(34,197,94,0.18), rgba(59,130,246,0.18));
+        border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .feature-card h3 {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+
+    .feature-card p {
+        color: var(--muted);
+        font-size: 15px;
+    }
+
+    .showcase {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        align-items: stretch;
+    }
+
+    .showcase-card {
+        border-radius: 28px;
+        padding: 28px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        min-height: 100%;
+    }
+
+    .showcase-card h3 {
+        font-size: 28px;
+        margin-bottom: 12px;
+        line-height: 1.15;
+    }
+
+    .showcase-card p {
+        color: var(--muted);
+        margin-bottom: 18px;
+    }
+
+    .bullet-list {
+        display: grid;
+        gap: 12px;
+    }
+
+    .bullet-item {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        color: #e2e8f0;
+    }
+
+    .bullet-icon {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: rgba(34, 197, 94, 0.18);
+        color: #86efac;
+        flex-shrink: 0;
+        font-size: 14px;
+        font-weight: 900;
+    }
+
+    .pricing-wrap {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+    }
+
+    .price-card {
+        border-radius: 28px;
+        padding: 28px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .price-card.featured {
+        background: linear-gradient(180deg, rgba(34, 197, 94, 0.12), rgba(59, 130, 246, 0.09));
+        border-color: rgba(134, 239, 172, 0.4);
+        transform: translateY(-8px);
+    }
+
+    .badge-popular {
+        position: absolute;
+        right: 18px;
+        top: 18px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(134, 239, 172, 0.16);
+        color: #86efac;
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+    .price-card h3 {
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+
+    .price-note {
+        color: var(--muted);
+        font-size: 15px;
+        margin-bottom: 22px;
+    }
+
+    .price {
+        display: flex;
+        align-items: end;
+        gap: 8px;
+        margin-bottom: 20px;
+    }
+
+    .price strong {
+        font-size: 42px;
+        line-height: 1;
+        letter-spacing: -0.04em;
+    }
+
+    .price span {
+        color: var(--muted-2);
+        font-weight: 600;
+    }
+
+    .price-list {
+        display: grid;
+        gap: 12px;
+        margin: 22px 0 28px;
+    }
+
+    .price-list div {
+        color: #e2e8f0;
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+    }
+
+    /* TESTIMONIAL SECTION */
+    .testimonials-section {
+        position: relative;
+    }
+
+    .section-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: rgba(37, 99, 235, 0.08);
+        color: #2563eb;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        margin-bottom: 14px;
+    }
+
+    .testimonial-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+        gap: 24px;
+        margin-top: 34px;
+    }
+
+    .testimonial-card {
+        position: relative;
+        background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+        border: 1px solid rgba(148, 163, 184, 0.18);
+        border-radius: 22px;
+        padding: 28px;
+        box-shadow: 0 18px 45px rgba(15, 23, 42, 0.06);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        overflow: hidden;
+    }
+
+    .testimonial-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 22px 55px rgba(15, 23, 42, 0.1);
+    }
+
+    .quote-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(37, 99, 235, 0.08);
+        color: #2563eb;
+        font-size: 18px;
+        margin-bottom: 16px;
+    }
+
+    .stars {
+        color: #f59e0b;
+        font-size: 18px;
+        letter-spacing: 2px;
+        margin-bottom: 14px;
+    }
+
+    .testimonial-message {
+        color: #475569;
+        font-size: 15px;
+        line-height: 1.75;
+        margin-bottom: 24px;
+        min-height: 96px;
+    }
+
+    .testimonial-user {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-top: auto;
+    }
+
+    .testimonial-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #2563eb, #0f172a);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 18px;
+        box-shadow: 0 10px 25px rgba(37, 99, 235, 0.22);
+    }
+
+    .person {
+        font-size: 16px;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 4px;
+    }
+
+    .role {
+        font-size: 13px;
+        color: #64748b;
+    }
+
+    .review-box {
+        margin-top: 56px;
+        background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+        border: 1px solid rgba(148, 163, 184, 0.16);
+        border-radius: 24px;
+        padding: 34px;
+        box-shadow: 0 20px 50px rgba(15, 23, 42, 0.06);
+    }
+
+    .review-box-header {
+        text-align: center;
+        margin-bottom: 28px;
+    }
+
+    .review-box-header h2 {
+        margin: 0 0 10px;
+        color: #0f172a;
+    }
+
+    .review-box-header p {
+        margin: 0;
+        color: #64748b;
+    }
+
+    .review-form {
+        max-width: 760px;
+        margin: 0 auto;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .form-group {
+        margin-bottom: 18px;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 14px;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 8px;
+    }
+
+    .review-form input,
+    .review-form textarea,
+    .review-form select {
+        width: 100%;
+        padding: 15px 16px;
+        border-radius: 14px;
+        border: 1px solid #dbe2ea;
+        background: #fff;
+        color: #0f172a;
+        font-size: 14px;
+        transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease;
+    }
+
+    .review-form input::placeholder,
+    .review-form textarea::placeholder {
+        color: #94a3b8;
+    }
+
+    .review-form input:focus,
+    .review-form textarea:focus,
+    .review-form select:focus {
+        outline: none;
+        border-color: #2563eb;
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    }
+
+    .review-form textarea {
+        resize: vertical;
+        min-height: 140px;
+    }
+
+    .review-submit-btn {
+        width: 100%;
+        padding: 15px 18px;
+        border-radius: 14px;
+        font-weight: 700;
+        margin-top: 6px;
+    }
+
+    .cta-box {
+        border-radius: 34px;
+        padding: 42px;
+        background: linear-gradient(135deg, rgba(34,197,94,0.18), rgba(59,130,246,0.18));
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        box-shadow: var(--shadow-lg);
+        text-align: center;
+    }
+
+    .cta-box h2 {
+        font-size: clamp(32px, 5vw, 52px);
+        line-height: 1.08;
+        letter-spacing: -0.04em;
+        margin-bottom: 14px;
+    }
+
+    .cta-box p {
+        color: var(--muted);
+        max-width: 720px;
+        margin: 0 auto 24px;
+        font-size: 17px;
+    }
+
+    .footer {
+        padding: 34px 0 50px;
+        color: var(--muted-2);
+    }
+
+    .footer-grid {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 18px;
+        flex-wrap: wrap;
+        padding-top: 20px;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .footer-links {
+        display: flex;
+        gap: 18px;
+        flex-wrap: wrap;
+    }
+
+    .mobile-menu-btn {
+        display: none;
+    }
+
+    @media (max-width: 1100px) {
+        .hero-grid,
+        .showcase,
+        .pricing-wrap,
+        .features-grid,
+        .testimonial-grid {
+            grid-template-columns: 1fr 1fr;
         }
 
         .hero-grid {
-            display: grid;
-            grid-template-columns: 1.05fr 0.95fr;
-            gap: 42px;
-            align-items: center;
-        }
-
-        .eyebrow {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 16px;
-            border-radius: 999px;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            color: #dbeafe;
-            font-size: 13px;
-            font-weight: 700;
-            margin-bottom: 22px;
-        }
-
-        .eyebrow-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: var(--primary);
-            box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.12);
-        }
-
-        .hero h1 {
-            font-size: clamp(40px, 7vw, 72px);
-            line-height: 1.02;
-            letter-spacing: -0.05em;
-            font-weight: 900;
-            margin-bottom: 20px;
-            max-width: 720px;
-        }
-
-        .hero h1 .accent {
-            background: linear-gradient(135deg, #86efac, #60a5fa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero-text {
-            color: var(--muted);
-            font-size: 18px;
-            max-width: 640px;
-            margin-bottom: 28px;
-        }
-
-        .hero-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 14px;
-            margin-bottom: 26px;
-        }
-
-        .hero-metrics {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-
-        .metric-pill {
-            padding: 12px 16px;
-            border-radius: 16px;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #e2e8f0;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .hero-card {
-            position: relative;
-        }
-
-        .dashboard-shell {
-            position: relative;
-            border-radius: 34px;
-            padding: 18px;
-            background: linear-gradient(180deg, rgba(255,255,255,0.14), rgba(255,255,255,0.03));
-            border: 1px solid rgba(255, 255, 255, 0.14);
-            box-shadow: var(--shadow-xl);
-        }
-
-        .dashboard-panel {
-            border-radius: 28px;
-            overflow: hidden;
-            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-            color: #0f172a;
-        }
-
-        .panel-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 18px 22px;
-            border-bottom: 1px solid #e2e8f0;
-            background: #f8fafc;
-        }
-
-        .panel-brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 800;
-        }
-
-        .panel-brand span:first-child {
-            width: 34px;
-            height: 34px;
-            border-radius: 10px;
-            display: grid;
-            place-items: center;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: #fff;
-        }
-
-        .panel-grid {
-            padding: 22px;
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 18px;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 14px;
-        }
-
-        .stat-card {
-            background: #fff;
-            border: 1px solid #e2e8f0;
-            border-radius: 20px;
-            padding: 18px;
-            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
-        }
-
-        .stat-label {
-            color: #64748b;
-            font-size: 13px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-        }
-
-        .stat-value {
-            font-size: 28px;
-            font-weight: 900;
-            line-height: 1;
-            margin-bottom: 8px;
-        }
-
-        .stat-note {
-            color: #475569;
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        .table-card,
-        .mini-chart {
-            background: #fff;
-            border: 1px solid #e2e8f0;
-            border-radius: 22px;
-            padding: 18px;
-            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
-        }
-
-        .table-card h4,
-        .mini-chart h4 {
-            font-size: 16px;
-            margin-bottom: 14px;
-            color: #0f172a;
-        }
-
-        .activity-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            padding: 12px 0;
-            border-bottom: 1px solid #f1f5f9;
-            font-size: 14px;
-            color: #334155;
-        }
-
-        .activity-row:last-child {
-            border-bottom: none;
-            padding-bottom: 0;
-        }
-
-        .tag {
-            padding: 6px 10px;
-            border-radius: 999px;
-            font-size: 12px;
-            font-weight: 800;
-        }
-
-        .tag-success {
-            background: rgba(34, 197, 94, 0.12);
-            color: #15803d;
-        }
-
-        .tag-warning {
-            background: rgba(245, 158, 11, 0.14);
-            color: #b45309;
-        }
-
-        .tag-danger {
-            background: rgba(239, 68, 68, 0.12);
-            color: #b91c1c;
-        }
-
-        .chart-bars {
-            display: flex;
-            align-items: end;
-            gap: 12px;
-            height: 160px;
-            padding-top: 10px;
-        }
-
-        .bar-wrap {
-            flex: 1;
-            text-align: center;
-            font-size: 12px;
-            color: #64748b;
-            font-weight: 700;
-        }
-
-        .bar {
-            width: 100%;
-            border-radius: 14px 14px 8px 8px;
-            background: linear-gradient(180deg, #60a5fa, #22c55e);
-            margin-bottom: 10px;
-        }
-
-        .floating-card {
-            position: absolute;
-            border-radius: 20px;
-            padding: 16px;
-            background: rgba(11, 19, 36, 0.9);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            box-shadow: var(--shadow-lg);
-            backdrop-filter: blur(12px);
-        }
-
-        .floating-card.one {
-            left: -24px;
-            bottom: 24px;
-            width: 220px;
-        }
-
-        .floating-card.two {
-            right: -18px;
-            top: 42px;
-            width: 200px;
-        }
-
-        .float-label {
-            font-size: 12px;
-            color: var(--muted-2);
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .float-value {
-            font-size: 26px;
-            font-weight: 900;
-            margin-bottom: 8px;
-        }
-
-        .section {
-            padding: 54px 0;
-        }
-
-        .section-heading {
-            max-width: 720px;
-            margin: 0 auto 34px;
-            text-align: center;
-        }
-
-        .section-heading h2 {
-            font-size: clamp(30px, 5vw, 48px);
-            line-height: 1.08;
-            letter-spacing: -0.04em;
-            margin-bottom: 14px;
-        }
-
-        .section-heading p {
-            color: var(--muted);
-            font-size: 17px;
+            align-items: start;
         }
 
         .logo-strip {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 16px;
-        }
-
-        .logo-card {
-            border-radius: 18px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 18px;
-            text-align: center;
-            color: #dbeafe;
-            font-weight: 800;
-            letter-spacing: 0.04em;
-        }
-
-        .features-grid {
-            display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 18px;
         }
+    }
 
-        .feature-card {
-            border-radius: 24px;
-            padding: 24px;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .feature-icon {
-            width: 56px;
-            height: 56px;
-            border-radius: 18px;
-            display: grid;
-            place-items: center;
-            margin-bottom: 18px;
-            font-size: 24px;
-            background: linear-gradient(135deg, rgba(34,197,94,0.18), rgba(59,130,246,0.18));
-            border: 1px solid rgba(255, 255, 255, 0.12);
-        }
-
-        .feature-card h3 {
-            font-size: 20px;
-            margin-bottom: 10px;
-        }
-
-        .feature-card p {
-            color: var(--muted);
-            font-size: 15px;
-        }
-
-        .showcase {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 24px;
-            align-items: stretch;
-        }
-
-        .showcase-card {
-            border-radius: 28px;
-            padding: 28px;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            min-height: 100%;
-        }
-
-        .showcase-card h3 {
-            font-size: 28px;
-            margin-bottom: 12px;
-            line-height: 1.15;
-        }
-
-        .showcase-card p {
-            color: var(--muted);
-            margin-bottom: 18px;
-        }
-
-        .bullet-list {
-            display: grid;
-            gap: 12px;
-        }
-
-        .bullet-item {
-            display: flex;
-            gap: 12px;
-            align-items: flex-start;
-            color: #e2e8f0;
-        }
-
-        .bullet-icon {
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            display: grid;
-            place-items: center;
-            background: rgba(34, 197, 94, 0.18);
-            color: #86efac;
-            flex-shrink: 0;
-            font-size: 14px;
-            font-weight: 900;
-        }
-
-        .pricing-wrap {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 18px;
-        }
-
-        .price-card {
-            border-radius: 28px;
-            padding: 28px;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .price-card.featured {
-            background: linear-gradient(180deg, rgba(34, 197, 94, 0.12), rgba(59, 130, 246, 0.09));
-            border-color: rgba(134, 239, 172, 0.4);
-            transform: translateY(-8px);
-        }
-
-        .badge-popular {
-            position: absolute;
-            right: 18px;
-            top: 18px;
-            padding: 8px 12px;
-            border-radius: 999px;
-            background: rgba(134, 239, 172, 0.16);
-            color: #86efac;
-            font-size: 12px;
-            font-weight: 800;
-        }
-
-        .price-card h3 {
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
-
-        .price-note {
-            color: var(--muted);
-            font-size: 15px;
-            margin-bottom: 22px;
-        }
-
-        .price {
-            display: flex;
-            align-items: end;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-
-        .price strong {
-            font-size: 42px;
-            line-height: 1;
-            letter-spacing: -0.04em;
-        }
-
-        .price span {
-            color: var(--muted-2);
-            font-weight: 600;
-        }
-
-        .price-list {
-            display: grid;
-            gap: 12px;
-            margin: 22px 0 28px;
-        }
-
-        .price-list div {
-            color: #e2e8f0;
-            display: flex;
-            gap: 10px;
-            align-items: flex-start;
-        }
-
-        .testimonial-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 18px;
-        }
-
-        .testimonial-card {
-            border-radius: 24px;
-            padding: 24px;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .stars {
-            color: #fbbf24;
-            margin-bottom: 14px;
-            letter-spacing: 0.1em;
-        }
-
-        .testimonial-card p {
-            color: var(--muted);
-            margin-bottom: 18px;
-        }
-
-        .person {
-            font-weight: 800;
-        }
-
-        .role {
-            color: var(--muted-2);
-            font-size: 14px;
-        }
-
-        .cta-box {
-            border-radius: 34px;
-            padding: 42px;
-            background: linear-gradient(135deg, rgba(34,197,94,0.18), rgba(59,130,246,0.18));
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            box-shadow: var(--shadow-lg);
-            text-align: center;
-        }
-
-        .cta-box h2 {
-            font-size: clamp(32px, 5vw, 52px);
-            line-height: 1.08;
-            letter-spacing: -0.04em;
-            margin-bottom: 14px;
-        }
-
-        .cta-box p {
-            color: var(--muted);
-            max-width: 720px;
-            margin: 0 auto 24px;
-            font-size: 17px;
-        }
-
-        .footer {
-            padding: 34px 0 50px;
-            color: var(--muted-2);
-        }
-
-        .footer-grid {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 18px;
-            flex-wrap: wrap;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .footer-links {
-            display: flex;
-            gap: 18px;
-            flex-wrap: wrap;
-        }
-
-        .mobile-menu-btn {
+    @media (max-width: 820px) {
+        .nav-links {
             display: none;
         }
 
-        @media (max-width: 1100px) {
-            .hero-grid,
-            .showcase,
-            .pricing-wrap,
-            .features-grid,
-            .testimonial-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-
-            .hero-grid {
-                align-items: start;
-            }
-
-            .logo-strip {
-                grid-template-columns: repeat(3, 1fr);
-            }
+        .mobile-menu-btn {
+            display: inline-flex;
         }
 
-        @media (max-width: 820px) {
-            .nav-links {
-                display: none;
-            }
-
-            .mobile-menu-btn {
-                display: inline-flex;
-            }
-
-            .hero {
-                padding-top: 40px;
-            }
-
-            .hero-grid,
-            .showcase,
-            .pricing-wrap,
-            .features-grid,
-            .testimonial-grid,
-            .logo-strip {
-                grid-template-columns: 1fr;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .floating-card.one,
-            .floating-card.two {
-                position: static;
-                width: auto;
-                margin-top: 14px;
-            }
-
-            .cta-box {
-                padding: 30px 22px;
-            }
-
-            .nav-actions .btn-outline {
-                display: none;
-            }
+        .hero {
+            padding-top: 40px;
         }
 
-        @media (max-width: 560px) {
-            .hero h1 {
-                font-size: 40px;
-            }
-
-            .section {
-                padding: 42px 0;
-            }
-
-            .feature-card,
-            .showcase-card,
-            .price-card,
-            .testimonial-card {
-                padding: 20px;
-            }
-
-            .panel-grid,
-            .panel-top {
-                padding: 16px;
-            }
+        .hero-grid,
+        .showcase,
+        .pricing-wrap,
+        .features-grid,
+        .testimonial-grid,
+        .logo-strip,
+        .form-row {
+            grid-template-columns: 1fr;
         }
-    </style>
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .floating-card.one,
+        .floating-card.two {
+            position: static;
+            width: auto;
+            margin-top: 14px;
+        }
+
+        .cta-box {
+            padding: 30px 22px;
+        }
+
+        .nav-actions .btn-outline {
+            display: none;
+        }
+
+        .review-box {
+            padding: 24px;
+        }
+    }
+
+    @media (max-width: 560px) {
+        .hero h1 {
+            font-size: 40px;
+        }
+
+        .section {
+            padding: 42px 0;
+        }
+
+        .feature-card,
+        .showcase-card,
+        .price-card,
+        .testimonial-card {
+            padding: 20px;
+        }
+
+        .panel-grid,
+        .panel-top {
+            padding: 16px;
+        }
+
+        .review-box {
+            padding: 20px;
+        }
+    }
+</style>
 </head>
 <body>
     <header class="topbar">
@@ -852,7 +1049,7 @@
                 </h1>
 
                 <p class="hero-text">
-                    PharmaHub is a premium pharmacy management SaaS that helps you track inventory, monitor expiry dates, manage sales and purchases, support staff operations, and make better business decisions from one elegant dashboard.
+                    PharmaHub is a modern pharmacy management platform designed to help you manage inventory, monitor expiry dates, track sales and purchases, support staff operations, and make smarter business decisions from one streamlined dashboard.
                 </p>
 
                 <div class="hero-actions">
@@ -891,7 +1088,7 @@
                                 <div class="stat-card">
                                     <div class="stat-label">Low Stock Alerts</div>
                                     <div class="stat-value">19</div>
-                                    <div class="stat-note">Needs urgent refill</div>
+                                    <div class="stat-note">Requires attention</div>
                                 </div>
                                 <div class="stat-card">
                                     <div class="stat-label">Sales Today</div>
@@ -901,7 +1098,7 @@
                                 <div class="stat-card">
                                     <div class="stat-label">Expiring Soon</div>
                                     <div class="stat-value">7</div>
-                                    <div class="stat-note">Within next 30 days</div>
+                                    <div class="stat-note">Within the next 30 days</div>
                                 </div>
                             </div>
 
@@ -924,11 +1121,11 @@
                                     <span class="tag tag-success">In Stock</span>
                                 </div>
                                 <div class="activity-row">
-                                    <span>Amoxicillin 250mg low stock</span>
+                                    <span>Amoxicillin 250mg running low</span>
                                     <span class="tag tag-warning">Low Stock</span>
                                 </div>
                                 <div class="activity-row">
-                                    <span>Cough Syrup batch expiring soon</span>
+                                    <span>Cough Syrup batch nearing expiry</span>
                                     <span class="tag tag-danger">Expiry Alert</span>
                                 </div>
                             </div>
@@ -937,15 +1134,15 @@
                 </div>
 
                 <div class="floating-card one">
-                    <div class="float-label">Monthly growth</div>
+                    <div class="float-label">Monthly Growth</div>
                     <div class="float-value">+28%</div>
-                    <div style="color: var(--muted); font-size: 14px;">More control over sales, stock, and reporting.</div>
+                    <div style="color: var(--muted); font-size: 14px;">Greater visibility across sales, stock, and reporting.</div>
                 </div>
 
                 <div class="floating-card two">
-                    <div class="float-label">Expiry monitoring</div>
+                    <div class="float-label">Expiry Monitoring</div>
                     <div class="float-value">24/7</div>
-                    <div style="color: var(--muted); font-size: 14px;">Never miss important stock alerts again.</div>
+                    <div style="color: var(--muted); font-size: 14px;">Stay ahead with timely stock and expiry alerts.</div>
                 </div>
             </div>
         </div>
@@ -954,8 +1151,8 @@
     <section class="section">
         <div class="container">
             <div class="section-heading">
-                <h2>Built for pharmacy teams that want premium operations</h2>
-                <p>Designed to help independent pharmacies, growing pharmacy brands, and healthcare businesses manage daily operations with less stress and more confidence.</p>
+                <h2>Built for pharmacy teams that value efficiency and control</h2>
+                <p>Designed to support independent pharmacies, growing pharmacy brands, and healthcare businesses in managing daily operations with greater confidence, accuracy, and ease.</p>
             </div>
             <div class="logo-strip">
                 <div class="logo-card">SMART STOCK</div>
@@ -971,44 +1168,44 @@
         <div class="container">
             <div class="section-heading">
                 <h2>Everything you need to run a smarter pharmacy</h2>
-                <p>From stock visibility to daily sales performance, PharmaHub gives your business the tools needed to stay accurate, efficient, and ready to grow.</p>
+                <p>From inventory visibility to sales performance, PharmaHub equips your pharmacy with the tools needed to stay organized, efficient, and ready for growth.</p>
             </div>
 
             <div class="features-grid">
                 <div class="feature-card">
                     <div class="feature-icon">💊</div>
                     <h3>Inventory Management</h3>
-                    <p>Track drug quantities, batches, categories, suppliers, and stock levels in one organized system built for pharmacy workflows.</p>
+                    <p>Track drug quantities, batches, categories, suppliers, and stock levels in one organized system built specifically for pharmacy operations.</p>
                 </div>
 
                 <div class="feature-card">
                     <div class="feature-icon">⏰</div>
                     <h3>Expiry Monitoring</h3>
-                    <p>Stay ahead of losses with smart expiry tracking, early alerts, and clearer visibility into drugs approaching their expiration dates.</p>
+                    <p>Stay ahead of losses with proactive expiry tracking, early alerts, and clear visibility into drugs approaching their expiration dates.</p>
                 </div>
 
                 <div class="feature-card">
                     <div class="feature-icon">🧾</div>
                     <h3>Sales & Purchases</h3>
-                    <p>Record transactions, manage purchase history, and keep your daily business flow organized without relying on manual paperwork.</p>
+                    <p>Record transactions, manage purchase history, and maintain a structured workflow without relying on manual paperwork.</p>
                 </div>
 
                 <div class="feature-card">
                     <div class="feature-icon">👥</div>
                     <h3>Multi-Staff Access</h3>
-                    <p>Give your team the right level of access while keeping owners in control of operations, decisions, and sensitive business data.</p>
+                    <p>Provide your team with the right level of access while maintaining oversight of operations, workflows, and key business information.</p>
                 </div>
 
                 <div class="feature-card">
                     <div class="feature-icon">📊</div>
                     <h3>Business Reports</h3>
-                    <p>Generate reports for stock, expiry, purchases, and sales so you can understand business performance and act with confidence.</p>
+                    <p>Generate stock, expiry, purchase, and sales reports that help you understand performance and make informed business decisions.</p>
                 </div>
 
                 <div class="feature-card">
                     <div class="feature-icon">🔐</div>
                     <h3>Secure & Scalable</h3>
-                    <p>Built with modern web technologies so your pharmacy can operate on a reliable platform that grows with your business needs.</p>
+                    <p>Built with modern web technologies to provide a reliable platform that supports your pharmacy as it grows.</p>
                 </div>
             </div>
         </div>
@@ -1017,24 +1214,24 @@
     <section class="section" id="solutions">
         <div class="container showcase">
             <div class="showcase-card">
-                <h3>Less chaos. More visibility. Better control.</h3>
-                <p>PharmaHub helps pharmacy owners move from scattered operations to one clean, intelligent workflow that supports better service and stronger decisions.</p>
+                <h3>Less complexity. More visibility. Better decisions.</h3>
+                <p>PharmaHub helps pharmacy owners move from disconnected processes to a structured digital workflow that supports better service delivery and stronger decision-making.</p>
                 <div class="bullet-list">
                     <div class="bullet-item"><span class="bullet-icon">✓</span><span>Know exactly what is in stock at any time.</span></div>
-                    <div class="bullet-item"><span class="bullet-icon">✓</span><span>Reduce losses from unnoticed expiry dates.</span></div>
-                    <div class="bullet-item"><span class="bullet-icon">✓</span><span>Track sales and purchases with more confidence.</span></div>
-                    <div class="bullet-item"><span class="bullet-icon">✓</span><span>Empower staff while maintaining owner oversight.</span></div>
+                    <div class="bullet-item"><span class="bullet-icon">✓</span><span>Minimize losses from overlooked expiry dates.</span></div>
+                    <div class="bullet-item"><span class="bullet-icon">✓</span><span>Track sales and purchases with greater accuracy.</span></div>
+                    <div class="bullet-item"><span class="bullet-icon">✓</span><span>Enable staff productivity while maintaining management oversight.</span></div>
                 </div>
             </div>
 
             <div class="showcase-card">
-                <h3>Built for modern healthcare businesses</h3>
-                <p>Whether you run a single outlet or plan to scale, PharmaHub gives you the digital foundation needed to deliver speed, organization, and professionalism.</p>
+                <h3>Designed for modern healthcare businesses</h3>
+                <p>Whether you operate a single pharmacy or plan to expand, PharmaHub provides the digital foundation needed for speed, organization, and professionalism.</p>
                 <div class="bullet-list">
-                    <div class="bullet-item"><span class="bullet-icon">✓</span><span>Professional dashboard for daily decision-making.</span></div>
-                    <div class="bullet-item"><span class="bullet-icon">✓</span><span>Simple onboarding and clean user experience.</span></div>
-                    <div class="bullet-item"><span class="bullet-icon">✓</span><span>Premium SaaS feel that matches modern business expectations.</span></div>
-                    <div class="bullet-item"><span class="bullet-icon">✓</span><span>Designed to save time and improve operations.</span></div>
+                    <div class="bullet-item"><span class="bullet-icon">✓</span><span>Professional dashboard for daily operational decisions.</span></div>
+                    <div class="bullet-item"><span class="bullet-icon">✓</span><span>Smooth onboarding and user-friendly experience.</span></div>
+                    <div class="bullet-item"><span class="bullet-icon">✓</span><span>Modern platform built to reflect today’s business standards.</span></div>
+                    <div class="bullet-item"><span class="bullet-icon">✓</span><span>Structured to save time and improve efficiency.</span></div>
                 </div>
             </div>
         </div>
@@ -1043,178 +1240,243 @@
     <section class="section" id="pricing">
         <div class="container">
             <div class="section-heading">
-                <h2>Simple pricing for every growth stage</h2>
-                <p>Start free, upgrade when ready, and choose the plan that matches your pharmacy size, staffing needs, and business goals.</p>
+                <h2>Simple pricing for every stage of growth</h2>
+                <p>Start free, upgrade when ready, and choose the plan that aligns with your pharmacy size, team structure, and business goals.</p>
             </div>
 
             <div class="pricing-wrap">
-    <div class="price-card">
-        <h3>Trial</h3>
-        <div class="price-note">Perfect for new pharmacies that want to explore PharmaHub before subscribing.</div>
-        <div class="price">
-            <strong>₦0</strong>
-            <span>/ 14 days</span>
-        </div>
-        <div class="price-list">
-            <div><span class="bullet-icon">✓</span><span>14-day free trial access</span></div>
-            <div><span class="bullet-icon">✓</span><span>Drug inventory management</span></div>
-            <div><span class="bullet-icon">✓</span><span>Expiry date monitoring</span></div>
-            <div><span class="bullet-icon">✓</span><span>Sales and purchase records</span></div>
-            <div><span class="bullet-icon">✓</span><span>Basic pharmacy reports</span></div>
-            <div><span class="bullet-icon">✓</span><span>No payment required to start</span></div>
-        </div>
-        <a href="{% url 'register' %}" class="btn btn-outline" style="width:100%;">Start Free Trial</a>
-    </div>
-
-    <div class="price-card">
-        <h3>Starter</h3>
-        <div class="price-note">Ideal for small pharmacies that need essential tools and limited staff access.</div>
-        <div class="price">
-            <strong>₦3,740</strong>
-            <span>/ month</span>
-        </div>
-        <div class="price-list">
-            <div><span class="bullet-icon">✓</span><span>Up to 3 staff accounts</span></div>
-            <div><span class="bullet-icon">✓</span><span>Inventory and stock control</span></div>
-            <div><span class="bullet-icon">✓</span><span>Expiry tracking and alerts</span></div>
-            <div><span class="bullet-icon">✓</span><span>Sales and purchase management</span></div>
-            <div><span class="bullet-icon">✓</span><span>Daily and monthly reports</span></div>
-            <div><span class="bullet-icon">✓</span><span>Secure pharmacy dashboard</span></div>
-        </div>
-        <a href="{% url 'register' %}" class="btn btn-outline" style="width:100%;">Choose Starter</a>
-    </div>
-
-    <div class="price-card featured">
-        <div class="badge-popular">Most Popular</div>
-        <h3>Basic</h3>
-        <div class="price-note">Best for growing pharmacies that need stronger team support and better reporting.</div>
-        <div class="price">
-            <strong>₦7,290</strong>
-            <span>/ month</span>
-        </div>
-        <div class="price-list">
-            <div><span class="bullet-icon">✓</span><span>Up to 7 staff accounts</span></div>
-            <div><span class="bullet-icon">✓</span><span>Everything in Starter</span></div>
-            <div><span class="bullet-icon">✓</span><span>Better multi-staff workflow</span></div>
-            <div><span class="bullet-icon">✓</span><span>Advanced reporting tools</span></div>
-            <div><span class="bullet-icon">✓</span><span>Improved business insights</span></div>
-            <div><span class="bullet-icon">✓</span><span>Reliable pharmacy operations support</span></div>
-        </div>
-        <a href="{% url 'register' %}" class="btn btn-primary" style="width:100%;">Choose Basic</a>
-    </div>
-
-    <div class="price-card">
-        <h3>Premium</h3>
-        <div class="price-note">Built for established pharmacies that want more scale, more staff, and stronger control.</div>
-        <div class="price">
-            <strong>₦17,820</strong>
-            <span>/ month</span>
-        </div>
-        <div class="price-list">
-            <div><span class="bullet-icon">✓</span><span>Up to 20 staff accounts</span></div>
-            <div><span class="bullet-icon">✓</span><span>Everything in Basic</span></div>
-            <div><span class="bullet-icon">✓</span><span>More operational flexibility</span></div>
-            <div><span class="bullet-icon">✓</span><span>Premium business reporting</span></div>
-            <div><span class="bullet-icon">✓</span><span>Designed for larger teams</span></div>
-            <div><span class="bullet-icon">✓</span><span>Priority support experience</span></div>
-        </div>
-        <a href="{% url 'register' %}" class="btn btn-outline" style="width:100%;">Choose Premium</a>
-    </div>
-
-    <div class="price-card">
-        <h3>Starter Yearly</h3>
-        <div class="price-note">Best annual option for small pharmacies that want to save more over time.</div>
-        <div class="price">
-            <strong>₦37,260</strong>
-            <span>/ year</span>
-        </div>
-        <div class="price-list">
-            <div><span class="bullet-icon">✓</span><span>Up to 3 staff accounts</span></div>
-            <div><span class="bullet-icon">✓</span><span>Full Starter features</span></div>
-            <div><span class="bullet-icon">✓</span><span>Lower yearly cost</span></div>
-            <div><span class="bullet-icon">✓</span><span>Stable long-term access</span></div>
-            <div><span class="bullet-icon">✓</span><span>Inventory and expiry control</span></div>
-            <div><span class="bullet-icon">✓</span><span>Professional reporting tools</span></div>
-        </div>
-        <a href="{% url 'register' %}" class="btn btn-outline" style="width:100%;">Choose Starter Yearly</a>
-    </div>
-
-    <div class="price-card">
-        <h3>Basic Yearly</h3>
-        <div class="price-note">Annual package for growing pharmacies that want better value and stronger team access.</div>
-        <div class="price">
-            <strong>₦73,430</strong>
-            <span>/ year</span>
-        </div>
-        <div class="price-list">
-            <div><span class="bullet-icon">✓</span><span>Up to 7 staff accounts</span></div>
-            <div><span class="bullet-icon">✓</span><span>Full Basic features</span></div>
-            <div><span class="bullet-icon">✓</span><span>Advanced reporting access</span></div>
-            <div><span class="bullet-icon">✓</span><span>Long-term business value</span></div>
-            <div><span class="bullet-icon">✓</span><span>Improved team productivity</span></div>
-            <div><span class="bullet-icon">✓</span><span>Reliable pharmacy growth support</span></div>
-        </div>
-        <a href="{% url 'register' %}" class="btn btn-outline" style="width:100%;">Choose Basic Yearly</a>
-    </div>
-
-    <div class="price-card">
-        <h3>Premium Yearly</h3>
-        <div class="price-note">The best value for larger pharmacies that need long-term scale and premium access.</div>
-        <div class="price">
-            <strong>₦153,560</strong>
-            <span>/ year</span>
-        </div>
-        <div class="price-list">
-            <div><span class="bullet-icon">✓</span><span>Up to 20 staff accounts</span></div>
-            <div><span class="bullet-icon">✓</span><span>Full Premium features</span></div>
-            <div><span class="bullet-icon">✓</span><span>Strongest long-term savings</span></div>
-            <div><span class="bullet-icon">✓</span><span>Premium support access</span></div>
-            <div><span class="bullet-icon">✓</span><span>Scalable for larger operations</span></div>
-            <div><span class="bullet-icon">✓</span><span>High-level reporting and control</span></div>
-        </div>
-        <a href="{% url 'register' %}" class="btn btn-outline" style="width:100%;">Choose Premium Yearly</a>
-    </div>
-</div>
-        </div>
-    </section>
-
-    <section class="section" id="testimonials">
-        <div class="container">
-            <div class="section-heading">
-                <h2>Loved by pharmacy owners who want to work smarter</h2>
-                <p>Presenting your platform with strong testimonials adds trust and makes the product feel like a serious solution for modern businesses.</p>
-            </div>
-
-            <div class="testimonial-grid">
-                <div class="testimonial-card">
-                    <div class="stars">★★★★★</div>
-                    <p>PharmaHub gives us a more organized way to manage stock and monitor expiry dates. The dashboard feels premium and easy to use.</p>
-                    <div class="person">Adebayo Pharmacy</div>
-                    <div class="role">Community Pharmacy Owner</div>
+                <div class="price-card">
+                    <h3>Trial</h3>
+                    <div class="price-note">Ideal for pharmacies that want to explore PharmaHub before choosing a subscription plan.</div>
+                    <div class="price">
+                        <strong>₦0</strong>
+                        <span>/ 14 days</span>
+                    </div>
+                    <div class="price-list">
+                        <div><span class="bullet-icon">✓</span><span>14-day free trial access</span></div>
+                        <div><span class="bullet-icon">✓</span><span>Drug inventory management</span></div>
+                        <div><span class="bullet-icon">✓</span><span>Expiry date monitoring</span></div>
+                        <div><span class="bullet-icon">✓</span><span>Sales and purchase records</span></div>
+                        <div><span class="bullet-icon">✓</span><span>Basic pharmacy reports</span></div>
+                        <div><span class="bullet-icon">✓</span><span>No payment required to begin</span></div>
+                    </div>
+                    <a href="{% url 'register' %}" class="btn btn-outline" style="width:100%;">Start Free Trial</a>
                 </div>
 
-                <div class="testimonial-card">
-                    <div class="stars">★★★★★</div>
-                    <p>The sales and inventory visibility helped us reduce confusion in daily operations. It feels like software built for real pharmacy work.</p>
-                    <div class="person">HealthPlus Care</div>
-                    <div class="role">Operations Manager</div>
+                <div class="price-card">
+                    <h3>Starter</h3>
+                    <div class="price-note">Ideal for small pharmacies that need essential operational tools and limited staff access.</div>
+                    <div class="price">
+                        <strong>₦3,740</strong>
+                        <span>/ month</span>
+                    </div>
+                    <div class="price-list">
+                        <div><span class="bullet-icon">✓</span><span>Up to 3 staff accounts</span></div>
+                        <div><span class="bullet-icon">✓</span><span>Inventory and stock control</span></div>
+                        <div><span class="bullet-icon">✓</span><span>Expiry tracking and alerts</span></div>
+                        <div><span class="bullet-icon">✓</span><span>Sales and purchase management</span></div>
+                        <div><span class="bullet-icon">✓</span><span>Daily and monthly reports</span></div>
+                        <div><span class="bullet-icon">✓</span><span>Secure pharmacy dashboard</span></div>
+                    </div>
+                    <a href="{% url 'register' %}" class="btn btn-outline" style="width:100%;">Choose Starter</a>
                 </div>
 
-                <div class="testimonial-card">
-                    <div class="stars">★★★★★</div>
-                    <p>What we love most is the clean interface and clear reporting. It makes our pharmacy look and operate more professionally.</p>
-                    <div class="person">Medline Store</div>
-                    <div class="role">Pharmacy Director</div>
+                <div class="price-card featured">
+                    <div class="badge-popular">Most Popular</div>
+                    <h3>Basic</h3>
+                    <div class="price-note">Best for growing pharmacies that require stronger team support and more detailed reporting.</div>
+                    <div class="price">
+                        <strong>₦7,290</strong>
+                        <span>/ month</span>
+                    </div>
+                    <div class="price-list">
+                        <div><span class="bullet-icon">✓</span><span>Up to 7 staff accounts</span></div>
+                        <div><span class="bullet-icon">✓</span><span>Everything in Starter</span></div>
+                        <div><span class="bullet-icon">✓</span><span>Improved multi-staff workflow</span></div>
+                        <div><span class="bullet-icon">✓</span><span>Advanced reporting tools</span></div>
+                        <div><span class="bullet-icon">✓</span><span>Better business insights</span></div>
+                        <div><span class="bullet-icon">✓</span><span>Reliable operational support</span></div>
+                    </div>
+                    <a href="{% url 'register' %}" class="btn btn-primary" style="width:100%;">Choose Basic</a>
+                </div>
+
+                <div class="price-card">
+                    <h3>Premium</h3>
+                    <div class="price-note">Built for established pharmacies that require scale, larger teams, and stronger operational control.</div>
+                    <div class="price">
+                        <strong>₦17,820</strong>
+                        <span>/ month</span>
+                    </div>
+                    <div class="price-list">
+                        <div><span class="bullet-icon">✓</span><span>Up to 20 staff accounts</span></div>
+                        <div><span class="bullet-icon">✓</span><span>Everything in Basic</span></div>
+                        <div><span class="bullet-icon">✓</span><span>Greater operational flexibility</span></div>
+                        <div><span class="bullet-icon">✓</span><span>Premium reporting tools</span></div>
+                        <div><span class="bullet-icon">✓</span><span>Designed for larger teams</span></div>
+                        <div><span class="bullet-icon">✓</span><span>Priority support experience</span></div>
+                    </div>
+                    <a href="{% url 'register' %}" class="btn btn-outline" style="width:100%;">Choose Premium</a>
+                </div>
+
+                <div class="price-card">
+                    <h3>Starter Yearly</h3>
+                    <div class="price-note">A strong annual option for small pharmacies that want long-term value and savings.</div>
+                    <div class="price">
+                        <strong>₦37,260</strong>
+                        <span>/ year</span>
+                    </div>
+                    <div class="price-list">
+                        <div><span class="bullet-icon">✓</span><span>Up to 3 staff accounts</span></div>
+                        <div><span class="bullet-icon">✓</span><span>Full Starter features</span></div>
+                        <div><span class="bullet-icon">✓</span><span>Lower annual cost</span></div>
+                        <div><span class="bullet-icon">✓</span><span>Stable long-term access</span></div>
+                        <div><span class="bullet-icon">✓</span><span>Inventory and expiry control</span></div>
+                        <div><span class="bullet-icon">✓</span><span>Professional reporting tools</span></div>
+                    </div>
+                    <a href="{% url 'register' %}" class="btn btn-outline" style="width:100%;">Choose Starter Yearly</a>
+                </div>
+
+                <div class="price-card">
+                    <h3>Basic Yearly</h3>
+                    <div class="price-note">An annual package for growing pharmacies seeking stronger value and improved team access.</div>
+                    <div class="price">
+                        <strong>₦73,430</strong>
+                        <span>/ year</span>
+                    </div>
+                    <div class="price-list">
+                        <div><span class="bullet-icon">✓</span><span>Up to 7 staff accounts</span></div>
+                        <div><span class="bullet-icon">✓</span><span>Full Basic features</span></div>
+                        <div><span class="bullet-icon">✓</span><span>Advanced reporting access</span></div>
+                        <div><span class="bullet-icon">✓</span><span>Long-term business value</span></div>
+                        <div><span class="bullet-icon">✓</span><span>Improved team productivity</span></div>
+                        <div><span class="bullet-icon">✓</span><span>Reliable pharmacy growth support</span></div>
+                    </div>
+                    <a href="{% url 'register' %}" class="btn btn-outline" style="width:100%;">Choose Basic Yearly</a>
+                </div>
+
+                <div class="price-card">
+                    <h3>Premium Yearly</h3>
+                    <div class="price-note">The best annual value for larger pharmacies that need scale, advanced access, and premium support.</div>
+                    <div class="price">
+                        <strong>₦153,560</strong>
+                        <span>/ year</span>
+                    </div>
+                    <div class="price-list">
+                        <div><span class="bullet-icon">✓</span><span>Up to 20 staff accounts</span></div>
+                        <div><span class="bullet-icon">✓</span><span>Full Premium features</span></div>
+                        <div><span class="bullet-icon">✓</span><span>Greater long-term savings</span></div>
+                        <div><span class="bullet-icon">✓</span><span>Premium support access</span></div>
+                        <div><span class="bullet-icon">✓</span><span>Scalable for larger operations</span></div>
+                        <div><span class="bullet-icon">✓</span><span>Advanced reporting and control</span></div>
+                    </div>
+                    <a href="{% url 'register' %}" class="btn btn-outline" style="width:100%;">Choose Premium Yearly</a>
                 </div>
             </div>
         </div>
     </section>
+
+    <section class="section testimonials-section" id="testimonials">
+    <div class="container">
+        <div class="section-heading">
+            <span class="section-badge">Customer Reviews</span>
+            <h2>What our customers are saying</h2>
+            <p>Feedback from pharmacy professionals using PharmaHub to manage daily operations more effectively.</p>
+        </div>
+
+        <div class="testimonial-grid">
+            {% for t in testimonials %}
+            <div class="testimonial-card">
+                <div class="quote-icon">
+                    <i class="fas fa-quote-right"></i>
+                </div>
+
+                <div class="stars">
+                    {% if t.rating == 5 %}★★★★★
+                    {% elif t.rating == 4 %}★★★★
+                    {% elif t.rating == 3 %}★★★
+                    {% elif t.rating == 2 %}★★
+                    {% else %}★
+                    {% endif %}
+                </div>
+
+                <p class="testimonial-message">“{{ t.message }}”</p>
+
+                <div class="testimonial-user">
+                    <div class="testimonial-avatar">
+                        {{ t.name|slice:":1"|upper }}
+                    </div>
+                    <div>
+                        <div class="person">{{ t.name }}</div>
+                        <div class="role">{{ t.role }}</div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="testimonial-card">
+                <div class="quote-icon">
+                    <i class="fas fa-quote-right"></i>
+                </div>
+                <div class="stars">★★★★★</div>
+                <p class="testimonial-message">“No customer reviews yet. Be the first to share your experience with PharmaHub.”</p>
+                <div class="testimonial-user">
+                    <div class="testimonial-avatar">P</div>
+                    <div>
+                        <div class="person">PharmaHub User</div>
+                        <div class="role">Customer Feedback</div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="review-box">
+            <div class="review-box-header">
+                <span class="section-badge">Share Feedback</span>
+                <h2>Leave a review</h2>
+                <p>Your review will appear after approval.</p>
+            </div>
+
+            <form method="POST" class="review-form">
+                {% csrf_token %}
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <input type="text" name="name" placeholder="Your Name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" name="role" placeholder="Your Role" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <textarea name="message" placeholder="Write your review..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <select name="rating">
+                        <option value="5">★★★★★ - Excellent</option>
+                        <option value="4">★★★★ - Very Good</option>
+                        <option value="3">★★★ - Good</option>
+                        <option value="2">★★ - Fair</option>
+                        <option value="1">★ - Poor</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary review-submit-btn">
+                    Submit Review
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+
 
     <section class="section">
         <div class="container">
             <div class="cta-box">
                 <h2>Ready to modernize your pharmacy operations?</h2>
-                <p>Start your free trial today and experience a premium pharmacy management platform built to help your business stay organized, efficient, and ready for growth.</p>
+                <p>Start your free trial today and experience a pharmacy management platform built to help your business stay organized, efficient, and prepared for growth.</p>
                 <div class="hero-actions" style="justify-content:center; margin-bottom:0;">
                     <a href="{% url 'register' %}" class="btn btn-primary">Start Free Trial</a>
                     <a href="{% url 'login' %}" class="btn btn-outline">Login</a>
@@ -1224,20 +1486,37 @@
     </section>
 
     <footer class="footer">
-        <div class="container footer-grid">
-            <div>
-                <strong style="color:#fff;">PharmaHub</strong><br>
-                <span>Modern pharmacy management software for smarter operations.</span>
-            </div>
-            <div class="footer-links">
-                <a href="#features">Features</a>
-                <a href="#pricing">Pricing</a>
-                <a href="#testimonials">Testimonials</a>
-                <a href="{% url 'login' %}">Login</a>
-                <a href="{% url 'register' %}">Register</a>
-            </div>
+    <div class="container footer-grid">
+        <div>
+            <strong style="color:#fff;">PharmaHub</strong><br>
+            <span>Modern pharmacy management software built for smarter operations.</span><br>
+            <span>© 2026 PharmaHub. All rights reserved.</span>
         </div>
-    </footer>
+
+        <div class="footer-links">
+
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'register' %}">Register</a>
+
+            <!-- Social Icons -->
+            <a href="https://wa.me/2349164208536" target="_blank" class="social-icon whatsapp">
+                <i class="fab fa-whatsapp"></i>
+            </a>
+
+            <a href="https://instagram.com/pharmahub_africa" target="_blank" class="social-icon instagram">
+                <i class="fab fa-instagram"></i>
+            </a>
+
+            <a href="https://tiktok.com/@pharmahub_africa" target="_blank" class="social-icon tiktok">
+                <i class="fab fa-tiktok"></i>
+            </a>
+
+            <a href="https://facebook.com/pharmahubafrica" target="_blank" class="social-icon facebook">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+        </div>
+    </div>
+</footer>
 
     <script>
         function toggleMobileMenu() {

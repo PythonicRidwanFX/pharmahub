@@ -1,6 +1,6 @@
 from datetime import timedelta
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.utils.timezone import now
 from django.db.models import Sum
 
@@ -9,6 +9,8 @@ from sales.models import Sale
 from purchases.models import Purchase
 from subscriptions.decorators import subscription_required
 from pharmacies.decorators import pharmacy_active_required
+from .models import Testimonial
+from .forms import TestimonialForm
 
 
 @login_required
@@ -76,9 +78,24 @@ def dashboard_view(request):
 def help_view(request):
     return render(request, 'dashboard/help.html')
 
-from django.shortcuts import render, redirect
 
 def landing_page(request):
     if request.user.is_authenticated:
         return redirect('dashboard')
-    return render(request, 'landing.html')
+
+    testimonials = Testimonial.objects.all().order_by('-created_at')
+
+    if request.method == 'POST':
+        form = TestimonialForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('landing_page')
+    else:
+        form = TestimonialForm()
+
+    context = {
+        'testimonials': testimonials,
+        'form': form,
+    }
+
+    return render(request, 'landing.html', context)
