@@ -28,11 +28,10 @@ def purchase_list(request):
 @subscription_required
 @pharmacy_active_required
 def add_purchase(request):
-    # 🔒 Role restriction
-    if request.user.role not in ['owner', 'admin']:
+    if request.user.role not in ['owner', 'admin', 'pharmacist', 'staff', 'cashier']:
         raise PermissionDenied("You do not have permission to add purchases.")
 
-    # 🔒 Ensure user has a pharmacy
+
     if not hasattr(request.user, 'pharmacy') or request.user.pharmacy is None:
         messages.error(request, "You are not assigned to any pharmacy.")
         return redirect('dashboard')
