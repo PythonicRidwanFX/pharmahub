@@ -248,8 +248,30 @@
 
                 <div class="form-grid">
                     <div class="form-group">
+                        <label>Search Drug</label>
+                        <input
+                            type="text"
+                            id="drug-search"
+                            class="form-control"
+                            placeholder="Type drug name to search..."
+                            autocomplete="off"
+                        >
+                    </div>
+
+                    <div class="form-group">
                         <label>Drug</label>
                         {{ form.drug }}
+                    </div>
+
+                    <div class="form-group">
+                        <label>Available Stock</label>
+                        <input
+                            type="text"
+                            id="available-stock"
+                            class="form-control"
+                            placeholder="Stock will show here"
+                            readonly
+                        >
                     </div>
 
                     <div class="form-group">
@@ -281,4 +303,93 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('drug-search');
+        const drugSelect = document.getElementById('drug-select');
+        const unitPriceField = document.getElementById('unit-price-field');
+        const stockField = document.getElementById('available-stock');
+
+        if (!searchInput || !drugSelect || !unitPriceField) return;
+
+        const originalOptions = Array.from(drugSelect.options).map(option => ({
+            value: option.value,
+            text: option.text,
+            selected: option.selected
+        }));
+
+        const drugData = {
+            {% for drug in form.fields.drug.queryset %}
+                "{{ drug.id }}": {
+                    price: "{{ drug.unit_price }}",
+                    stock: "{{ drug.quantity }}"
+                },
+            {% endfor %}
+        };
+
+        function updateDrugInfo() {
+            const selectedDrugId = drugSelect.value;
+
+            if (drugData[selectedDrugId]) {
+                unitPriceField.value = drugData[selectedDrugId].price;
+
+                if (stockField) {
+                    stockField.value = drugData[selectedDrugId].stock;
+                }
+            } else {
+                unitPriceField.value = '';
+                if (stockField) {
+                    stockField.value = '';
+                }
+            }
+        }
+
+        searchInput.addEventListener('input', function () {
+            const searchValue = this.value.toLowerCase().trim();
+            const currentValue = drugSelect.value;
+
+            drugSelect.innerHTML = '';
+
+            const matchedOptions = originalOptions.filter(option => {
+                return option.text.toLowerCase().includes(searchValue);
+            });
+
+            if (matchedOptions.length === 0) {
+                const noResultOption = document.createElement('option');
+                noResultOption.value = '';
+                noResultOption.textContent = 'No matching drug found';
+                drugSelect.appendChild(noResultOption);
+
+                unitPriceField.value = '';
+                if (stockField) {
+                    stockField.value = '';
+                }
+                return;
+            }
+
+            matchedOptions.forEach(optionData => {
+                const option = document.createElement('option');
+                option.value = optionData.value;
+                option.textContent = optionData.text;
+
+                if (optionData.value === currentValue) {
+                    option.selected = true;
+                }
+
+                drugSelect.appendChild(option);
+            });
+
+            if (!drugSelect.value && matchedOptions.length > 0) {
+                drugSelect.selectedIndex = 0;
+            }
+
+            updateDrugInfo();
+        });
+
+        drugSelect.addEventListener('change', updateDrugInfo);
+
+        updateDrugInfo();
+    });
+</script>
 {% endblock %}

@@ -285,6 +285,104 @@
             justify-content: center;
         }
     }
+
+    .analytics-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 24px;
+        margin-top: 28px;
+        margin-bottom: 28px;
+    }
+
+    .chart-card {
+        background: linear-gradient(145deg, #ffffff, #f8fbff);
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+        border: 1px solid rgba(148, 163, 184, 0.15);
+    }
+
+    .chart-card.wide {
+        min-height: 390px;
+    }
+
+    .chart-wrap {
+        position: relative;
+        height: 290px;
+        margin-top: 16px;
+    }
+
+    .doughnut-wrap {
+        height: 260px;
+    }
+
+    .insight-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        margin-bottom: 28px;
+    }
+
+    .insight-card {
+        background: #ffffff;
+        border-radius: 18px;
+        padding: 20px;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+        border: 1px solid rgba(148, 163, 184, 0.14);
+    }
+
+    .insight-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: #64748b;
+        margin-bottom: 10px;
+    }
+
+    .insight-value {
+        font-size: 22px;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 8px;
+        line-height: 1.3;
+    }
+
+    .insight-note {
+        font-size: 13px;
+        color: #94a3b8;
+        line-height: 1.5;
+    }
+
+    .pill.analytics {
+        background: rgba(37, 99, 235, 0.1);
+        color: #2563eb;
+        font-weight: 700;
+    }
+
+    @media (max-width: 1100px) {
+        .analytics-grid,
+        .insight-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .chart-card,
+        .insight-card {
+            padding: 18px;
+        }
+
+        .chart-wrap {
+            height: 240px;
+        }
+
+        .doughnut-wrap {
+            height: 220px;
+        }
+
+        .insight-value {
+            font-size: 18px;
+        }
+    }
 </style>
 
 <div class="owner-dashboard">
@@ -340,6 +438,54 @@
             <div class="stat-label">Today's Purchases</div>
             <p class="stat-value">₦{{ today_purchases }}</p>
             <div class="stat-hint">Stock purchases made today</div>
+        </div>
+    </div>
+
+    <div class="analytics-grid">
+        <div class="chart-card wide">
+            <div class="section-header">
+                <div>
+                    <h3>Sales & Purchase Trend</h3>
+                    <p>Last 7 days performance overview</p>
+                </div>
+                <span class="pill analytics">Analytics</span>
+            </div>
+            <div class="chart-wrap">
+                <canvas id="salesPurchaseChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-card">
+            <div class="section-header">
+                <div>
+                    <h3>Inventory Status</h3>
+                    <p>Current stock health distribution</p>
+                </div>
+                <span class="pill analytics">Health</span>
+            </div>
+            <div class="chart-wrap doughnut-wrap">
+                <canvas id="inventoryStatusChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="insight-grid">
+        <div class="insight-card">
+            <div class="insight-title">Best Sales Day</div>
+            <div class="insight-value">{{ best_sales_day|default:"No data yet" }}</div>
+            <div class="insight-note">Highest sales performance within the last 7 days</div>
+        </div>
+
+        <div class="insight-card">
+            <div class="insight-title">Top Selling Drug</div>
+            <div class="insight-value">{{ top_selling_drug|default:"No sales yet" }}</div>
+            <div class="insight-note">Most frequently sold item recently</div>
+        </div>
+
+        <div class="insight-card">
+            <div class="insight-title">Inventory Analysis</div>
+            <div class="insight-value">{{ inventory_analysis }}</div>
+            <div class="insight-note">Quick health summary of your stock records</div>
         </div>
     </div>
 
@@ -456,4 +602,114 @@
 
     </div>
 </div>
+
+{{ chart_labels|json_script:"chart-labels" }}
+{{ sales_chart_data|json_script:"sales-chart-data" }}
+{{ purchases_chart_data|json_script:"purchases-chart-data" }}
+{{ inventory_chart_data|json_script:"inventory-chart-data" }}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const chartLabelsElement = document.getElementById('chart-labels');
+    const salesChartDataElement = document.getElementById('sales-chart-data');
+    const purchasesChartDataElement = document.getElementById('purchases-chart-data');
+    const inventoryChartDataElement = document.getElementById('inventory-chart-data');
+
+    if (chartLabelsElement && salesChartDataElement && purchasesChartDataElement && inventoryChartDataElement) {
+        const chartLabels = JSON.parse(chartLabelsElement.textContent);
+        const salesChartData = JSON.parse(salesChartDataElement.textContent);
+        const purchasesChartData = JSON.parse(purchasesChartDataElement.textContent);
+        const inventoryChartData = JSON.parse(inventoryChartDataElement.textContent);
+
+        const salesPurchaseCanvas = document.getElementById('salesPurchaseChart');
+        if (salesPurchaseCanvas) {
+            const salesPurchaseCtx = salesPurchaseCanvas.getContext('2d');
+            new Chart(salesPurchaseCtx, {
+                type: 'line',
+                data: {
+                    labels: chartLabels,
+                    datasets: [
+                        {
+                            label: 'Sales',
+                            data: salesChartData,
+                            borderColor: '#16a34a',
+                            backgroundColor: 'rgba(22, 163, 74, 0.12)',
+                            fill: true,
+                            tension: 0.4,
+                            borderWidth: 3,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        },
+                        {
+                            label: 'Purchases',
+                            data: purchasesChartData,
+                            borderColor: '#2563eb',
+                            backgroundColor: 'rgba(37, 99, 235, 0.10)',
+                            fill: true,
+                            tension: 0.4,
+                            borderWidth: 3,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '₦' + value;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        const inventoryStatusCanvas = document.getElementById('inventoryStatusChart');
+        if (inventoryStatusCanvas) {
+            const inventoryStatusCtx = inventoryStatusCanvas.getContext('2d');
+            new Chart(inventoryStatusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Healthy Stock', 'Low Stock', 'Expiring Soon', 'Expired'],
+                    datasets: [{
+                        data: inventoryChartData,
+                        backgroundColor: [
+                            '#16a34a',
+                            '#f59e0b',
+                            '#3b82f6',
+                            '#ef4444'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '68%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+    }
+</script>
 {% endblock %}

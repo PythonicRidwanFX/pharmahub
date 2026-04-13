@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
+
 from .models import Purchase
 from .forms import PurchaseForm
 from subscriptions.decorators import subscription_required
@@ -12,7 +13,6 @@ from pharmacies.decorators import pharmacy_active_required
 @subscription_required
 @pharmacy_active_required
 def purchase_list(request):
-    # 🔒 Ensure user has a pharmacy
     if not hasattr(request.user, 'pharmacy') or request.user.pharmacy is None:
         messages.error(request, "You are not assigned to any pharmacy.")
         return redirect('dashboard')
@@ -31,7 +31,6 @@ def add_purchase(request):
     if request.user.role not in ['owner', 'admin', 'pharmacist', 'staff', 'cashier']:
         raise PermissionDenied("You do not have permission to add purchases.")
 
-
     if not hasattr(request.user, 'pharmacy') or request.user.pharmacy is None:
         messages.error(request, "You are not assigned to any pharmacy.")
         return redirect('dashboard')
@@ -46,7 +45,6 @@ def add_purchase(request):
             purchase.pharmacy = pharmacy
             purchase.save()
 
-            # ✅ Update stock
             drug = purchase.drug
             drug.quantity += purchase.quantity
             drug.save()
@@ -55,7 +53,6 @@ def add_purchase(request):
             return redirect('purchase_list')
         else:
             messages.error(request, "Please correct the form errors.")
-
     else:
         form = PurchaseForm(pharmacy=pharmacy)
 
